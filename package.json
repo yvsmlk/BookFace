@@ -7,7 +7,15 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test:front": "npm run test --workspace=Frontend",
+    "test:back": "npm run test --workspace=Backend",
+    "dev": "npm run dev --workspace=Frontend",
+    "start": "npm run start --workspace=BackEnd",
+    "deploy:front": "npm run deploy --workspace=Backend",
+
+    "deploy:back": " No need",
+    "preview": "np run preview --workspace=Frontend",
+    "preview-build": "np run preview-build --workspace=Frontend"
   },
   "repository": {
     "type": "git",
