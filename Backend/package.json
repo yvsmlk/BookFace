@@ -1,0 +1,12 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start":"start",
+    "test": "TODO tests backend"
+  },
+  "author": "",
+  "license": "ISC"
+}
