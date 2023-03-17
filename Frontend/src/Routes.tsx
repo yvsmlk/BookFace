@@ -1,17 +1,11 @@
-import React from 'react';
 import { Routes, Route } from "react-router-dom"
-import Home from './Pages/Home'
-
+import LandingPage from './Pages/LandingPage'
 
 
 
 export function routes() {
-  return <Routes>
-    <Route path='/' element={< Home/>} />
-    
-   
-    
-    
-    
-  </Routes>;
+    return <Routes>
+            <Route path='/LandingPage' element={<LandingPage />} />
+
+    </Routes>
 }
