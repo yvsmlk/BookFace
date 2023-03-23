@@ -12,6 +12,10 @@ app.use(cors());
 
 
 
+app.use('/login',require('./routes/login.routes'))
+app.use('/logout',require('./routes/logout.routes'))
+app.use('/register',require('./routes/register.routes'))
+
 
 app.listen(PORT,() =>{
     console.log( `\nServer running on ---> http://localhost:${PORT}\n`)
