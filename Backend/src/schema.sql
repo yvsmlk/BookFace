@@ -26,15 +26,6 @@ CREATE TABLE tags (
     type VARCHAR(100)
 );
 
-CREATE TABLE participations (
-    id int PRIMARY KEY AUTO_INCREMENT ,
-    context_id int not null,
-    subscription_id int not null,
-    context_type VARCHAR(100),
-    subscription_type VARCHAR(100)
-);
-
-
 CREATE TABLE grouplist (
     id int PRIMARY KEY AUTO_INCREMENT ,
     user_id int not null,
@@ -84,4 +75,27 @@ CREATE TABLE media (
     id int PRIMARY KEY AUTO_INCREMENT ,
     type VARCHAR(50) not null,
     link varchar(200)
+);
+
+CREATE TABLE userFollow (
+    user_id int not null,
+    follower_id int not null
+    
+);
+
+CREATE TABLE userGroup (
+    post_id int not null,
+    group_id int not null
+    
+);
+
+CREATE TABLE groupPosts (
+    post_id int not null,
+    group_id int not null
+    
+);
+
+CREATE TABLE registeredPosts (
+    user_id int not null,
+    post_id int not null
 );
