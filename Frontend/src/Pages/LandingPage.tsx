@@ -25,10 +25,10 @@ const LandingPage = () => {
         </p>
         <div className="flex justify-center">
           <button className="bg-white hover:bg-green-700 text-green-600 hover:text-white font-bold py-2 px-4 rounded border-2 border-green-600 mr-4">
-            Log In
+          <Link to="/Login">Log In</Link>
           </button>
           <button className="bg-white hover:bg-green-700 text-green-600 hover:text-white font-bold py-2 px-4 rounded border-2 border-green-600 mr-4">
-            Sign In
+          <Link to="/Register">Sign In</Link>
           </button>
         </div>
       </div>

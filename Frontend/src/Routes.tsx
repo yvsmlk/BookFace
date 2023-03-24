@@ -5,6 +5,9 @@ import PostCard from "./Components/Postcard/Postcard"
 import SideBar from "./Components/SideBar/SideBar"
 import VCard from "./Components/VCard/VCard"
 import LandingPage from './Pages/LandingPage'
+import Register from "./Pages/Register"
+import Login from "./Pages/Login"
+
 
 import NatureCard from "./Components/GalleryCard/GalleryCard"
 import NatureTrendCard from "./Components/NatureTrendCard/NatureTrendCard"
@@ -37,5 +40,12 @@ export function routes() {
             comments: 0
         }} />} />
 
+        
+       
+
+            <Route path= '/Register' element={<Register/>} />
+            <Route path= '/Login' element={<Login/>} />
+          
+        
     </Routes>
 }
