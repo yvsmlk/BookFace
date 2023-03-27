@@ -1,6 +1,7 @@
 
 import { createPool, Pool  } from "mysql2";
 const mysql = require('mysql2')
+
 import * as dotenv from "dotenv";
 dotenv.config();
 
@@ -19,10 +20,10 @@ abstract class DbConnect {
   //   abstract update(...params:any):Promise<any>;
   //   abstract delete(...params:any):Promise<any>;
 
-  pollEnd() {
+  close() {
     setTimeout(()=>{
       this.connection.end();
-    },250)
+    },1)
   }
 
 }

@@ -10,8 +10,11 @@ CREATE TABLE users (
     email VARCHAR(100),
     pwd VARCHAR(100),
     status int,
-    created_at datetime not null
+    created_at datetime not null,
+    INDEX UX (email)
 );
+
+-- create unique index UX on users (email)
 
 CREATE TABLE sessions (
     id int PRIMARY KEY AUTO_INCREMENT ,
@@ -21,10 +24,13 @@ CREATE TABLE sessions (
 
 CREATE TABLE tags (
     id int PRIMARY KEY AUTO_INCREMENT ,
-    context_id int not null,
-    tag VARCHAR(100),
-    type VARCHAR(100)
+    context_id int not null FOREIGN KEY,
+    tag VARCHAR(100) not NULL,
+    type VARCHAR(100) not NULL,
+    INDEX UX (tag)
 );
+
+-- create unique index UX on tags (tag)
 
 CREATE TABLE grouplist (
     id int PRIMARY KEY AUTO_INCREMENT ,
