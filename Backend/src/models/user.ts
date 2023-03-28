@@ -156,13 +156,7 @@ export class User extends DbConnect {
                 }
 
                 let {id} = dbUser.content as {
-                    id:number,
-                    banner:number,
-                    picture: number,
-                    username: string,
-                    email: string,
-                    status: number,
-                    created_at: string
+                    id:number
                 }
 
                 let tagRes = await tag.addTag(id,tagname,Type.TagTypes.USER)
@@ -226,7 +220,8 @@ export class User extends DbConnect {
                         username: rows[0]['username'],
                         email: rows[0]['email'],
                         status: rows[0]['status'],
-                        created_at: rows[0]['created_at']
+                        created_at: rows[0]['created_at'],
+                        pwd:rows[0]['pwd']
                     }
                 })
             })
@@ -293,25 +288,79 @@ export class User extends DbConnect {
 
     
 
-    login(email:string,pwd:string){
+    async login(email:string,pwd:string){
 
-        return new Promise<Type.ResponseMsg>((resolve, reject) => {
+        const hashedPwd =  await bcrypt.hash(pwd, 10)
+        return new Promise<Type.ResponseMsg>(async (resolve, reject) => {
+
+            let session = new Session()
+            let dbUser = await this.getUser(email)
+
+            if (dbUser.status != 100){
+                resolve({
+                    status:202,
+                    message:Type.StatusTypes[202],
+                    content: {}
+                })
+            }
+
+            let {id,pwd} = dbUser.content as {
+                id:number,
+                pwd:string
+            }
+
+            let resSession = await session.getSession(id)
+
+            if ( resSession.status != 201){
+                resolve({
+                    status:405,
+                    message:Type.StatusTypes[405],
+                    content: {email:email}
+                })
+                session.close()
+                return
+            }
+
+            resSession = await session.addSession(id)
+            session.close()
+            if ( resSession.status != 100){
+                resolve({
+                    status:202,
+                    message:Type.StatusTypes[202],
+                    content: resSession.content
+                })
+                return
+            }
+            
             resolve({
-                status:200,
-                message:"todo",
-                content: {}
+                status:100,
+                message:Type.StatusTypes[100],
+                content: {hashedPWD:pwd,id:id}
             })
         })
         
     }
 
     //logout based on JWT
-    logout(){
+    logout(user_id:number){
 
-        return new Promise<Type.ResponseMsg>((resolve, reject) => {
+        return new Promise<Type.ResponseMsg>(async (resolve, reject) => {
+            let session = new Session()
+
+            let resSession = await session.deleteSession(user_id)
+            session.close()
+            if ( resSession.status != 100){
+                resolve({
+                    status:202,
+                    message:Type.StatusTypes[202],
+                    content: resSession.content
+                })
+                return
+            }
+            
             resolve({
-                status:200,
-                message:"todo",
+                status:100,
+                message:Type.StatusTypes[100],
                 content: {}
             })
         })

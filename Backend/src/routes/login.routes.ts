@@ -2,7 +2,7 @@ import express from 'express';
 const router = express.Router();
 import { login } from '../controllers/login';
 
-router.get('/',login)
+router.post('/',login)
 
 
 module.exports = router

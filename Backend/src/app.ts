@@ -5,10 +5,17 @@ import cors from "cors";
 
 const PORT = 3535
 
+const  whitelist = ['https://liolle.github.io','http://localhost:5173','http://localhost:4173']
+
+var corsOptions = {
+  credentials: true,
+  origin: whitelist
+}
+
 const app = express();
 app.use(express.json())
 app.use(cookieParser())
-app.use(cors());
+app.use(cors(corsOptions));
 
 
 

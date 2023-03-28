@@ -1,25 +1,32 @@
 import { User } from "../src/models/user"
 import { StatusTypes } from "../src/models/types"
 import { Tags } from "../src/models/tags"
+import { Session } from "../src/models/sessions"
 import * as Type from "../src/models/types"
 
 let testEmail = "test@test.tst"
 
 let user = new User()
 let tags = new Tags()
-// test("Test login add user session", async ()=>{
-//     expect((await user.register(testEmail,"test")).status).toBe(StatusTypes[100]);
-//     expect((await user.getUser(testEmail)).status).toBe(StatusTypes[100]);
-//     expect((await user.removeUser(testEmail)).status).toBe(StatusTypes[100]);
-// })
+let session = new Session()
+test("Test login add user session ", async ()=>{
+    user.removeUser(testEmail)
+    expect((await user.register(testEmail,"test")).status).toBe(100);
 
-// test("Test logout remove user session", async ()=>{
-//     expect((await user.register(testEmail,"test")).status).toBe(StatusTypes[100]);
-//     expect((await user.login(testEmail,"test")).status).toBe(StatusTypes[100]);
-//     expect((await user.logout()).status).toBe(StatusTypes[100]);
-        
-//     expect((await user.removeUser(testEmail)).status).toBe(StatusTypes[100]);
-// })
+    let {id} = (await user.getUser(testEmail)).content as {
+        id:number
+    }
+
+    expect((await session.getSession(id)).status).toBe(201);
+    expect((await user.login(testEmail,"test")).status).toBe(100);
+    expect((await user.login(testEmail,"test")).status).toBe(405);
+    expect((await session.getSession(id)).status).toBe(100);
+    //Testing logout require manipulation http only cookies
+    // expect((await user.logout(id)).status).toBe(100);
+    // expect((await session.getSession(id)).status).toBe(201);
+    expect((await user.removeUser(testEmail)).status).toBe(100);
+})
+
 
 test("Test Register", async ()=>{
     await user.removeUser(testEmail)
@@ -42,5 +49,6 @@ beforeAll(done => {
 afterAll(done => {
     tags.close()
     user.close()
+    session.close()
     done()
 })

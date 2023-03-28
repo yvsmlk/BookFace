@@ -16,9 +16,8 @@ export const register = async (req:Request, res:Response)=>{
     }
   
     let user = new User()
-
     let resp = await user.register(email,pwd)
-
+    user.close()
     if (resp.status != 100){
         res.status(400).json(
             {

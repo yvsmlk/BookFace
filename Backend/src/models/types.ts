@@ -11,7 +11,9 @@ export const StatusTypes = {
     401: 'Incorrect input',
     402: 'Incorrect input type',
     403: 'Not authorized',
-    404: 'System error'
+    404: 'System error',
+    405: 'Already connected',
+    406: 'Missing Token'
 };
 
 export const TagTypes = {
