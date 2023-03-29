@@ -22,7 +22,7 @@ export class Tags extends DbConnect{
     getTag(tag:string){
         //
         let sql_get_session = `
-        SELECT * FROM tags
+        SELECT * FROM bf_tags
         WHERE tag = '${tag}'
         `
 
@@ -43,7 +43,10 @@ export class Tags extends DbConnect{
                         message:Type.StatusTypes[201],
                         content: {}
                     })
+                    return
                 }
+
+                console.log(rows)
 
                 resolve({
                     status:100,
@@ -63,7 +66,7 @@ export class Tags extends DbConnect{
     getTagById(id:number,type:string){
         //
         let sql_get_session = `
-        SELECT * FROM tags
+        SELECT * FROM bf_tags
         WHERE context_id = '${id}' AND type = '${type}'
         `
 
@@ -108,7 +111,7 @@ export class Tags extends DbConnect{
     addTag(user_id:number,tag:string,type:string){
         //
         let sql_add_session = `
-        INSERT INTO tags (context_id,tag,type)
+        INSERT INTO bf_tags (context_id,tag,type)
         VALUES('${user_id}', '${tag}','${type}')
         `
 
@@ -134,7 +137,7 @@ export class Tags extends DbConnect{
 
     deleteTag(id:number){
         let sql_del_session = `
-        DELETE FROM tags 
+        DELETE FROM bf_tags 
         WHERE context_id = '${id}'
         `
 

@@ -1,7 +1,6 @@
 import jwt from "jsonwebtoken";
-import dotenv from "dotenv";
 import crypto from "crypto";
-dotenv.config();
+
 
 export const createToken = (email:string)=>{
 
