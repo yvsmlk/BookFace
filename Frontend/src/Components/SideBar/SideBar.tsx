@@ -9,17 +9,17 @@ const SideBar: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const toggle = () => setIsOpen(!isOpen);
 
   return (
-    <div className="container">
+    <div className="container w-40 z-50 ">
       <div
-        style={{ width: isOpen ? '200px' : '50px' }}
-        className="sidebar bg-green-50 text-green-900 h-screen py-8 px-4 transition-all duration-500 ease-in-out"
+        style={{ width: isOpen ? '160px' : '50px' }}
+        className="sidebar bg-green-700 text-white h-screen py-8 px-4 transition-all duration-500 ease-in-out"
       >
         <div className="top_section flex justify-between items-center mb-8">
           <h1
             style={{ display: isOpen ? 'block' : 'none' }}
             className="logo text-xl font-bold"
           >
-            Logo
+            PHYSYS
           </h1>
           <div
             style={{ marginLeft: isOpen ? '50px' : '0px' }}

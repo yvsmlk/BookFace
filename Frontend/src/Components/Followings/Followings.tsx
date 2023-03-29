@@ -29,7 +29,7 @@ const FollowSuggestions: React.FC<Props> = ({ suggestions }) => {
             <div className="font-medium">{person.name}</div>
             <div className="text-gray-600">@{person.username}</div>
           </div>
-          <button className="bg-green-500 hover:bg-green-900 text-white py-1 px-4 rounded-lg mr-2">
+          <button className="bg-green-700 hover:bg-green-900 text-white py-1 px-4 rounded-lg mr-2">
       +follow
           </button>
         </div>

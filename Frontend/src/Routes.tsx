@@ -12,12 +12,15 @@ import Login from "./Pages/Login"
 import NatureCard from "./Components/GalleryCard/GalleryCard"
 import NatureTrendCard from "./Components/NatureTrendCard/NatureTrendCard"
 import Publication from "./Components/Publication/Publication"
+import Home from "./Pages/Home"
+import SearchBar from "./Components/Search/SearchBar"
 
 
 
 export function routes() {
     return <Routes>
-            <Route path='LandingPage/' element={<LandingPage />} />
+            <Route path='/' element={<LandingPage />} />
+            <Route path='/Home' element={<Home />} />
             <Route path='SideBar/' element={<SideBar isOpen={true} />} />
             <Route path='/VCard' element={<VCard name="John Doe" username="johndoe" followers={1000} following={500} />} />
             <Route path='/Followings' element={<Followings suggestions={people} />} />
@@ -45,6 +48,7 @@ export function routes() {
 
             <Route path= '/Register' element={<Register/>} />
             <Route path= '/Login' element={<Login/>} />
+            <Route path= '/SearchBar' element={<SearchBar/>} />
           
         
     </Routes>

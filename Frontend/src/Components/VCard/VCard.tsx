@@ -9,9 +9,9 @@ type VCardProps = {
 
 const VCard: React.FC<VCardProps> = ({ name, username, followers, following }) => {
   return (
-    <div className="max-w-sm mx-auto rounded-md overflow-hidden shadow-md bg-white">
+    <div className=" max-w-sm mx-auto rounded-md overflow-hidden shadow-md bg-white">
       <div className="bg-green-700 h-28 flex justify-center items-center">
-        <div className="h-28 flex items-center mt-12 z-50">
+        <div className="h-28 flex items-center mt-12 z-30">
           <img
             src="https://randomuser.me/api/portraits/women/8.jpg"
             alt="Profile Picture"
