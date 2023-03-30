@@ -20,7 +20,7 @@ export class Session extends DbConnect{
     getSession(user_id:number){
         //
         let sql_add_session = `
-        SELECT * FROM sessions
+        SELECT * FROM bf_sessions
         WHERE user_id = '${user_id}'
         `
 
@@ -59,7 +59,7 @@ export class Session extends DbConnect{
 
     addSession(user_id:number){
         let sql_add_session = `
-        INSERT INTO sessions (user_id)
+        INSERT INTO bf_sessions (user_id)
         VALUES('${user_id}')
         `
         return new Promise<Type.ResponseMsg>((resolve, reject) => {
@@ -84,7 +84,7 @@ export class Session extends DbConnect{
 
     deleteSession(user_id:number){
         let sql_del_session = `
-        DELETE FROM sessions 
+        DELETE FROM bf_sessions 
         WHERE user_id = '${user_id}'
         `
 

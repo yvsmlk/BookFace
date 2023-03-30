@@ -10,8 +10,9 @@
   "scripts": {
     "test:front": "npm run test --workspace=Frontend",
     "test:back": "npm run test --workspace=Backend",
-    "dev": "npm run dev --workspace=Frontend",
-    "start": "npm run start --workspace=Backend",
+    "dev:": "npm run dev --workspace=Frontend",
+    "start:dev": "npm run start:dev --workspace=Backend",
+    "start:prod": "npm run start:prod --workspace=Backend",
     "deploy:front": "npm run deploy --workspace=Backend",
     "deploy:back": " No need",
     "preview": "np run preview --workspace=Frontend",

@@ -1,28 +1,19 @@
-import jwt from "jsonwebtoken";
-import crypto from "crypto";
-
-
-export const createToken = (email:string)=>{
-
-    const accessToken = jwt.sign(
-        {"email": email},
-        process.env.ACCESS_TOKEN_S as string,
-        {expiresIn:process.env.ACCESS_TOKEN_TTL}
-    )
-
-    const refreshToken = jwt.sign(
-        {"email": email},
-        process.env.REFRESH_TOKEN_S as string,
-        {expiresIn:process.env.REFRESH_TOKEN_TTL}
-    )
-
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.verifyJWT = exports.signJWT = exports.createToken = void 0;
+const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
+const createToken = (email) => {
+    const accessToken = jsonwebtoken_1.default.sign({ "email": email }, process.env.ACCESS_TOKEN_S, { expiresIn: process.env.ACCESS_TOKEN_TTL });
+    const refreshToken = jsonwebtoken_1.default.sign({ "email": email }, process.env.REFRESH_TOKEN_S, { expiresIn: process.env.REFRESH_TOKEN_TTL });
     return {
-        access:accessToken,
-        refresh:refreshToken
-    }
-
-}
-
+        access: accessToken,
+        refresh: refreshToken
+    };
+};
+exports.createToken = createToken;
 const privateKey = `-----BEGIN RSA PRIVATE KEY-----
 MIIEpAIBAAKCAQEAoH5OSmFwJbTNI4hjRFon7K9D232NSicGPh9a4ygwT5la7RCe
 aCukaa1U+Qr4dYz8HcJVl7Lw2TZQG/4G2ukFjRaCE/YFafz71I7uKG/ifaHbTtux
@@ -49,8 +40,7 @@ KKucDEaBlzvIOiaDBPKhHi8W7lczwJpSipUcIcEZJYFjV0K1z0oVdZ3wAJWZ6/FW
 Y6EVwQKBgQCG6oq59upP3mdI3fGthFaM6dW8w/eWt+INpwBx3TxTqaBpmY0bA6ki
 E7tbeeptuGWPaHyxOWxOxaX8ocOf5kJP8Kh/NUch6MyE2Jh+dgKYIpUc9l++9tJO
 29MqZWBdrTIlJ4400i/D77TrpQkG8szA0x26XeM6BuFFgqc3y7QWxA==
------END RSA PRIVATE KEY-----`
-
+-----END RSA PRIVATE KEY-----`;
 const publicKey = `-----BEGIN PUBLIC KEY-----
 MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAoH5OSmFwJbTNI4hjRFon
 7K9D232NSicGPh9a4ygwT5la7RCeaCukaa1U+Qr4dYz8HcJVl7Lw2TZQG/4G2ukF
@@ -59,25 +49,21 @@ A9cu+suqZMbnhdEK5X6wluat8VJ3586qHClmpj3ABmSvyTuHiG91f+4ANZdvkWJX
 vgyazgm//JoYPAPd2pFy29SsBdnnwfHs9JlZYn1xwn0HTLc5mucsU8DdUlIdk5qo
 ukxcnJyRN73IZWstEHeb1YOVHuSV6N9drBfGvSZd6SYGRC+fNan8DSV3TtZ/3hmt
 fwIDAQAB
------END PUBLIC KEY-----`
-
-
+-----END PUBLIC KEY-----`;
 // sign jwt
-export function signJWT(payload: object, expiresIn: string | number) {
-    return jwt.sign(payload, process.env.PRK || privateKey, { algorithm: "RS256", expiresIn });
-  }
-  
+function signJWT(payload, expiresIn) {
+    return jsonwebtoken_1.default.sign(payload, process.env.PRK || privateKey, { algorithm: "RS256", expiresIn });
+}
+exports.signJWT = signJWT;
 // verify jwt
-export function verifyJWT(token: string) {
+function verifyJWT(token) {
     try {
-        const decoded = jwt.verify(token, process.env.PK || publicKey);
+        const decoded = jsonwebtoken_1.default.verify(token, process.env.PK || publicKey);
         return { payload: decoded, expired: false };
-    } catch (error) {
+    }
+    catch (error) {
         //@ts-ignore
         return { payload: null, expired: error.message.includes("jwt expired") };
     }
 }
-
-
-
-
+exports.verifyJWT = verifyJWT;
