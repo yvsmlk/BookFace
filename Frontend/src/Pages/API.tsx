@@ -1,5 +1,10 @@
 
 
+import SwaggerUI from "swagger-ui-react"
+import "swagger-ui-react/swagger-ui.css"
+
+
+
 import { useState, useEffect } from 'react'
 const SAMPLE = ()=>{
     return (
@@ -15,10 +20,11 @@ type buttonProps = {
 
 const S_BUTTON = ({text, activeButton, setActiveButton}:buttonProps)=>{
 
-    let bg_color = text == activeButton? 'bg-neutral-500' : 'bg-neutral-900'
+    let bg_color = text == activeButton? 'bg-neutral-50' : 'bg-neutral-900'
+    let color = text == activeButton? 'text-neutral-900' : 'text-neutral-50'
 
     return (
-        <button className={`flex justify-center items-center h-[75%] ${bg_color} 
+        <button className={`flex justify-center items-center h-[75%] ${bg_color} ${color}
         text-neutral-50 select-none cursor-pointer rounded-t-md p-2`}
         onClick={()=>setActiveButton(text)}>
             {text}
@@ -37,12 +43,13 @@ const VIEWSLIDER = ()=>{
     }
 
     return (
-        <div  className=" flex-1 flex flex-col bg-neutral-900 p-1 ">
+        <div  className=" flex-1 flex flex-col bg-neutral-900 p-3 overflow-x-scroll">
             <div className=" flex items-end gap-2 flex-[0_1_5%] pl-2 ">
                 <S_BUTTON text="Development" activeButton={activeButton} setActiveButton={setActiveButton}/>
                 <S_BUTTON text="Production" activeButton={activeButton} setActiveButton={setActiveButton}/>
             </div>
-            <div className=" flex-[0_1_95%] rounded-lg bg-neutral-500">
+            <div className=" flex-[0_1_95%] rounded-lg bg-neutral-50">
+                <SwaggerUI  url="#" />
                 {getDisplayInfo(activeButton).host}
             </div>
         </div>
@@ -51,7 +58,7 @@ const VIEWSLIDER = ()=>{
 
 export const APIDoc = ()=>{
     return (
-        <div className=" flex h-screen">
+        <div className=" flex h-screen ">
             <VIEWSLIDER/>
         </div>
     )
