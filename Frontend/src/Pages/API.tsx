@@ -2,8 +2,7 @@
 
 import SwaggerUI from "swagger-ui-react"
 import "swagger-ui-react/swagger-ui.css"
-
-
+import { getDoc } from "../api_doc"
 
 import { useState, useEffect } from 'react'
 const SAMPLE = ()=>{
@@ -49,7 +48,7 @@ const VIEWSLIDER = ()=>{
                 <S_BUTTON text="Production" activeButton={activeButton} setActiveButton={setActiveButton}/>
             </div>
             <div className=" flex-[0_1_95%] rounded-lg bg-neutral-50">
-                <SwaggerUI  url="#" />
+                <SwaggerUI  spec={getDoc(getDisplayInfo(activeButton).host)} />
                 {getDisplayInfo(activeButton).host}
             </div>
         </div>
