@@ -4,8 +4,7 @@ import { Session } from "../models/sessions";
 import { signJWT } from "../utils/token";
 import  bcrypt, { hashSync }  from "bcrypt";
 import * as Type from "../models/types";
-import dotenv from "dotenv";
-dotenv.config();
+
 
 const basicConnect = async (email:string,pwd:string,hashedPwd:string,id:number,req: Request, res: Response)=>{
 

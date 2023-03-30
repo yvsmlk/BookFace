@@ -33,7 +33,7 @@ export class User extends DbConnect {
 
     async getTag(tag:string){
         let query = `
-        SELECT * FROM tags WHERE tag = '${tag}'
+        SELECT * FROM bf_tags WHERE tag = '${tag}'
         `
         return new Promise<Type.ResponseMsg>((resolve, reject) => {
             this.connection.query(query, (err:any, rows:[], fields:any)=>{
@@ -104,12 +104,12 @@ export class User extends DbConnect {
         // verify uniqueness of the timestamp return status accordingly 
         let {tagname} = (await this.findRandomTag()).content as {tagname:string}
         let sql_register = `
-        INSERT INTO users (email,pwd,created_at)
+        INSERT INTO bf_users (email,pwd,created_at)
         VALUES('${email}','${hashedPWD}',TIMESTAMP('${timestamp}','0:0:0'))
         `
 
         let sql_addTag = `
-        INSERT INTO tags (email,pwd,created_at)
+        INSERT INTO bf_tags (email,pwd,created_at)
         VALUES('${email}','${hashedPWD}',TIMESTAMP('${timestamp}','0:0:0'))
         `    
         
@@ -186,7 +186,7 @@ export class User extends DbConnect {
     async getUser (email:string){
 
         let sql_get_user = `
-        SELECT * FROM users
+        SELECT * FROM bf_users
         WHERE email = '${email}'
         `
 
@@ -233,7 +233,7 @@ export class User extends DbConnect {
     async removeUser (email:string){
 
         let sql_del_user = `
-        DELETE FROM users 
+        DELETE FROM bf_users 
         WHERE email = '${email}'
         `
         
