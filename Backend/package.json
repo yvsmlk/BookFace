@@ -9,7 +9,7 @@
     "ts.check": "tsc --project tsconfig.json",
     "build": "rimraf dist && tsc",
     "add-build": "git add dist",
-    "test": "jest "
+    "test": "jest --detectOpenHandles"
   },
   "author": "",
   "license": "ISC",

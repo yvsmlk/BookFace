@@ -40,3 +40,16 @@ export type UserResponseInfo = {
     picture: string,
     banner: string
 }
+
+export type CommentType = {
+    user: number,
+    content: string,
+    responses: CommentResponseType[]
+    created_at: string,
+}
+
+export type CommentResponseType = {
+    user: number,
+    content: string,
+    created_at: string,
+}
