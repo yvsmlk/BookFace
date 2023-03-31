@@ -23,6 +23,10 @@ export const TagTypes = {
     
 };
 
+export const LikeAction = {
+    INCREMENT: 'INCREMENT',
+    DECREMENT: 'DECREMENT'
+};
 
 export type ResponseMsg = {
     status: number,
@@ -41,15 +45,41 @@ export type UserResponseInfo = {
     banner: string
 }
 
+
+    /*
+
+    CREATE TABLE bf_posts (
+        id int PRIMARY KEY AUTO_INCREMENT ,
+        user_id int not null,
+        media_id int not null,
+        content varchar(2048) ,
+        created_at datetime,
+        likes int DEFAULT 0
+    );
+
+
+    */
+
+export type PostType = {
+    user: number,
+    media: number
+    content: string,
+    created_at: string,
+    likes:number
+}
+
 export type CommentType = {
     user: number,
     content: string,
     responses: CommentResponseType[]
     created_at: string,
+    likes:number
 }
 
 export type CommentResponseType = {
     user: number,
     content: string,
     created_at: string,
+    likes:number
+
 }

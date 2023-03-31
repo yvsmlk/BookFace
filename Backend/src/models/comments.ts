@@ -36,7 +36,7 @@ export class Comment extends DbConnect{
         })
     }
 
-    private async createComments(id:number){
+    private async createComments(post_id:number){
         // make request here
 
         let defaultComment = {
@@ -60,10 +60,29 @@ export class Comment extends DbConnect{
     /*
         should return the comment + the list of response
     */
-    async get(id:number){
+    async get(post_id:number){
 
-        let response = await this.createComments(id)
-        let {comment} = response.content as {comment:Type.CommentType}
+        let response = await this.createComments(post_id)
+        let comments = response.content as Type.CommentType[]
+
+        return new Promise<Type.ResponseMsg>((resolve, reject) => {
+            resolve({
+                status:100,
+                message:"TODO",
+                content: comments
+            })
+        })
+
+    }
+
+    async getSpecific(user_id:number,timestamp:string){
+        let comment:Type.CommentType = {
+            user:-1,
+            content:"",
+            responses: [],
+            created_at:"",
+            likes:0
+        }
 
         return new Promise<Type.ResponseMsg>((resolve, reject) => {
             resolve({
@@ -74,7 +93,6 @@ export class Comment extends DbConnect{
                 }
             })
         })
-
     }
 
     async delete(id:number){
