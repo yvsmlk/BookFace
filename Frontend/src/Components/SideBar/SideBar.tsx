@@ -9,7 +9,7 @@ const SideBar: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const toggle = () => setIsOpen(!isOpen);
 
   return (
-    <div className="container w-40 z-50 ">
+    <div className="container w-40 min-h-screen z-50 ">
       <div
         style={{ width: isOpen ? '160px' : '50px' }}
         className="sidebar bg-green-700 text-white h-screen py-8 px-4 transition-all duration-500 ease-in-out"

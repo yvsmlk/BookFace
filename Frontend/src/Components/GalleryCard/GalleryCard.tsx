@@ -13,7 +13,7 @@ const fetchPhotos = async () => {
     params: {
       query: 'nature',
       count: 6,
-      client_id: 'kmMfq6yY4MFe-VcIqkO1Irsr8Z5RSaM005Iy_sst_wM',
+      client_id: 'J344RJO6jc3fRHVQvRtSxZWBzokxuxIqyOWIn7twIe0',
     },
   });
   return response.data;
@@ -30,7 +30,7 @@ const NatureCard = () => {
     getPhotos();
     const interval = setInterval(() => {
       getPhotos();
-    }, 160000000000);
+    }, 160000000);
     return () => clearInterval(interval);
   }, []);
 

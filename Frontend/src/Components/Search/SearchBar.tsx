@@ -22,17 +22,17 @@ const SearchBar = () => {
         placeholder="Search users or posts..."
         value={searchTerm}
         onChange={handleInputChange}
-        className="w-full px-4 py-2 border-2 rounded-md shadow-inner"
+        className="w-full px-4 py-2 border-2 rounded-md shadow-inner  mt-1 mr-2"
       />
       <button
         type="button"
         onClick={handleSearch}
-        className="ml-2 px-4 py-2 border-2 rounded-md hover:bg-gray-200"
+        className=" bg-green-700 text-white ml-2 px-4 py-2 border-2 rounded-md hover:bg-green-900 mt-1"
       >
         Search
       </button>
       
-      <div className="mt-4">
+      <div className=" mt-4 h-4 ">
         {searchResults.map((result) => (
           <div key={result.id}>
             <div className="font-bold">{result.username}</div>

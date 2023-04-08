@@ -15,8 +15,8 @@ const FollowSuggestions: React.FC<Props> = ({ suggestions }) => {
 
   return (
     <div className="max-w-sm mx-auto my-4 rounded-md overflow-hidden shadow-md bg-white text-green-900">
-      <div className="bg-green-700 h-16 flex justify-center items-center">
-        <h2 className="text-lg font-medium text-white">You may follow</h2>
+      <div className="bg- h-16 flex justify-center items-center">
+        <h2 className="text-lg font-medium text-green-700">You may follow</h2>
       </div>
       {displayedSuggestions.map((person) => (
         <div key={person.id} className="flex items-center mb-4 border-b-2 border-gray-300 pb-4 ml-2">

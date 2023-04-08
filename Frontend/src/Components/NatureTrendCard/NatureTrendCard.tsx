@@ -26,11 +26,12 @@ const NatureTrendsCard = () => {
   }, []);
 
   return (
-    <div className="max-w-sm mx-auto rounded-md overflow-hidden shadow-md bg-white  text-green-800">
-       <div className="bg-green-700 h-16 flex justify-center items-center text-white">
+    <div className="max-w-sm mx-auto rounded-md overflow-hidden shadow-md bg-white  text-green-700">
+       <div className="h-16 flex justify-center items-center text-green-700">
       
          <h2 className="text-xl font-semibold mb-4">Trending Topics</h2>
         </div>
+        
      <ul>
         {trends.map((trend) => (
           <li key={trend} className="text-gray-600 mb-2">

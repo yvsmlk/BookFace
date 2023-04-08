@@ -14,6 +14,7 @@ import NatureTrendCard from "./Components/NatureTrendCard/NatureTrendCard"
 import Publication from "./Components/Publication/Publication"
 import Home from "./Pages/Home"
 import SearchBar from "./Components/Search/SearchBar"
+import HomePage from "./Pages/Profile"
 
 
 
@@ -49,6 +50,7 @@ export function routes() {
             <Route path= '/Register' element={<Register/>} />
             <Route path= '/Login' element={<Login/>} />
             <Route path= '/SearchBar' element={<SearchBar/>} />
+          
           
         
     </Routes>
