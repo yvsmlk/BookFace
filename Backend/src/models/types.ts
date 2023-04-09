@@ -23,9 +23,9 @@ export const TagTypes = {
     
 };
 
-export const LikeAction = {
-    INCREMENT: 'INCREMENT',
-    DECREMENT: 'DECREMENT'
+export const LikeType = {
+    COMMENT: 'COMMENT',
+    POST: 'POST'
 };
 
 export type ResponseMsg = {

@@ -50,6 +50,8 @@ app.use('/login',require('./routes/login.routes'))
 app.use('/logout',require('./routes/logout.routes'))
 app.use('/register',require('./routes/register.routes'))
 
+app.use('/posts',require('./routes/posts.routes'))
+
 
 app.listen(PORT,() =>{
     let ENV = process.env.ENVIRONNEMENT == 'production' ? 'PRODUCTION':'DEVELOPMENT' 

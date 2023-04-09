@@ -45,7 +45,6 @@ export class Post extends DbConnect{
             this.connection.query(add_query, (err:any, rows:any, fields:any)=>{
                 
                 if (err){
-                    console.log(err)
                     resolve({
                         status:404,
                         message:Type.StatusTypes[404],
@@ -270,57 +269,6 @@ export class Post extends DbConnect{
             })
         })
     }
-
-    async like(post_id:number,action=Type.LikeAction.INCREMENT){
-
-       let increment_query =`
-        UPDATE bf_posts
-        SET likes = likes +1
-        WHERE id = '${post_id}'
-       `
-
-       let decrement_query =`
-        UPDATE bf_posts
-        SET likes = 
-        CASE likes 
-            WHEN 0 THEN 0
-            ELSE likes - 1
-        END
-        WHERE id = '${post_id}'
-       `
-
-        return new Promise<Type.ResponseMsg>(async (resolve, reject) => {
-
-            let postResponse = await this.get(post_id)
-
-            if (postResponse.status != 100){
-                resolve(postResponse)
-                return
-            }
-
-            this.connection.query(action == Type.LikeAction.INCREMENT ? increment_query:decrement_query, 
-                (err:any, rows:any, fields:any)=>{
-
-                if (err){
-                    console.log(err)
-                    resolve({
-                        status:404,
-                        message:Type.StatusTypes[404],
-                        content: {error: err}
-                    })
-                    return
-                }
-
-                resolve({
-                    status:100,
-                    message:Type.StatusTypes[100],
-                    content: {}
-                })
-
-            })
-        })
-    }
-
     
 
 }
