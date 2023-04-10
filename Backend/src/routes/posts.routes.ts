@@ -1,10 +1,12 @@
 import express from 'express';
 const router = express.Router();
- import { addPost,like } from '../controllers/posts';
+import { addPost,likePost } from '../controllers/posts';
 
 
 router.post('/add',addPost)
-router.post('/like',like)
+router.post('/like',likePost)
+
+// router.get('/',)
 
 
 module.exports = router

@@ -5,12 +5,13 @@ import * as Type from "../models/types";
 import { Tags } from '../models/tags';
 import { checkResponse } from '../utils/response';
 import { Like } from '../models/likes';
+import { Comment } from '../models/comments';
 
-export const addPost = async (req:Request, res:Response)=>{
-    //TODO
-    const {tag,content,media} = req.body
 
-    if (!tag ||!content){
+export const addComment = async (req:Request, res:Response)=>{
+    const {tag,content,post_id,parent_comment} = req.body
+
+    if (!tag ||!content || !post_id){
         res.status(400).json(
             {
                 status:400,
@@ -19,7 +20,8 @@ export const addPost = async (req:Request, res:Response)=>{
                     exemple:{
                         tag:"@xyz",
                         content:"test content",
-                        media:0
+                        post_id:-1,
+                        parent_comment:-1
                     }
                 }
             }
@@ -27,15 +29,13 @@ export const addPost = async (req:Request, res:Response)=>{
         return
     }
 
-    let post_obj = new Post()
+    let comment_obj = new Comment()
     let tag_obj = new Tags()
     
     //check tag 
 
     let tag_response = await tag_obj.getTag(tag)
-
     if (!checkResponse(tag_response,res))return
-
     const {id,type} = tag_response.content as {id:number,type:string}
 
     if (type != Type.TagTypes.USER){
@@ -49,9 +49,8 @@ export const addPost = async (req:Request, res:Response)=>{
         return
     }
 
-    let post_response = await post_obj.add(id,content,media||0)
-
-    if (!checkResponse(post_response,res))return
+    let comment_response = await comment_obj.add(id,post_id,content,parent_comment||-1)
+    if (!checkResponse(comment_response,res))return
 
     res.status(200).json(
         {
@@ -63,7 +62,7 @@ export const addPost = async (req:Request, res:Response)=>{
 
 }
 
-export const getPost =async (req:Request, res:Response) => {
+export const getComment =async (req:Request, res:Response) => {
     res.status(400).json(
         {
             status:200,
@@ -73,7 +72,7 @@ export const getPost =async (req:Request, res:Response) => {
     )
 }
 
-export const likePost = async (req:Request, res:Response)=>{
+export const likeComment = async (req:Request, res:Response)=>{
     const {tag,context_id} = req.body
 
     if ( !tag || !context_id){
@@ -81,12 +80,7 @@ export const likePost = async (req:Request, res:Response)=>{
             {
                 status:400,
                 message:Type.StatusTypes[400],
-                content: {
-                    example:{
-                        tag:"@xyz",
-                        context_id:"test content"
-                    }
-                }
+                content: {}
             }
         )
         return
@@ -112,9 +106,7 @@ export const likePost = async (req:Request, res:Response)=>{
         return
     }
 
-    
-
-    let like_response = await like_obj.like(context_id,id,Type.LikeType.POST)
+    let like_response = await like_obj.like(context_id,id,Type.LikeType.COMMENT)
 
     if (!checkResponse(like_response,res))return
 
