@@ -28,6 +28,20 @@ export const LikeType = {
     POST: 'POST'
 };
 
+export type PostOrderType = 'LATEST'|'LIKES'
+export const PostOrder = {
+    LATEST: 'LATEST',
+    LIKES: 'LIKES'
+}
+
+
+export type PostSelectionType = 'PUBLIC'|'USER'|'GROUP'
+export const PostSelection = {
+    PUBLIC:'PUBLIC',
+    USER: 'USER',
+    GROUP: 'GROUP'
+}
+
 export type ResponseMsg = {
     status: number,
     message: string,

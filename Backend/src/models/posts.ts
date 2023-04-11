@@ -117,11 +117,12 @@ export class Post extends DbConnect{
         })
     }
 
-    async get(post_id:number){
+    async get(post_id:number ){
         
         let get_query = `
         SELECT * FROM bf_posts
         WHERE id = ${post_id}
+        
         `
 
         return new Promise<Type.ResponseMsg>((resolve, reject) => {
@@ -151,7 +152,7 @@ export class Post extends DbConnect{
 
                 let post = {
                     post_id: rows[0]['id'],
-                    user: rows[0]['user_id'],
+                    publisher: rows[0]['user_id'],
                     media: rows[0]['media_id'],
                     content: rows[0]['content'],
                     created_at: rows[0]['created_at'],
@@ -168,6 +169,108 @@ export class Post extends DbConnect{
 
         })
 
+    }
+
+    private createSelectQuery(order:Type.PostOrderType,select:Type.PostSelectionType,tag:string,n:number){
+
+        let base_query = ""
+
+        // base 
+
+        switch (select) {
+            case 'GROUP':
+                base_query = this.SELECT_GROUP(tag)
+                break;
+            case 'USER':
+                base_query = this.SELECT_USER(tag)
+                break;
+            case 'PUBLIC':
+                base_query = this.SELECT_PUBLIC()
+                break;
+        
+            default:
+                break;
+        }
+
+        
+
+        // order + limit
+        switch (order) {
+            case 'LATEST':
+                base_query += `
+                ORDER BY created_at DESC
+                LIMIT ${n}
+                `
+                break;
+            case 'LATEST':
+                base_query += `
+                ORDER BY likes DESC
+                LIMIT ${n}
+                `
+                break;
+        
+            default:
+                break;
+        }
+
+        return base_query
+
+    }
+
+    async select(tag:string,order:Type.PostOrderType = 'LATEST',
+    selection:Type.PostSelectionType ='PUBLIC',n=5){
+
+        let get_query = this.createSelectQuery(order,selection,tag,n)
+        console.log(get_query);
+        
+        return new Promise<Type.ResponseMsg>( async (resolve, reject) => {
+
+
+            this.connection.query(get_query, (err:any, rows:[], fields:any)=>{
+                
+                if (err){
+                    resolve({
+                        status:404,
+                        message:Type.StatusTypes[404],
+                        content: {error: err}
+                    })
+                    return
+                }
+
+                if (rows.length == 0){
+                    resolve({
+                        status:201,
+                        message:Type.StatusTypes[201],
+                        content: []
+                    })
+                    return
+                }
+
+                let output = []
+
+                for( let x of rows){
+                    output.push(
+                        {
+                            post_id: x['id'],
+                            publisher: x['publisher'],
+                            media: x['media_id'],
+                            content: x['content'],
+                            created_at: x['created_at'],
+                            likes: x['likes']
+                        }
+                    )
+                }
+                
+                resolve({
+                    status:100,
+                    message:Type.StatusTypes[100],
+                    content: output
+                })
+
+            })
+
+
+        })
     }
 
     async getUser(user_id:number,timestamp:string){
@@ -271,4 +374,78 @@ export class Post extends DbConnect{
     }
     
 
+    private SELECT_GROUP(gp_tag:string){
+        return(
+            `
+            SELECT gpost.post_id AS id, 
+            tags.tag AS GP_TAG , 
+            COALESCE(UTags.tag, '') AS publisher, 
+            posts.content, 
+            posts.media_id, 
+            posts.created_at, 
+            COALESCE(likes.likes, 0) AS likes 
+            FROM bf_groupposts gpost 
+            INNER JOIN bf_tags tags 
+                ON tags.context_id = gpost.group_id 
+            LEFT JOIN bf_posts posts 
+                ON gpost.post_id = posts.id 
+            LEFT JOIN bf_tags UTags 
+                ON UTags.context_id = posts.user_id 
+            LEFT JOIN (
+                SELECT context_id, count(*) AS likes 
+                FROM bf_likes 
+                GROUP BY context_id
+            ) likes 
+                ON gpost.post_id = likes.context_id 
+            WHERE tags.tag = '${gp_tag}' 
+            `
+
+        )
+    } 
+
+    private SELECT_USER(u_tag:string){
+        return(
+            `
+            SELECT regPost.post_id AS id, regUTag.tag AS RUTAG, 
+            UTags.tag AS publisher , posts.content, 
+            posts.media_id, posts.created_at, 
+            COALESCE(likes.likes, 0) AS likes
+            FROM bf_registeredposts regPost 
+            INNER JOIN bf_tags regUTag on regPost.user_id = regUTag.context_id
+            LEFT JOIN bf_posts posts ON regPost.post_id = posts.id 
+            LEFT JOIN bf_tags UTags ON UTags.context_id = posts.user_id 
+            LEFT JOIN (
+                SELECT context_id, count(*) AS likes 
+                FROM bf_likes 
+                GROUP BY context_id
+            ) likes ON regPost.post_id = likes.context_id 
+            WHERE regUTag.tag = '${u_tag}'
+            `
+
+        )
+    } 
+
+    private SELECT_PUBLIC(){
+        return(
+            `
+            SELECT posts.id, 
+            UTags.tag AS publisher , 
+            posts.content, 
+            posts.media_id, 
+            posts.created_at, 
+            COALESCE(likes.likes, 0) AS likes
+            from  bf_posts posts
+            left join bf_groupposts gPosts  on gPosts.post_id = posts.id
+            LEFT JOIN bf_tags UTags ON UTags.context_id = posts.user_id 
+            LEFT JOIN (
+                SELECT context_id, count(*) AS likes 
+                FROM bf_likes 
+                GROUP BY context_id
+            ) likes ON posts.id = likes.context_id 
+            WHERE gPosts.post_id is null
+            `
+
+        )
+    } 
+    
 }

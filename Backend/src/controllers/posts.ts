@@ -63,14 +63,96 @@ export const addPost = async (req:Request, res:Response)=>{
 
 }
 
-export const getPost =async (req:Request, res:Response) => {
-    res.status(400).json(
+export const getGroupPost =async (req:Request, res:Response) => {
+
+    const {group_tag,order,n} = req.query
+    console.log(group_tag);
+    
+    if (!group_tag){
+        // group post
+        res.status(400).json(
+            {
+                status:201,
+                message:Type.StatusTypes[201],
+                content: {
+                    exemple:'host/posts/group?group_tag=@xyz&order=LATEST&n=5'
+                }
+            }
+        )
+        return
+    }
+
+    let post_obj = new Post()
+    let limit = n == undefined ? 5: parseInt(n as string)
+    let post_response = await post_obj.select(group_tag as string,(order || 'LATEST') as Type.PostOrderType,'GROUP',isNaN(limit)?5:limit)
+    post_obj.close()
+    
+    if (!checkResponse(post_response,res))return
+
+    res.status(200).json(
         {
-            status:200,
-            message:"TODO",
-            content: {}
+            status:100,
+            message:Type.StatusTypes[100],
+            content: post_response.content
         }
     )
+}
+
+export const getRegisteredPost =async (req:Request, res:Response) => {
+
+    const {user_tag,n,order} = req.query
+
+    if (!user_tag){
+        res.status(400).json(
+            {
+                status:201,
+                message:Type.StatusTypes[201],
+                content: {
+                    example: 'host/posts/registered?user_tag=@xyz&order=LATEST&n=5'
+                }
+            }
+        )
+        return
+    }
+
+    let post_obj = new Post()
+    let limit = n == undefined ? 5: parseInt(n as string)
+    let post_response = await post_obj.select(user_tag as string,(order || 'LATEST') as Type.PostOrderType,'USER',isNaN(limit)?5:limit)
+    post_obj.close()
+
+    if (!checkResponse(post_response,res))return
+
+    res.status(200).json(
+        {
+            status:100,
+            message:Type.StatusTypes[100],
+            content: post_response.content
+        }
+    )
+
+    
+}
+
+export const getPublicPost =async (req:Request, res:Response) => {
+
+    const {n,order} = req.query
+
+    let post_obj = new Post()
+    let limit = n == undefined ? 5: parseInt(n as string)
+    let post_response = await post_obj.select("",(order || 'LATEST') as Type.PostOrderType,'PUBLIC',isNaN(limit)?5:limit)
+    post_obj.close()
+
+    if (!checkResponse(post_response,res))return
+
+    res.status(200).json(
+        {
+            status:100,
+            message:Type.StatusTypes[100],
+            content: post_response.content
+        }
+    )
+
+    
 }
 
 export const likePost = async (req:Request, res:Response)=>{
