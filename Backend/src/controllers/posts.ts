@@ -63,6 +63,137 @@ export const addPost = async (req:Request, res:Response)=>{
 
 }
 
+export const addGroupPost = async (req:Request, res:Response)=>{
+    //TODO
+    const {user_tag,group_tag,content,media} = req.body
+
+    if (!user_tag || !group_tag ||!content){
+        res.status(400).json(
+            {
+                status:400,
+                message:Type.StatusTypes[400],
+                content: {
+                    exemple:{
+                        user_tag:"@xyz",
+                        group_tag:"@xyz",
+                        content:"test content",
+                        media:0
+                    }
+                }
+            }
+        )
+        return
+    }
+
+    let post_obj = new Post()
+    let tag_obj = new Tags()
+    
+    //check tag 
+
+    let user_tag_response = await tag_obj.getTag(user_tag)
+    let group_tag_response = await tag_obj.getTag(group_tag)
+    
+
+    if (!checkResponse(user_tag_response,res))return
+    if (!checkResponse(group_tag_response,res))return
+
+    let uinfo = user_tag_response.content as {id:number,type:string}
+
+
+    if (uinfo.type != Type.TagTypes.USER){
+        res.status(400).json(
+            {
+                status:401,
+                message:Type.StatusTypes[401],
+                content: "Wrong tag type: "+user_tag 
+            }
+        )
+        return
+    }
+
+    let ginfo = group_tag_response.content as {id:number,type:string}
+
+
+    if (ginfo.type != Type.TagTypes.GROUP){
+        res.status(400).json(
+            {
+                status:401,
+                message:Type.StatusTypes[401],
+                content: "Wrong tag type: "+group_tag 
+            }
+        )
+        return
+    }
+
+    let post_response = await post_obj.addGroupPost(ginfo.id,uinfo.id,content,media||0)
+
+    if (!checkResponse(post_response,res))return
+
+    res.status(200).json(
+        {
+            status:100,
+            message:Type.StatusTypes[100],
+            content: {}
+        }
+    )
+
+}
+
+export const registerPost = async (req:Request, res:Response)=>{
+    //TODO
+    const {user_tag,posts_id} = req.body
+
+    if (!user_tag || !posts_id){
+        res.status(400).json(
+            {
+                status:400,
+                message:Type.StatusTypes[400],
+                content: {
+                    exemple:{
+                        user_tag:"@xyz",
+                        posts_id:2
+                    }
+                }
+            }
+        )
+        return
+    }
+
+    let post_obj = new Post()
+    let tag_obj = new Tags()
+    
+    //check tag 
+
+    let user_tag_response = await tag_obj.getTag(user_tag)
+    if (!checkResponse(user_tag_response,res))return
+    let uinfo = user_tag_response.content as {id:number,type:string}
+
+    if (uinfo.type != Type.TagTypes.USER){
+        res.status(400).json(
+            {
+                status:401,
+                message:Type.StatusTypes[401],
+                content: "Wrong tag type: "+user_tag 
+            }
+        )
+        return
+    }
+
+    let post_response = await post_obj.register(uinfo.id,posts_id)
+
+    if (!checkResponse(post_response,res))return
+
+    res.status(200).json(
+        {
+            status:100,
+            message:Type.StatusTypes[100],
+            content: {}
+        }
+    )
+
+}
+
+
 export const getGroupPost =async (req:Request, res:Response) => {
 
     const {group_tag,order,n} = req.query

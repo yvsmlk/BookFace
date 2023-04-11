@@ -23,6 +23,127 @@ export class Post extends DbConnect{
         super();
     }
 
+    async register(user_id:number,post_id:number){
+
+        return new Promise<Type.ResponseMsg>( async (resolve, reject) => {
+            
+            let register_post_query =`
+            INSERT INTO bf_registeredposts (user_id, post_id) 
+            SELECT user_id, post_id 
+            FROM (
+                SELECT 
+                (SELECT id  FROM bf_users WHERE id = ${user_id}) AS user_id,
+                (SELECT id  FROM bf_posts WHERE id = ${post_id}) AS post_id
+            ) t
+            WHERE user_id IS NOT NULL AND post_id IS NOT NULL;
+            `
+            
+            this.connection.query(register_post_query, (err:any, rows:any, fields:any)=>{
+                
+                if (err){
+
+                    const {code} = err
+
+                    if (code == 'ER_DUP_ENTRY'){
+                        resolve({
+                            status:200,
+                            message:Type.StatusTypes[200],
+                            content: {}
+                        })
+                        return
+                    }
+
+                    resolve({
+                        status:404,
+                        message:Type.StatusTypes[404],
+                        content: {error: err}
+                    })
+                    return
+                }
+                
+                
+                resolve({
+                    status:100,
+                    message:Type.StatusTypes[100],
+                    content: {}
+                })
+
+            })
+
+
+        })
+
+
+    }
+
+    async addGroupPost(group_id:number,user_id:number,content:string,media_id = 0,timestamp = getTimeStamp() ){
+        
+        let add_response = await this.add(user_id,content,media_id,timestamp)
+        
+
+        return new Promise<Type.ResponseMsg>( async (resolve, reject) => {
+            
+            if ( add_response.status != 100){
+                resolve(add_response)
+                return
+            }
+            
+            let last_id_query = `
+                SELECT LAST_INSERT_ID() AS id;
+            `
+            
+            this.connection.query(last_id_query, (err:any, rows:any, fields:any)=>{
+                
+                if (err){
+                    resolve({
+                        status:404,
+                        message:Type.StatusTypes[404],
+                        content: {error: err}
+                    })
+                    return
+                }
+                
+                const id = rows[0]['id'] || 0
+                
+                if (id == 0){
+                    resolve({
+                        status:404,
+                        message:Type.StatusTypes[404],
+                        content: {}
+                    })
+                    return
+                }
+                
+                let add_group_query = `
+                    INSERT INTO bf_groupposts (post_id, group_id)
+                    SELECT ${id}, ${group_id}
+                    FROM bf_grouplist groupL
+                    WHERE groupL.id = ${group_id};
+                
+                `
+                this.connection.query(add_group_query, (err:any, rows:any, fields:any)=>{
+                    if (err){
+                        resolve({
+                            status:404,
+                            message:Type.StatusTypes[404],
+                            content: {error: err}
+                        })
+                        return
+                    }
+                })
+                
+                resolve({
+                    status:100,
+                    message:Type.StatusTypes[100],
+                    content: {}
+                })
+
+            })
+
+
+        })
+
+    }
     
     async add(user_id:number,content:string,media_id = 0,timestamp = getTimeStamp() ){
 
@@ -62,58 +183,6 @@ export class Post extends DbConnect{
             })
 
 
-        })
-    }
-
-    private async createPost(post_id:number){
-
-        
-        let find_query = `
-        SELECT * FROM bf_posts 
-        WHERE id = '${post_id}'
-        `
-
-
-        return new Promise<Type.ResponseMsg>((resolve, reject) => {
-
-            this.connection.query(find_query, (err:any, rows:any, fields:any)=>{
-
-                if (err){
-                    console.log(err)
-                    resolve({
-                        status:404,
-                        message:Type.StatusTypes[404],
-                        content: {error: err}
-                    })
-                    return
-                }
-
-                if (rows.length == 0){
-                    resolve({
-                        status:201,
-                        message:Type.StatusTypes[201],
-                        content: {}
-                    })
-                    return
-                }
-
-                let post = {
-                    user: rows[0]['user_id'],
-                    media: rows[0]['media_id'],
-                    content: rows[0]['content'],
-                    created_at: rows[0]['created_at'],
-                    likes:rows[0]['likes']
-                }
-
-                resolve({
-                    status:100,
-                    message:Type.StatusTypes[100],
-                    content: {
-                        post:post
-                    }
-                })
-
-            })
         })
     }
 
@@ -372,7 +441,6 @@ export class Post extends DbConnect{
             })
         })
     }
-    
 
     private SELECT_GROUP(gp_tag:string){
         return(

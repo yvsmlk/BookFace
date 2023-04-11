@@ -95,18 +95,19 @@ CREATE TABLE bf_userFollow (
 );
 
 CREATE TABLE bf_userGroup (
-    post_id int not null,
+    user_id int not null,
     group_id int not null,
-    PRIMARY KEY (post_id, group_id)
+    PRIMARY KEY (user_id, group_id)
 );
 
 CREATE TABLE bf_groupPosts (
     post_id int not null,
     group_id int not null
-    
+    PRIMARY KEY (post_id, group_id)
 );
 
 CREATE TABLE bf_registeredPosts (
     user_id int not null,
-    post_id int not null
+    post_id int not null,
+    PRIMARY KEY (user_id, post_id)
 );
