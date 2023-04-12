@@ -83,6 +83,7 @@ export type PostType = {
 }
 
 export type CommentType = {
+    id:number,
     user: string,
     content: string,
     responses: CommentResponseType[]
@@ -91,6 +92,7 @@ export type CommentType = {
 }
 
 export type CommentResponseType = {
+    id:number,
     user: string,
     content: string,
     created_at: string,

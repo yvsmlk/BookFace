@@ -86,6 +86,7 @@ export class Comment extends DbConnect{
                 
                 let map_item = comment_map.get(parent_comment)
                 let resp_com:Type.CommentResponseType = {
+                    id:id,
                     user: tag,
                     content: content,
                     created_at: created_at,
@@ -93,14 +94,15 @@ export class Comment extends DbConnect{
                 }
     
                 if (!map_item){
-                    comment_map.set(parent_comment,
-                        {
-                            user: "",
-                            content: "",
-                            responses: [resp_com],
-                            created_at: "",
-                            likes: 0
-                        })
+                    comment_map.set(parent_comment,{
+                        id:id,
+                        user: "",
+                        content: "",
+                        responses: [resp_com],
+                        created_at: "",
+                        likes: 0
+                    }
+                        )
                 }
                 else{
                     map_item.responses.push(resp_com)
@@ -109,6 +111,7 @@ export class Comment extends DbConnect{
             else{
 
                 let com:Type.CommentType = {
+                    id:id,
                     user: tag,
                     content: content,
                     created_at: created_at,
