@@ -49,7 +49,7 @@ const Home = () => {
         <SideBar children={undefined} />
       )} 
         <section className="flex flex-wrap mt-2 md:flex-1">
-  <div className="w-full md:w-4/5 xl:flex-1">
+  <div className="w-full md:w-5/5 xl:flex-1">
     <div className="mb-2 md:ml-2 xl:ml-0">
       <VCard name="John Doe" username="johndoe" followers={1000} following={500} />
     </div>
@@ -57,7 +57,7 @@ const Home = () => {
       <Followings suggestions={people} />
     </div>
   </div>
-  <div className="w-full md:w-4/5 xl:flex-1">
+  <div className=" min-h-screen mx-auto overflow-hidden w-full md:w-4/5 xl:flex-1">
     <div className="mb-2 md:ml-2 xl:ml-0">
       <PostCard profilePictureUrl="https://randomuser.me/api/portraits/women/8.jpg" />
     </div>
@@ -101,7 +101,7 @@ const Home = () => {
       />
     </div>
   </div>
-  <div className="w-full md:w-4/5 xl:flex-1">
+  <div className="w-full md:w-5/5 xl:flex-1">
     <div className="mb-2 md:ml-2 xl:ml-0">
       <SearchBar />
     </div>

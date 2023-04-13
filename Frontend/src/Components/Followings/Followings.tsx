@@ -14,7 +14,7 @@ const FollowSuggestions: React.FC<Props> = ({ suggestions }) => {
   };
 
   return (
-    <div className="max-w-sm mx-auto my-4 rounded-md overflow-hidden shadow-md bg-white text-green-900">
+    <div className="  w-96   md:w-4/5 lg:w-4/5 xl:w-4/5 mx-auto rounded-md overflow-hidden shadow-md bg-white">
       <div className="bg- h-16 flex justify-center items-center">
         <h2 className="text-lg font-medium text-green-700">You may follow</h2>
       </div>

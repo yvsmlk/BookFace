@@ -9,7 +9,7 @@ type VCardProps = {
 
 const VCard: React.FC<VCardProps> = ({ name, username, followers, following }) => {
   return (
-    <div className=" max-w-sm mx-auto rounded-md overflow-hidden shadow-md bg-white">
+    <div className="  w-96   md:w-4/5 lg:w-4/5 xl:w-4/5 mx-auto rounded-md overflow-hidden shadow-md bg-white">
       <div className="bg-green-700 h-28 flex justify-center items-center">
         <div className="h-28 flex items-center mt-12 z-30">
           <img

@@ -26,7 +26,8 @@ const NatureTrendsCard = () => {
   }, []);
 
   return (
-    <div className="max-w-sm mx-auto rounded-md overflow-hidden shadow-md bg-white  text-green-700">
+    <div className="  w-96  sm:w-2/5 md:w-4/5 lg:w-4/5 xl:w-4/5 mx-auto rounded-md overflow-hidden shadow-md bg-white">
+
        <div className="h-16 flex justify-center items-center text-green-700">
       
          <h2 className="text-xl font-semibold mb-4">Trending Topics</h2>

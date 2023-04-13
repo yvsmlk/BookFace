@@ -35,7 +35,7 @@ const NatureCard = () => {
   }, []);
 
   return (
-    <div className="max-w-sm mx-auto rounded-md overflow-hidden shadow-md bg-white">
+    <div className="  w-96   md:w-4/5 lg:w-4/5 xl:w-4/5 mx-auto rounded-md overflow-hidden shadow-md bg-white">
       <div className="grid grid-cols-3 gap-1">
         {photos.map((photo) => (
           <img key={photo.id} src={photo.urls.regular} alt="" className="object-cover w-full h-28 " />
