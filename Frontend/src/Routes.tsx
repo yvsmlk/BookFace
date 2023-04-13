@@ -4,9 +4,11 @@ import people from "./Components/Followings/people"
 import PostCard from "./Components/Postcard/Postcard"
 import SideBar from "./Components/SideBar/SideBar"
 import VCard from "./Components/VCard/VCard"
+import ModalCookies from "./Components/ModalCookies/ModalCookies"
 import LandingPage from './Pages/LandingPage'
 import Register from "./Pages/Register"
 import Login from "./Pages/Login"
+import ProfileCard from "./Components/ProfileCard/ProfileCard"
 
 
 import NatureCard from "./Components/GalleryCard/GalleryCard"
@@ -17,13 +19,36 @@ import Publication from "./Components/Publication/Publication"
 
 export function routes() {
     return <Routes>
-            <Route path='LandingPage/' element={<LandingPage />} />
+            <Route path='/' element={<LandingPage />} />
+            <Route path= '/Register' element={<Register/>} />
+            <Route path= '/Login' element={<Login/>} />
+            {/* <Route path= '/ModalCookies' element={<ModalCookies/>} /> */}
             <Route path='SideBar/' element={<SideBar isOpen={true} />} />
+            <Route path='SideBarStat/' element={<SideBar isOpen={true} />} />
             <Route path='/VCard' element={<VCard name="John Doe" username="johndoe" followers={1000} following={500} />} />
             <Route path='/Followings' element={<Followings suggestions={people} />} />
             <Route path='/post' element={<PostCard profilePictureUrl="https://randomuser.me/api/portraits/women/8.jpg" />} />
             <Route path='NatureCard/' element={<NatureCard />} />
             <Route path='NatureTrendCard/' element={<NatureTrendCard />} />
+            <Route path='/ProfileCard' element={<ProfileCard data={{
+                id: 0,
+                author: {
+                name: "John Doe",
+                username: "johndoe",
+                avatarUrl: "https://randomuser.me/api/portraits/men/4.jpg"
+                
+
+                },
+
+                profileDescription: "Passionate traveler and amateur photographer exploring the world one shot at a time. Always seeking new adventures and experiences.",
+                address: "123 Main St.",
+                country: "USA",
+                following: 100,
+                followers: 500,
+                followedBy: "Jane Smith, Bob Johnson and Mike Davis"
+
+            }} />} />
+
             <Route path='Publication/' element={<Publication data={{
             id: 0,
             author: {
@@ -39,13 +64,6 @@ export function routes() {
             shares: 0,
             comments: 0
         }} />} />
-
-        
-       
-
-            <Route path= '/Register' element={<Register/>} />
-            <Route path= '/Login' element={<Login/>} />
-          
         
     </Routes>
 }

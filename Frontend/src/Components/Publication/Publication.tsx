@@ -5,9 +5,12 @@ import { BiSave } from "react-icons/bi";
 
 interface Props {
   data: PostData;
+  className: string;
+  onClick: () => void;
+  children?: React.ReactNode;
 }
 
-const Publication: React.FC<Props> = ({ data }) => {
+const Publication: React.FC<Props> = ({ data}) => {
   const [isSaved, setIsSaved] = useState(false);
   const [isCommenting, setIsCommenting] = useState(false);
   const [commentText, setCommentText] = useState("");
@@ -37,7 +40,7 @@ const Publication: React.FC<Props> = ({ data }) => {
   };
 
   return (
-    <div className="max-w-lg mx-auto rounded-md overflow-hidden shadow-md bg-white w-[calc(100% + 30px)]">
+    <div className="max-w-3xl mx-auto rounded-md overflow-hidden pt-3 shadow-md bg-white w-[calc(100% + 30px)]">
       <div className="flex items-center justify-between mb-4 mr-1 ml-1">
         <div className="flex items-center">
           <img src={data.author.avatarUrl} alt="Avatar" className="w-10 h-10 rounded-full mr-2" />
