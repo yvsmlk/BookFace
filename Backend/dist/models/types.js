@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.TagTypes = exports.StatusTypes = void 0;
+exports.PostSelection = exports.PostOrder = exports.LikeType = exports.TagTypes = exports.StatusTypes = void 0;
 // 100 - 199 general message
 // 200 - 399 db error
 // 400+ other
@@ -21,4 +21,17 @@ exports.TagTypes = {
     USER: 'USER',
     GROUP: 'GROUP',
     EVENT: 'EVENT'
+};
+exports.LikeType = {
+    COMMENT: 'COMMENT',
+    POST: 'POST'
+};
+exports.PostOrder = {
+    LATEST: 'LATEST',
+    LIKES: 'LIKES'
+};
+exports.PostSelection = {
+    PUBLIC: 'PUBLIC',
+    USER: 'USER',
+    GROUP: 'GROUP'
 };
