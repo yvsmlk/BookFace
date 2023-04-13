@@ -35,8 +35,8 @@ CREATE TABLE bf_grouplist (
     id int PRIMARY KEY AUTO_INCREMENT ,
     user_id int not null,
     name VARCHAR(100) DEFAULT 'group',
-    created_at datetime not null
-    
+    created_at datetime not null,
+    INDEX UX (name)
 );
 
 CREATE TABLE bf_events (
@@ -53,10 +53,17 @@ CREATE TABLE bf_comments (
     id int PRIMARY KEY AUTO_INCREMENT ,
     user_id int not null,
     post_id int not null,
-    parent_comment int,
+    parent_comment int default -1,
     content varchar(2048),
-    created_at datetime not null,
-    likes int DEFAULT 0
+    created_at datetime not null
+);
+
+CREATE TABLE bf_likes (
+    context_id int not null,
+    type varchar(50),
+    user_id int not null,
+    do_delete boolean default false,
+    PRIMARY KEY (context_id, user_id)
 );
 
 CREATE TABLE bf_notifications (
@@ -72,8 +79,7 @@ CREATE TABLE bf_posts (
     user_id int not null,
     media_id int not null,
     content varchar(2048) ,
-    created_at datetime,
-    likes int DEFAULT 0
+    created_at datetime
 );
 
 CREATE TABLE bf_media (
@@ -84,23 +90,24 @@ CREATE TABLE bf_media (
 
 CREATE TABLE bf_userFollow (
     user_id int not null,
-    follower_id int not null
-    
+    follower_id int not null,
+    PRIMARY KEY (user_id, follower_id)
 );
 
 CREATE TABLE bf_userGroup (
-    post_id int not null,
-    group_id int not null
-    
+    user_id int not null,
+    group_id int not null,
+    PRIMARY KEY (user_id, group_id)
 );
 
 CREATE TABLE bf_groupPosts (
     post_id int not null,
-    group_id int not null
-    
+    group_id int not null,
+    PRIMARY KEY (post_id, group_id)
 );
 
 CREATE TABLE bf_registeredPosts (
     user_id int not null,
-    post_id int not null
+    post_id int not null,
+    PRIMARY KEY (user_id, post_id)
 );

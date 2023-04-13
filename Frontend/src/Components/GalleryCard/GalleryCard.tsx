@@ -1,0 +1,49 @@
+import { useState, useEffect } from 'react';
+import axios from 'axios';
+
+type Photo = {
+  id: string;
+  urls: {
+    regular: string;
+  };
+};
+
+const fetchPhotos = async () => {
+  const response = await axios.get<Photo[]>('https://api.unsplash.com/photos/random', {
+    params: {
+      query: 'nature',
+      count: 6,
+      client_id: 'kmMfq6yY4MFe-VcIqkO1Irsr8Z5RSaM005Iy_sst_wM',
+    },
+  });
+  return response.data;
+};
+
+const NatureCard = () => {
+  const [photos, setPhotos] = useState<Photo[]>([]);
+
+  useEffect(() => {
+    const getPhotos = async () => {
+      const newPhotos = await fetchPhotos();
+      setPhotos(newPhotos);
+    };
+    getPhotos();
+    const interval = setInterval(() => {
+      getPhotos();
+    }, 160000000000);
+    return () => clearInterval(interval);
+  }, []);
+
+  return (
+    <div className="max-w-sm mx-auto rounded-md overflow-hidden shadow-md bg-white">
+      <div className="grid grid-cols-3 gap-1">
+        {photos.map((photo) => (
+          <img key={photo.id} src={photo.urls.regular} alt="" className="object-cover w-full h-28 " />
+        ))}
+      </div>
+    </div>
+  );
+};
+
+export default NatureCard;
+

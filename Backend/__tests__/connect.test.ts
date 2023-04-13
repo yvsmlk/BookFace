@@ -1,5 +1,4 @@
 import { User } from "../src/models/user"
-import { StatusTypes } from "../src/models/types"
 import { Tags } from "../src/models/tags"
 import { Session } from "../src/models/sessions"
 import * as Type from "../src/models/types"
@@ -21,7 +20,7 @@ test("Test login add user session ", async ()=>{
     expect((await user.login(testEmail,"test")).status).toBe(100);
     expect((await user.login(testEmail,"test")).status).toBe(405);
     expect((await session.getSession(id)).status).toBe(100);
-    //Testing logout require manipulation http only cookies
+    // Testing logout require manipulation http only cookies
     // expect((await user.logout(id)).status).toBe(100);
     // expect((await session.getSession(id)).status).toBe(201);
     expect((await user.removeUser(testEmail)).status).toBe(100);

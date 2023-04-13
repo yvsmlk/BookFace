@@ -29,6 +29,48 @@ export class User extends DbConnect {
         
     }
 
+    async getById(user_id:number){
+
+
+        let userCheck_query = `
+        SELECT * FROM bf_users
+        WHERE id = ${user_id}
+        `
+
+        return new Promise<Type.ResponseMsg>((resolve, reject) => {
+
+            this.connection.query(userCheck_query, (err:any, rows:any, fields:any)=>{
+
+                if (err){
+                    
+                    console.log(err)
+                    resolve({
+                        status:404,
+                        message:Type.StatusTypes[404],
+                        content: {error: err}
+                    })
+                    return
+                }
+
+                if (rows.length == 0){
+                    resolve({
+                        status:201,
+                        message:Type.StatusTypes[201],
+                        content: {}
+                    })
+                    return
+                }
+
+                resolve({
+                    status:100,
+                    message:Type.StatusTypes[100],
+                    content: {}
+                })
+
+            })
+        })
+
+    }
     
 
     async getTag(tag:string){
@@ -53,6 +95,7 @@ export class User extends DbConnect {
                         message: Type.StatusTypes[200],
                         content: {}
                     })
+                    return
                 }
 
                 resolve({
@@ -107,12 +150,6 @@ export class User extends DbConnect {
         INSERT INTO bf_users (email,pwd,created_at)
         VALUES('${email}','${hashedPWD}',TIMESTAMP('${timestamp}','0:0:0'))
         `
-
-        let sql_addTag = `
-        INSERT INTO bf_tags (email,pwd,created_at)
-        VALUES('${email}','${hashedPWD}',TIMESTAMP('${timestamp}','0:0:0'))
-        `    
-        
         return new Promise<Type.ResponseMsg>((resolve, reject) => {
 
             if (!tagname){
@@ -121,6 +158,7 @@ export class User extends DbConnect {
                     message:Type.StatusTypes[202],
                     content: {}
                 })
+                return
             }
 
             this.connection.query(sql_register, async (err:any, rows:any, fields:any)=>{
@@ -153,6 +191,7 @@ export class User extends DbConnect {
                         message:Type.StatusTypes[202],
                         content: {}
                     })
+                    return
                 }
 
                 let {id} = dbUser.content as {
@@ -168,6 +207,7 @@ export class User extends DbConnect {
                         message:Type.StatusTypes[202],
                         content: tagRes.content
                     })
+                    return
                 }
                 
                 
@@ -199,6 +239,7 @@ export class User extends DbConnect {
                         message:Type.StatusTypes[202],
                         content: {error: err}
                     })
+                    return
                 }
 
                 if (rows.length == 0){
@@ -261,6 +302,7 @@ export class User extends DbConnect {
                     message:del_tag.message,
                     content: del_tag.content
                 })
+                return
            }
 
            tag.close()
@@ -342,7 +384,7 @@ export class User extends DbConnect {
     }
 
     //logout based on JWT
-    logout(user_id:number){
+    async logout(user_id:number){
 
         return new Promise<Type.ResponseMsg>(async (resolve, reject) => {
             let session = new Session()
