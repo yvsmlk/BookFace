@@ -14,9 +14,9 @@ const FollowSuggestions: React.FC<Props> = ({ suggestions }) => {
   };
 
   return (
-    <div className="max-w-sm mx-auto my-4 rounded-md overflow-hidden shadow-md bg-white text-green-900">
-      <div className="bg-green-700 h-16 flex justify-center items-center">
-        <h2 className="text-lg font-medium text-white">You may follow</h2>
+    <div className="  w-96   md:w-4/5 lg:w-4/5 xl:w-4/5 mx-auto rounded-md overflow-hidden shadow-md bg-white">
+      <div className="bg- h-16 flex justify-center items-center">
+        <h2 className="text-lg font-medium text-green-700">You may follow</h2>
       </div>
       {displayedSuggestions.map((person) => (
         <div key={person.id} className="flex items-center mb-4 border-b-2 border-gray-300 pb-4 ml-2">
@@ -29,7 +29,7 @@ const FollowSuggestions: React.FC<Props> = ({ suggestions }) => {
             <div className="font-medium">{person.name}</div>
             <div className="text-gray-600">@{person.username}</div>
           </div>
-          <button className="bg-green-500 hover:bg-green-900 text-white py-1 px-4 rounded-lg mr-2">
+          <button className="bg-green-700 hover:bg-green-900 text-white py-1 px-4 rounded-lg mr-2">
       +follow
           </button>
         </div>
