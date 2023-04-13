@@ -69,7 +69,7 @@ const PostCard: React.FC<Props> = ({ profilePictureUrl }) => {
   };
 
   return (
-    <div className="max-w-lg mx-auto rounded-md overflow-hidden shadow-md bg-white w-[calc(100% + 30px)]">
+    <div className="  w-96   md:w-auto lg:w-auto xl:w-auto mx-auto rounded-md overflow-hidden shadow-md bg-white">
       <img className="h-12 w-12 rounded-full" src={profilePictureUrl} alt="Profile" />
       <div className="flex-1 ml-4 mr-4">
         <form onSubmit={handleSubmit}>
