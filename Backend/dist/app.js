@@ -37,6 +37,8 @@ app.use((0, cors_1.default)(corsOptions));
 app.use('/login', require('./routes/login.routes'));
 app.use('/logout', require('./routes/logout.routes'));
 app.use('/register', require('./routes/register.routes'));
+app.use('/posts', require('./routes/posts.routes'));
+app.use('/comments', require('./routes/comments.routes'));
 app.listen(PORT, () => {
     let ENV = process.env.ENVIRONNEMENT == 'production' ? 'PRODUCTION' : 'DEVELOPMENT';
     console.log(`\nServer running on ---> http://localhost:${PORT} <${ENV}>\n`);

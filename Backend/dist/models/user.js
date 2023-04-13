@@ -52,6 +52,38 @@ class User extends dbConnect_1.default {
     constructor() {
         super();
     }
+    async getById(user_id) {
+        let userCheck_query = `
+        SELECT * FROM bf_users
+        WHERE id = ${user_id}
+        `;
+        return new Promise((resolve, reject) => {
+            this.connection.query(userCheck_query, (err, rows, fields) => {
+                if (err) {
+                    console.log(err);
+                    resolve({
+                        status: 404,
+                        message: Type.StatusTypes[404],
+                        content: { error: err }
+                    });
+                    return;
+                }
+                if (rows.length == 0) {
+                    resolve({
+                        status: 201,
+                        message: Type.StatusTypes[201],
+                        content: {}
+                    });
+                    return;
+                }
+                resolve({
+                    status: 100,
+                    message: Type.StatusTypes[100],
+                    content: {}
+                });
+            });
+        });
+    }
     async getTag(tag) {
         let query = `
         SELECT * FROM bf_tags WHERE tag = '${tag}'
@@ -73,6 +105,7 @@ class User extends dbConnect_1.default {
                         message: Type.StatusTypes[200],
                         content: {}
                     });
+                    return;
                 }
                 resolve({
                     status: 100,
@@ -116,10 +149,6 @@ class User extends dbConnect_1.default {
         INSERT INTO bf_users (email,pwd,created_at)
         VALUES('${email}','${hashedPWD}',TIMESTAMP('${timestamp}','0:0:0'))
         `;
-        let sql_addTag = `
-        INSERT INTO bf_tags (email,pwd,created_at)
-        VALUES('${email}','${hashedPWD}',TIMESTAMP('${timestamp}','0:0:0'))
-        `;
         return new Promise((resolve, reject) => {
             if (!tagname) {
                 resolve({
@@ -127,6 +156,7 @@ class User extends dbConnect_1.default {
                     message: Type.StatusTypes[202],
                     content: {}
                 });
+                return;
             }
             this.connection.query(sql_register, async (err, rows, fields) => {
                 if (err) {
@@ -154,6 +184,7 @@ class User extends dbConnect_1.default {
                         message: Type.StatusTypes[202],
                         content: {}
                     });
+                    return;
                 }
                 let { id } = dbUser.content;
                 let tagRes = await tag.addTag(id, tagname, Type.TagTypes.USER);
@@ -164,6 +195,7 @@ class User extends dbConnect_1.default {
                         message: Type.StatusTypes[202],
                         content: tagRes.content
                     });
+                    return;
                 }
                 resolve({
                     status: 100,
@@ -187,6 +219,7 @@ class User extends dbConnect_1.default {
                         message: Type.StatusTypes[202],
                         content: { error: err }
                     });
+                    return;
                 }
                 if (rows.length == 0) {
                     resolve({
@@ -237,6 +270,7 @@ class User extends dbConnect_1.default {
                     message: del_tag.message,
                     content: del_tag.content
                 });
+                return;
             }
             tag.close();
             this.connection.query(sql_del_user, async (err, rows, fields) => {
@@ -297,7 +331,7 @@ class User extends dbConnect_1.default {
         });
     }
     //logout based on JWT
-    logout(user_id) {
+    async logout(user_id) {
         return new Promise(async (resolve, reject) => {
             let session = new sessions_1.Session();
             let resSession = await session.deleteSession(user_id);
