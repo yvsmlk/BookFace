@@ -10,8 +10,8 @@ const verifyJwt = (req: Request, res: Response, next: NextFunction): void => {
   if (!VAToken) {
     res.status(400).json(
         {
-            status:203,
-            message:Type.StatusTypes[203],
+            status:200,
+            message:Type.StatusTypes[200],
             content: {}
         }
     )
