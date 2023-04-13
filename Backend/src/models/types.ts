@@ -23,6 +23,24 @@ export const TagTypes = {
     
 };
 
+export const LikeType = {
+    COMMENT: 'COMMENT',
+    POST: 'POST'
+};
+
+export type PostOrderType = 'LATEST'|'LIKES'
+export const PostOrder = {
+    LATEST: 'LATEST',
+    LIKES: 'LIKES'
+}
+
+
+export type PostSelectionType = 'PUBLIC'|'USER'|'GROUP'
+export const PostSelection = {
+    PUBLIC:'PUBLIC',
+    USER: 'USER',
+    GROUP: 'GROUP'
+}
 
 export type ResponseMsg = {
     status: number,
@@ -39,4 +57,45 @@ export type UserResponseInfo = {
     status: number,
     picture: string,
     banner: string
+}
+
+
+    /*
+
+    CREATE TABLE bf_posts (
+        id int PRIMARY KEY AUTO_INCREMENT ,
+        user_id int not null,
+        media_id int not null,
+        content varchar(2048) ,
+        created_at datetime,
+        likes int DEFAULT 0
+    );
+
+
+    */
+
+export type PostType = {
+    user: number,
+    media: number
+    content: string,
+    created_at: string,
+    likes:number
+}
+
+export type CommentType = {
+    id:number,
+    user: string,
+    content: string,
+    responses: CommentResponseType[]
+    created_at: string,
+    likes:number
+}
+
+export type CommentResponseType = {
+    id:number,
+    user: string,
+    content: string,
+    created_at: string,
+    likes:number
+
 }
