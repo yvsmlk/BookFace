@@ -33,9 +33,9 @@ const SideBar: React.FC<{ children: React.ReactNode }> = ({ children }) => {
             to={item.path}
             key={index}
             className="link flex items-center py-2 px-4 hover:bg-green-700 hover:text-white"
-            activeClassName="active"
+            
           >
-            <div className="icon"  style={{ marginLeft: toggle ? '-18px' : '0px' }}     >{item.icon}</div>
+            <div className="icon"  style={{ marginLeft: isOpen ? '-15px' : '0px' }}     >{item.icon}</div>
             <div
               style={{ display: isOpen ? 'block' : 'none' }}
               className="link_text ml-2"
