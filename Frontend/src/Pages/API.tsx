@@ -49,7 +49,6 @@ const VIEWSLIDER = ()=>{
             </div>
             <div className=" flex-[0_1_95%] rounded-lg bg-neutral-50">
                 <SwaggerUI  spec={getDoc(getDisplayInfo(activeButton).host)} />
-                {getDisplayInfo(activeButton).host}
             </div>
         </div>
     )
