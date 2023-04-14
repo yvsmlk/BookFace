@@ -31,8 +31,8 @@ const response_1 = require("../utils/response");
 const likes_1 = require("../models/likes");
 const addPost = async (req, res) => {
     //TODO
-    const { tag, content, media } = req.body;
-    if (!tag || !content) {
+    const { content, media } = req.body;
+    if (!content) {
         res.status(400).json({
             status: 400,
             message: Type.StatusTypes[400],
@@ -47,21 +47,22 @@ const addPost = async (req, res) => {
         return;
     }
     let post_obj = new posts_1.Post();
-    let tag_obj = new tags_1.Tags();
-    //check tag 
-    let tag_response = await tag_obj.getTag(tag);
-    if (!(0, response_1.checkResponse)(tag_response, res))
-        return;
-    const { id, type } = tag_response.content;
-    if (type != Type.TagTypes.USER) {
-        res.status(400).json({
-            status: 401,
-            message: Type.StatusTypes[401],
-            content: "Wrong tag type: " + tag
-        });
-        return;
-    }
-    let post_response = await post_obj.add(id, content, media || 0);
+    // let tag_obj = new Tags()
+    // //check tag 
+    // let tag_response = await tag_obj.getTag(tag)
+    // if (!checkResponse(tag_response,res))return
+    // const {id,type} = tag_response.content as {id:number,type:string}
+    // if (type != Type.TagTypes.USER){
+    //     res.status(400).json(
+    //         {
+    //             status:401,
+    //             message:Type.StatusTypes[401],
+    //             content: "Wrong tag type: "+tag 
+    //         }
+    //     )
+    //     return
+    // }
+    let post_response = await post_obj.add(parseInt(req.params.user_id), content, media || 0);
     if (!(0, response_1.checkResponse)(post_response, res))
         return;
     res.status(200).json({
@@ -73,8 +74,8 @@ const addPost = async (req, res) => {
 exports.addPost = addPost;
 const addGroupPost = async (req, res) => {
     //TODO
-    const { user_tag, group_tag, content, media } = req.body;
-    if (!user_tag || !group_tag || !content) {
+    const { group_tag, content, media } = req.body;
+    if (!group_tag || !content) {
         res.status(400).json({
             status: 400,
             message: Type.StatusTypes[400],
@@ -91,22 +92,22 @@ const addGroupPost = async (req, res) => {
     }
     let post_obj = new posts_1.Post();
     let tag_obj = new tags_1.Tags();
-    //check tag 
-    let user_tag_response = await tag_obj.getTag(user_tag);
+    // //check tag 
+    // let user_tag_response = await tag_obj.getTag(user_tag)
     let group_tag_response = await tag_obj.getTag(group_tag);
-    if (!(0, response_1.checkResponse)(user_tag_response, res))
-        return;
-    if (!(0, response_1.checkResponse)(group_tag_response, res))
-        return;
-    let uinfo = user_tag_response.content;
-    if (uinfo.type != Type.TagTypes.USER) {
-        res.status(400).json({
-            status: 401,
-            message: Type.StatusTypes[401],
-            content: "Wrong tag type: " + user_tag
-        });
-        return;
-    }
+    // if (!checkResponse(user_tag_response,res))return
+    // if (!checkResponse(group_tag_response,res))return
+    // let uinfo = user_tag_response.content as {id:number,type:string}
+    // if (uinfo.type != Type.TagTypes.USER){
+    //     res.status(400).json(
+    //         {
+    //             status:401,
+    //             message:Type.StatusTypes[401],
+    //             content: "Wrong tag type: "+user_tag 
+    //         }
+    //     )
+    //     return
+    // }
     let ginfo = group_tag_response.content;
     if (ginfo.type != Type.TagTypes.GROUP) {
         res.status(400).json({
@@ -116,7 +117,7 @@ const addGroupPost = async (req, res) => {
         });
         return;
     }
-    let post_response = await post_obj.addGroupPost(ginfo.id, uinfo.id, content, media || 0);
+    let post_response = await post_obj.addGroupPost(ginfo.id, parseInt(req.params.user_id), content, media || 0);
     if (!(0, response_1.checkResponse)(post_response, res))
         return;
     res.status(200).json({
@@ -128,8 +129,8 @@ const addGroupPost = async (req, res) => {
 exports.addGroupPost = addGroupPost;
 const registerPost = async (req, res) => {
     //TODO
-    const { user_tag, posts_id } = req.body;
-    if (!user_tag || !posts_id) {
+    const { posts_id } = req.body;
+    if (!posts_id) {
         res.status(400).json({
             status: 400,
             message: Type.StatusTypes[400],
@@ -145,19 +146,20 @@ const registerPost = async (req, res) => {
     let post_obj = new posts_1.Post();
     let tag_obj = new tags_1.Tags();
     //check tag 
-    let user_tag_response = await tag_obj.getTag(user_tag);
-    if (!(0, response_1.checkResponse)(user_tag_response, res))
-        return;
-    let uinfo = user_tag_response.content;
-    if (uinfo.type != Type.TagTypes.USER) {
-        res.status(400).json({
-            status: 401,
-            message: Type.StatusTypes[401],
-            content: "Wrong tag type: " + user_tag
-        });
-        return;
-    }
-    let post_response = await post_obj.register(uinfo.id, posts_id);
+    // let user_tag_response = await tag_obj.getTag(user_tag)
+    // if (!checkResponse(user_tag_response,res))return
+    // let uinfo = user_tag_response.content as {id:number,type:string}
+    // if (uinfo.type != Type.TagTypes.USER){
+    //     res.status(400).json(
+    //         {
+    //             status:401,
+    //             message:Type.StatusTypes[401],
+    //             content: "Wrong tag type: "+parseInt(req.params.user_tag)
+    //         }
+    //     )
+    //     return
+    // }
+    let post_response = await post_obj.register(parseInt(req.params.user_id), posts_id);
     if (!(0, response_1.checkResponse)(post_response, res))
         return;
     res.status(200).json({
@@ -195,20 +197,22 @@ const getGroupPost = async (req, res) => {
 };
 exports.getGroupPost = getGroupPost;
 const getRegisteredPost = async (req, res) => {
-    const { user_tag, n, order } = req.query;
-    if (!user_tag) {
-        res.status(400).json({
-            status: 201,
-            message: Type.StatusTypes[201],
-            content: {
-                example: 'host/posts/registered?user_tag=@xyz&order=LATEST&n=5'
-            }
-        });
-        return;
-    }
+    const { n, order } = req.query;
+    // if (!user_tag){
+    //     res.status(400).json(
+    //         {
+    //             status:201,
+    //             message:Type.StatusTypes[201],
+    //             content: {
+    //                 example: 'host/posts/registered?user_tag=@xyz&order=LATEST&n=5'
+    //             }
+    //         }
+    //     )
+    //     return
+    // }
     let post_obj = new posts_1.Post();
     let limit = n == undefined ? 5 : parseInt(n);
-    let post_response = await post_obj.select(user_tag, (order || 'LATEST'), 'USER', isNaN(limit) ? 5 : limit);
+    let post_response = await post_obj.select(req.params.user_tag, (order || 'LATEST'), 'USER', isNaN(limit) ? 5 : limit);
     post_obj.close();
     if (!(0, response_1.checkResponse)(post_response, res))
         return;
@@ -235,8 +239,8 @@ const getPublicPost = async (req, res) => {
 };
 exports.getPublicPost = getPublicPost;
 const likePost = async (req, res) => {
-    const { tag, context_id } = req.body;
-    if (!tag || !context_id) {
+    const { context_id } = req.body;
+    if (!context_id) {
         res.status(400).json({
             status: 400,
             message: Type.StatusTypes[400],
@@ -250,20 +254,21 @@ const likePost = async (req, res) => {
         return;
     }
     let like_obj = new likes_1.Like();
-    let tag_obj = new tags_1.Tags();
-    let tag_response = await tag_obj.getTag(tag);
-    if (!(0, response_1.checkResponse)(tag_response, res))
-        return;
-    const { id, type } = tag_response.content;
-    if (type != Type.TagTypes.USER) {
-        res.status(400).json({
-            status: 401,
-            message: Type.StatusTypes[401],
-            content: "Wrong tag type: " + tag
-        });
-        return;
-    }
-    let like_response = await like_obj.like(context_id, id, Type.LikeType.POST);
+    // let tag_obj = new Tags()
+    // let tag_response = await tag_obj.getTag(tag)
+    // if (!checkResponse(tag_response,res))return
+    // const {id,type} = tag_response.content as {id:number,type:string}
+    // if (type != Type.TagTypes.USER){
+    //     res.status(400).json(
+    //         {
+    //             status:401,
+    //             message:Type.StatusTypes[401],
+    //             content: "Wrong tag type: "+tag 
+    //         }
+    //     )
+    //     return
+    // }
+    let like_response = await like_obj.like(context_id, parseInt(req.params.user_id), Type.LikeType.POST);
     if (!(0, response_1.checkResponse)(like_response, res))
         return;
     res.status(200).json({
