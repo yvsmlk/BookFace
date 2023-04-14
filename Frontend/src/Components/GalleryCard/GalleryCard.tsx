@@ -13,7 +13,7 @@ const fetchPhotos = async () => {
     params: {
       query: 'nature',
       count: 6,
-      client_id: 'kmMfq6yY4MFe-VcIqkO1Irsr8Z5RSaM005Iy_sst_wM',
+      client_id: 'J344RJO6jc3fRHVQvRtSxZWBzokxuxIqyOWIn7twIe0',
     },
   });
   return response.data;
@@ -30,12 +30,12 @@ const NatureCard = () => {
     getPhotos();
     const interval = setInterval(() => {
       getPhotos();
-    }, 160000000000);
+    }, 160000000);
     return () => clearInterval(interval);
   }, []);
 
   return (
-    <div className="max-w-sm mx-auto rounded-md overflow-hidden shadow-md bg-white">
+    <div className="  w-96   md:w-4/5 lg:w-4/5 xl:w-4/5 mx-auto rounded-md overflow-hidden shadow-md bg-white">
       <div className="grid grid-cols-3 gap-1">
         {photos.map((photo) => (
           <img key={photo.id} src={photo.urls.regular} alt="" className="object-cover w-full h-28 " />

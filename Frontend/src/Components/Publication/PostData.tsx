@@ -5,10 +5,16 @@ type PostData = {
       username: string;
       avatarUrl: string;
     };
+    profileDescription?: string;
+    address?: string;
+    country?: string;
     content?: string;
     imageUrl?: string;
     videoUrl?: string;
     postedAt: string;
+    following: number,
+    followedBy?: string,
+    followers: number,
     likes: number;
     shares: number;
     comments: number;
@@ -29,10 +35,16 @@ type PostData = {
   
   const generateRandomPostData = (): PostData => {
     const author = users[Math.floor(Math.random() * users.length)];
+    const profileDescription = Math.random() > 0.5 ? "Lorem ipsum dolor sit amet, consectetur adipiscing elit." : undefined;
+    const address = Math.random() > 0.5 ? "Lorem ipsum dolor sit amet." : undefined;
+    const country = Math.random() > 0.5 ? "Lorem ipsum dolor sit amet." : undefined;
     const content = Math.random() > 0.5 ? "Lorem ipsum dolor sit amet." : undefined;
     const imageUrl = Math.random() > 0.5 ? `https://picsum.photos/500/300?random=${Math.floor(Math.random() * 100)}` : undefined;
     const videoUrl = Math.random() > 0.5 ? "https://www.youtube.com/watch?v=dQw4w9WgXcQ" : undefined;
     const postedAt = new Date(new Date().getTime() - Math.random() * 86400000 * 7).toISOString(); // Last 7 days
+    const following = Math.floor(Math.random() * 50);
+    const followers = Math.floor(Math.random() * 50);
+    const followedBy = Math.random() > 0.5 ? "Lorem ipsum dolor sit amet." : undefined;
     const likes = Math.floor(Math.random() * 100);
     const shares = Math.floor(Math.random() * 50);
     const comments = Math.floor(Math.random() * 20);
@@ -40,10 +52,16 @@ type PostData = {
     return {
       id: Math.floor(Math.random() * 100000),
       author,
+      profileDescription,
+      address,
+      country,
       content,
       imageUrl,
       videoUrl,
       postedAt,
+      following,
+      followers,
+      followedBy,
       likes,
       shares,
       comments,
