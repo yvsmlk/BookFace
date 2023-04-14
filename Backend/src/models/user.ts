@@ -351,7 +351,7 @@ export class User extends DbConnect {
                 pwd:string
             }
 
-            let resSession = await session.getSession(id)
+            let resSession = await session.getSession(id) 
 
             if ( resSession.status != 201){
                 resolve({
@@ -362,6 +362,8 @@ export class User extends DbConnect {
                 session.close()
                 return
             }
+            
+           
 
             resSession = await session.addSession(id)
             session.close()
@@ -374,10 +376,25 @@ export class User extends DbConnect {
                 return
             }
             
+            resSession = await session.getSession(id) 
+            
+            let content = resSession.content as [{
+                id:number,
+                user_id:number,
+                tag:string
+            }]
+            
+            console.log(content);
+            
+            
             resolve({
                 status:100,
                 message:Type.StatusTypes[100],
-                content: {hashedPWD:pwd,id:id}
+                content: {
+                    hashedPWD:pwd,
+                    user_id:id,
+                    user_tag:content[0]['tag'] 
+                }
             })
         })
         

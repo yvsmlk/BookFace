@@ -6,13 +6,13 @@ import  bcrypt, { hashSync }  from "bcrypt";
 import * as Type from "../models/types";
 
 
-const basicConnect = async (email:string,pwd:string,hashedPwd:string,id:number,req: Request, res: Response)=>{
+const basicConnect = async (email:string,pwd:string,hashedPwd:string,id:number,user_tag:string,req: Request, res: Response)=>{
 
     if(bcrypt.compareSync(pwd,hashedPwd)){
 
-        const accessToken = signJWT({"email": email,"id": id}, process.env.ACCESS_TOKEN_TTL as string ||'20m');
-        const refreshToken = signJWT({"email": email,"id": id}, process.env.REFRESH_TOKEN_TTL as string || '1d');
-
+        const accessToken = signJWT({"email": email,"id": id,"user_tag":user_tag}, process.env.ACCESS_TOKEN_TTL as string ||'1h');
+        const refreshToken = signJWT({"email": email,"id": id,"user_tag":user_tag}, process.env.REFRESH_TOKEN_TTL as string || '1d');
+        
         try {
             // await user.update("",0,refreshToken)
                 
@@ -77,8 +77,9 @@ export const login = async (req:Request, res:Response)=>{
         )
         return
     }
-
-    let {hashedPWD,id} = resp.content as {hashedPWD:string,id:number}
+    console.log(resp);
     
-    basicConnect(email,pwd,hashedPWD,id,req, res)
+    let {hashedPWD,user_id,user_tag} = resp.content as {hashedPWD:string,user_id:number,user_tag:string}
+    
+    basicConnect(email,pwd,hashedPWD,user_id,user_tag,req, res)
 }
