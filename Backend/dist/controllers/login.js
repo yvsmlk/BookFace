@@ -31,14 +31,16 @@ const user_1 = require("../models/user");
 const token_1 = require("../utils/token");
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const Type = __importStar(require("../models/types"));
-const basicConnect = async (email, pwd, hashedPwd, id, req, res) => {
+const basicConnect = async (email, pwd, hashedPwd, id, user_tag, req, res) => {
     if (bcrypt_1.default.compareSync(pwd, hashedPwd)) {
-        const accessToken = (0, token_1.signJWT)({ "email": email, "id": id }, process.env.ACCESS_TOKEN_TTL || '20m');
-        const refreshToken = (0, token_1.signJWT)({ "email": email, "id": id }, process.env.REFRESH_TOKEN_TTL || '1d');
+        const accessToken = (0, token_1.signJWT)({ "email": email, "id": id, "user_tag": user_tag }, process.env.ACCESS_TOKEN_TTL || '1h');
+        const refreshToken = (0, token_1.signJWT)({ "email": email, "id": id, "user_tag": user_tag }, process.env.REFRESH_TOKEN_TTL || '1d');
         try {
             // await user.update("",0,refreshToken)
-            res.cookie("VRToken", refreshToken, { httpOnly: true, maxAge: 24 * 60 * 60 * 1000, sameSite: "none", secure: true });
-            res.cookie("VAToken", accessToken, { httpOnly: true, maxAge: 20 * 60 * 1000, sameSite: "none", secure: true });
+            // res.cookie("VRToken",refreshToken,{httpOnly:true,maxAge:24*60*60*1000, sameSite:"none" ,secure:true})
+            // res.cookie("VAToken",accessToken,{httpOnly:true,maxAge:20*60*1000, sameSite:"none" ,secure:true})
+            res.cookie("VRToken", refreshToken, { httpOnly: true, maxAge: 24 * 60 * 60 * 1000, sameSite: "none" });
+            res.cookie("VAToken", accessToken, { httpOnly: true, maxAge: 20 * 60 * 1000, sameSite: "none" });
             res.status(200).json({
                 status: 100,
                 message: Type.StatusTypes[100],
@@ -83,7 +85,8 @@ const login = async (req, res) => {
         });
         return;
     }
-    let { hashedPWD, id } = resp.content;
-    basicConnect(email, pwd, hashedPWD, id, req, res);
+    console.log(resp);
+    let { hashedPWD, user_id, user_tag } = resp.content;
+    basicConnect(email, pwd, hashedPWD, user_id, user_tag, req, res);
 };
 exports.login = login;
