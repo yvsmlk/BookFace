@@ -290,7 +290,6 @@ export class Post extends DbConnect{
     selection:Type.PostSelectionType ='PUBLIC',n=5){
 
         let get_query = this.createSelectQuery(order,selection,tag,n)
-        console.log(get_query);
         
         return new Promise<Type.ResponseMsg>( async (resolve, reject) => {
 

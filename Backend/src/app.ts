@@ -2,9 +2,12 @@
 import express from 'express';
 import cookieParser from "cookie-parser";
 import cors from "cors";
-
+import verifyJwt from './middlewares/auth';
 import path from 'path'
 import dotenv from "dotenv";
+
+
+
 let ENV = process.env.ENVIRONNEMENT || ""
 if (ENV == "production"){
 
@@ -47,8 +50,8 @@ app.use(cors(corsOptions));
 
 
 app.use('/login',require('./routes/login.routes'))
-app.use('/logout',require('./routes/logout.routes'))
 app.use('/register',require('./routes/register.routes'))
+app.use('/logout',require('./routes/logout.routes'))
 
 app.use('/posts',require('./routes/posts.routes'))
 app.use('/comments',require('./routes/comments.routes'))

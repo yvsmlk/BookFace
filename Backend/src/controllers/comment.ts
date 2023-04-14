@@ -9,16 +9,16 @@ import { Comment } from '../models/comments';
 
 
 export const addComment = async (req:Request, res:Response)=>{
-    const {tag,content,post_id,parent_comment} = req.body
+    const {content,post_id,parent_comment} = req.body
 
-    if (!tag ||!content || !post_id){
+    if (!content || !post_id){
         res.status(400).json(
             {
                 status:400,
                 message:Type.StatusTypes[400],
                 content: {
                     exemple:{
-                        tag:"@xyz",
+                        tag:req.params.user_tag,
                         content:"test content",
                         post_id:-1,
                         parent_comment:-1
@@ -34,23 +34,23 @@ export const addComment = async (req:Request, res:Response)=>{
     
     //check tag 
 
-    let tag_response = await tag_obj.getTag(tag)
-    tag_obj.close
-    if (!checkResponse(tag_response,res))return
-    const {id,type} = tag_response.content as {id:number,type:string}
+    // let tag_response = await tag_obj.getTag(tag)
+    // tag_obj.close
+    // if (!checkResponse(tag_response,res))return
+    // const {id,type} = tag_response.content as {id:number,type:string}
     
-    if (type != Type.TagTypes.USER){
-        res.status(400).json(
-            {
-                status:401,
-                message:Type.StatusTypes[401],
-                content: "Wrong tag type: "+tag 
-            }
-            )
-            return
-        }
+    // if (type != Type.TagTypes.USER){
+    //     res.status(400).json(
+    //         {
+    //             status:401,
+    //             message:Type.StatusTypes[401],
+    //             content: "Wrong tag type: "+tag 
+    //         }
+    //         )
+    //         return
+    //     }
         
-    let comment_response = await comment_obj.add(id,post_id,content,parent_comment||-1)
+    let comment_response = await comment_obj.add(parseInt(req.params.user_id),post_id,content,parent_comment||-1)
     comment_obj.close()
 
     if (!checkResponse(comment_response,res))return
@@ -112,9 +112,9 @@ export const getComment =async (req:Request, res:Response) => {
 }
 
 export const likeComment = async (req:Request, res:Response)=>{
-    const {tag,context_id} = req.body
+    const {context_id} = req.body
 
-    if ( !tag || !context_id){
+    if (  !context_id){
         res.status(400).json(
             {
                 status:400,
@@ -126,26 +126,26 @@ export const likeComment = async (req:Request, res:Response)=>{
     }
     
     let like_obj = new Like()
-    let tag_obj = new Tags()
+    // let tag_obj = new Tags()
 
-    let tag_response = await tag_obj.getTag(tag)
+    // let tag_response = await tag_obj.getTag(tag)
 
-    if (!checkResponse(tag_response,res))return
+    // if (!checkResponse(tag_response,res))return
 
-    const {id,type} = tag_response.content as {id:number,type:string}
+    // const {id,type} = tag_response.content as {id:number,type:string}
 
-    if (type != Type.TagTypes.USER){
-        res.status(400).json(
-            {
-                status:401,
-                message:Type.StatusTypes[401],
-                content: "Wrong tag type: "+tag 
-            }
-        )
-        return
-    }
+    // if (type != Type.TagTypes.USER){
+    //     res.status(400).json(
+    //         {
+    //             status:401,
+    //             message:Type.StatusTypes[401],
+    //             content: "Wrong tag type: "+tag 
+    //         }
+    //     )
+    //     return
+    // }
 
-    let like_response = await like_obj.like(context_id,id,Type.LikeType.COMMENT)
+    let like_response = await like_obj.like(context_id,parseInt(req.params.user_id),Type.LikeType.COMMENT)
 
     if (!checkResponse(like_response,res))return
 

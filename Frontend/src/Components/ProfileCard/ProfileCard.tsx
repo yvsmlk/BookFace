@@ -1,10 +1,11 @@
 import React from 'react';
 import { useState } from 'react';
-import PostData from "../Components/Publication/PostData";
+import PostData from "../Publication/PostData";
 import { FaHome, FaMapMarkerAlt } from "react-icons/fa";
 import classNames from 'classnames';
-import Publication from '../Components/Publication/Publication';
-import SideBarStat from '../Components/SideBar/SideBarStat';
+import Publication from '../Publication/Publication';
+import SideBarStat from '../SideBar/SideBarStat';
+import NatureTrendsCard from '../NatureTrendCard/NatureTrendCard';
 
 
 interface ProfileCardProps {
@@ -12,7 +13,7 @@ interface ProfileCardProps {
   }
 
     
-    const Profile: React.FC <ProfileCardProps> = ({data}) => { 
+    const ProfileCard: React.FC <ProfileCardProps> = ({data}) => { 
         
     const [active, setActive] = useState(0);
 
@@ -148,4 +149,4 @@ interface ProfileCardProps {
     
 
 
-export default Profile;
+export default ProfileCard;

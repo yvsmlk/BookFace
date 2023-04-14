@@ -20,8 +20,9 @@ export class Session extends DbConnect{
     getSession(user_id:number){
         //
         let sql_add_session = `
-        SELECT * FROM bf_sessions
-        WHERE user_id = '${user_id}'
+        SELECT S.id, S.user_id, T.tag FROM bf_sessions S
+        left join bf_tags T on T.context_id = S.user_id 
+        WHERE S.user_id = ${user_id}
         `
 
         return new Promise<Type.ResponseMsg>((resolve, reject) => {

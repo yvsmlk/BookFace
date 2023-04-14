@@ -5,6 +5,52 @@ import GlobeImage from '../images/GlobeImage.png'
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
+export type ResponseMsg = {
+  status: number,
+  message: string,
+  content: object | []
+}
+
+const fetchReg = async (email:string,pwd:string)=>{
+  let url = "http://localhost:3535/register/"
+
+  let option = {
+    method: 'POST',
+    headers: {
+      'accept': 'application/json',
+      'Content-Type': 'application/json',
+      
+    },
+    
+    body: JSON.stringify({
+      email: email,
+      pwd: pwd
+    }),
+    
+  }
+
+  
+  return new Promise<ResponseMsg>(async (resolve, reject) => {
+
+    try {
+
+      let response = await fetch(url,option)
+      let data:ResponseMsg = await response.json()
+
+      resolve(data) 
+      
+    } catch (err) {
+      resolve({
+        status:404,
+        message:"System error",
+        content: {err}
+      }) 
+    }
+    
+  })
+
+}
+
 
 function Register (){
 
@@ -29,32 +75,55 @@ function Register (){
             setCheckBoxChecked(e.target.checked);
           };
 
-    const handleSubmit = (e: any) => {
-        console.log(formError)
+    const handleSubmit = async (e: any) => {
         e.preventDefault()
         if ( !Email || !Password || !ConfPassword) {
-          toast.error('Sign in unsuccessful!', {
+          toast.error('Please fill in all fields', {
             position: "top-center",
-            autoClose: 1000
+            hideProgressBar:true,
+            pauseOnHover:true,
+            autoClose: 5000
           })
-          setFormError('Please fill in all fields.')
         } else if (!checkBoxChecked) {
-          toast.error('Sign in unsuccessful!', {
+          toast.error('Please accept the terms of use and privacy policy', {
             position: "top-center",
-            autoClose: 1000
+            hideProgressBar:true,
+            pauseOnHover:true,
+            autoClose: 5000
           })
-          setFormError('Please accept the terms of use and privacy policy.')
         }else {
           setFormError('')
-          toast.success('Sign in successful!', {
-          position: "top-center",
-          autoClose: 1000,
-        onClose: () => {
-          window.location.href = "/Login";
-        }})
-          
-          console.log("Formulaire envoyé");
-          // setIsSubmitted(true)
+
+          if (Password != ConfPassword){
+            toast.error('Passwords do not match', {
+              position: "top-center",
+              hideProgressBar:true,
+              pauseOnHover:true,
+              autoClose: 5000
+            })
+            return
+          }
+
+          let response = await fetchReg(Email,Password)
+          if (response.status == 100){
+
+            toast.success('Sign in successful!', {
+              position: "top-center",
+              autoClose: 1000,
+            onClose: () => {
+              window.location.href = "/Login";
+            }})
+        }
+        else{
+          toast.error(response.message, {
+            position: "top-center",
+            hideProgressBar:true,
+            pauseOnHover:true,
+            autoClose: 3000
+          })
+
+        }
+
         }
       
       }

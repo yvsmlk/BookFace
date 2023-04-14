@@ -9,7 +9,7 @@ CREATE TABLE bf_users (
     username VARCHAR(100),
     email VARCHAR(100) UNIQUE,
     pwd VARCHAR(100),
-    status int,
+    status int default 0,
     created_at datetime not null,
     INDEX UX (email)
 );
@@ -24,9 +24,10 @@ CREATE TABLE bf_sessions (
 
 CREATE TABLE bf_tags (
     id int PRIMARY KEY AUTO_INCREMENT ,
-    context_id int not null FOREIGN KEY,
+    context_id int not null ,
     tag VARCHAR(100) not NULL UNIQUE,
     type VARCHAR(100) not NULL,
+    INDEX UX (id,context_id)
 );
 
 -- create unique index UX on tags (tag)

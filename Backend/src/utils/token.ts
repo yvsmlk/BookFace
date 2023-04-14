@@ -64,6 +64,7 @@ fwIDAQAB
 
 // sign jwt
 export function signJWT(payload: object, expiresIn: string | number) {
+    
     return jwt.sign(payload, process.env.PRK || privateKey, { algorithm: "RS256", expiresIn });
   }
   
