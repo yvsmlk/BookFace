@@ -323,10 +323,17 @@ class User extends dbConnect_1.default {
                 });
                 return;
             }
+            resSession = await session.getSession(id);
+            let content = resSession.content;
+            console.log(content);
             resolve({
                 status: 100,
                 message: Type.StatusTypes[100],
-                content: { hashedPWD: pwd, id: id }
+                content: {
+                    hashedPWD: pwd,
+                    user_id: id,
+                    user_tag: content[0]['tag']
+                }
             });
         });
     }

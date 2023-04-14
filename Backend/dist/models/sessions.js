@@ -44,8 +44,9 @@ class Session extends dbConnect_1.default {
     getSession(user_id) {
         //
         let sql_add_session = `
-        SELECT * FROM bf_sessions
-        WHERE user_id = '${user_id}'
+        SELECT S.id, S.user_id, T.tag FROM bf_sessions S
+        left join bf_tags T on T.context_id = S.user_id 
+        WHERE S.user_id = ${user_id}
         `;
         return new Promise((resolve, reject) => {
             this.connection.query(sql_add_session, async (err, rows, fields) => {

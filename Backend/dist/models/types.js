@@ -9,6 +9,7 @@ exports.StatusTypes = {
     200: 'Already exist',
     201: 'Input does not exist',
     202: 'Request fail',
+    203: 'Unauthorized',
     400: 'Input missing',
     401: 'Incorrect input',
     402: 'Incorrect input type',
