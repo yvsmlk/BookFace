@@ -12,7 +12,7 @@ export type ResponseMsg = {
 }
 
 const fetchReg = async (email:string,pwd:string)=>{
-  let url = "http://localhost:3535/register/"
+  let url = "https://book-face-backend.vercel.app/register/"
 
   let option = {
     method: 'POST',
