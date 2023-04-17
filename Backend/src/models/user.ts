@@ -330,9 +330,8 @@ export class User extends DbConnect {
 
     
 
-    async login(email:string,pwd:string){
+    async login(email:string,in_pwd:string){
 
-        const hashedPwd =  await bcrypt.hash(pwd, 10)
         return new Promise<Type.ResponseMsg>(async (resolve, reject) => {
 
             let session = new Session()
@@ -344,11 +343,21 @@ export class User extends DbConnect {
                     message:dbUser.message,
                     content: dbUser.content
                 })
+                return
             }
 
             let {id,pwd} = dbUser.content as {
                 id:number,
                 pwd:string
+            }
+
+            if (!bcrypt.compareSync(in_pwd,pwd)){
+                resolve({
+                    status:401,
+                    message:Type.StatusTypes[401],
+                    content: {}
+                })
+                return
             }
 
             let resSession = await session.getSession(id) 
