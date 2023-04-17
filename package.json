@@ -13,10 +13,10 @@
     "dev": "npm run dev --workspace=Frontend",
     "start:dev": "npm run start:dev --workspace=Backend",
     "start:prod": "npm run start:prod --workspace=Backend",
-    "deploy:front": "npm run deploy --workspace=Backend",
-    "deploy:back": " No need",
-    "preview": "np run preview --workspace=Frontend",
-    "preview-build": "np run preview-build --workspace=Frontend"
+    "deploy:front": "npm run deploy --workspace=Frontend",
+    "deploy:back": " npm run deploy --workspace=Backend",
+    "preview": "npm run preview --workspace=Frontend",
+    "preview-build": "npm run preview-build --workspace=Frontend"
   },
   "repository": {
     "type": "git",

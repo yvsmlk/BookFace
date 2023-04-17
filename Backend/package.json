@@ -9,6 +9,7 @@
     "ts.check": "tsc --project tsconfig.json",
     "build": "rimraf dist && tsc",
     "add-build": "git add dist",
+    "deploy": "npm run ts.check && npm run build && npm run add-build",
     "test": "jest --detectOpenHandles"
   },
   "author": "",

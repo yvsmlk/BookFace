@@ -60,21 +60,6 @@ export type UserResponseInfo = {
     banner: string
 }
 
-
-    /*
-
-    CREATE TABLE bf_posts (
-        id int PRIMARY KEY AUTO_INCREMENT ,
-        user_id int not null,
-        media_id int not null,
-        content varchar(2048) ,
-        created_at datetime,
-        likes int DEFAULT 0
-    );
-
-
-    */
-
 export type PostType = {
     user: number,
     media: number
