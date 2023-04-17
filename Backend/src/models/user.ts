@@ -340,9 +340,9 @@ export class User extends DbConnect {
 
             if (dbUser.status != 100){
                 resolve({
-                    status:202,
-                    message:Type.StatusTypes[202],
-                    content: {}
+                    status:dbUser.status,
+                    message:dbUser.message,
+                    content: dbUser.content
                 })
             }
 
@@ -383,9 +383,6 @@ export class User extends DbConnect {
                 user_id:number,
                 tag:string
             }]
-            
-            console.log(content);
-            
             
             resolve({
                 status:100,

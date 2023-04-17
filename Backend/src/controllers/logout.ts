@@ -4,7 +4,7 @@ import * as Type from "../models/types";
 import { User } from "../models/user";
 
 export const logout = async (req:Request, res:Response)=>{
-    console.log(req.params);
+    console.log("PARAMS",req.params);
     // const { VRToken, VAToken } = req.cookies;
     // if (!VAToken) {
     //     res.status(400).json({
