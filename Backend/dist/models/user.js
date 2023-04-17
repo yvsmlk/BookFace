@@ -290,8 +290,7 @@ class User extends dbConnect_1.default {
             });
         });
     }
-    async login(email, pwd) {
-        const hashedPwd = await bcrypt_1.default.hash(pwd, 10);
+    async login(email, in_pwd) {
         return new Promise(async (resolve, reject) => {
             let session = new sessions_1.Session();
             let dbUser = await this.getUser(email);
@@ -301,8 +300,17 @@ class User extends dbConnect_1.default {
                     message: dbUser.message,
                     content: dbUser.content
                 });
+                return;
             }
             let { id, pwd } = dbUser.content;
+            if (!bcrypt_1.default.compareSync(in_pwd, pwd)) {
+                resolve({
+                    status: 401,
+                    message: Type.StatusTypes[401],
+                    content: {}
+                });
+                return;
+            }
             let resSession = await session.getSession(id);
             if (resSession.status != 201) {
                 resolve({
