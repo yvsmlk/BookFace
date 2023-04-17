@@ -57,6 +57,7 @@ function signJWT(payload, expiresIn) {
 exports.signJWT = signJWT;
 // verify jwt
 function verifyJWT(token) {
+    console.log("TOKEN", token);
     try {
         const decoded = jsonwebtoken_1.default.verify(token, process.env.PK || publicKey);
         return { payload: decoded, expired: false };

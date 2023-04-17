@@ -297,9 +297,9 @@ class User extends dbConnect_1.default {
             let dbUser = await this.getUser(email);
             if (dbUser.status != 100) {
                 resolve({
-                    status: 202,
-                    message: Type.StatusTypes[202],
-                    content: {}
+                    status: dbUser.status,
+                    message: dbUser.message,
+                    content: dbUser.content
                 });
             }
             let { id, pwd } = dbUser.content;
@@ -325,7 +325,6 @@ class User extends dbConnect_1.default {
             }
             resSession = await session.getSession(id);
             let content = resSession.content;
-            console.log(content);
             resolve({
                 status: 100,
                 message: Type.StatusTypes[100],

@@ -27,7 +27,7 @@ exports.logout = void 0;
 const Type = __importStar(require("../models/types"));
 const user_1 = require("../models/user");
 const logout = async (req, res) => {
-    console.log(req.params);
+    console.log("PARAMS", req.params);
     // const { VRToken, VAToken } = req.cookies;
     // if (!VAToken) {
     //     res.status(400).json({
