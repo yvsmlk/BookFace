@@ -56,6 +56,7 @@ const verifyJwt = (req, res, next) => {
     //       return
     //   }
     let payload = verif_out.payload;
+    console.log("PAYLOAD", payload);
     req.params.user_id = `${payload.id}`;
     req.params.email = `${payload.email}`;
     req.params.user_tag = `${payload.user_tag}`;

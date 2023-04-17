@@ -171,7 +171,6 @@ const registerPost = async (req, res) => {
 exports.registerPost = registerPost;
 const getGroupPost = async (req, res) => {
     const { group_tag, order, n } = req.query;
-    console.log(group_tag);
     if (!group_tag) {
         // group post
         res.status(400).json({

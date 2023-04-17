@@ -70,6 +70,8 @@ export function signJWT(payload: object, expiresIn: string | number) {
   
 // verify jwt
 export function verifyJWT(token: string) {
+    console.log("TOKEN",token);
+    
     try {
         const decoded = jwt.verify(token, process.env.PK || publicKey);
         return { payload: decoded, expired: false };
