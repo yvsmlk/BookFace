@@ -10,7 +10,7 @@ const basicConnect = async (email:string,pwd:string,hashedPwd:string,id:number,u
 
     if(bcrypt.compareSync(pwd,hashedPwd)){
 
-        const accessToken = signJWT({"email": email,"id": id,"user_tag":user_tag}, process.env.ACCESS_TOKEN_TTL as string ||'1h');
+        const accessToken = signJWT({"email": email,"id": id,"user_tag":user_tag}, process.env.ACCESS_TOKEN_TTL as string ||'1d');
         const refreshToken = signJWT({"email": email,"id": id,"user_tag":user_tag}, process.env.REFRESH_TOKEN_TTL as string || '1d');
         
         try {
@@ -19,7 +19,7 @@ const basicConnect = async (email:string,pwd:string,hashedPwd:string,id:number,u
             // res.cookie("VRToken",refreshToken,{httpOnly:true,maxAge:24*60*60*1000, sameSite:"none" ,secure:true})
             // res.cookie("VAToken",accessToken,{httpOnly:true,maxAge:20*60*1000, sameSite:"none" ,secure:true})
             res.cookie("VRToken",refreshToken,{httpOnly:true,maxAge:24*60*60*1000, sameSite:"none" })
-            res.cookie("VAToken",accessToken,{httpOnly:true,maxAge:20*60*1000, sameSite:"none" })
+            res.cookie("VAToken",accessToken,{httpOnly:true,maxAge:24*60*60*1000, sameSite:"none" })
 
             res.status(200).json(
                 {

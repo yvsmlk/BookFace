@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import  PostData  from "./PostData";
+import  {PostData}  from "./PostData";
 import { FaHeart, FaShare, FaComment, FaEllipsisH } from "react-icons/fa";
 import { BiSave } from "react-icons/bi";
 
@@ -10,7 +10,7 @@ interface Props {
   children?: React.ReactNode;
 }
 
-const Publication: React.FC<Props> = ({ data}) => {
+const Publication = ( {data}:{data:PostData} ) => {
   const [isSaved, setIsSaved] = useState(false);
   const [isCommenting, setIsCommenting] = useState(false);
   const [commentText, setCommentText] = useState("");
@@ -31,13 +31,13 @@ const Publication: React.FC<Props> = ({ data}) => {
     setIsCommenting(true);
   };
 
-  const handleCommentSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    const newComment = { text: commentText };
-    data.comments.push(newComment);
-    setIsCommenting(false);
-    setCommentText("");
-  };
+  // const handleCommentSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  //   event.preventDefault();
+  //   const newComment = { text: commentText };
+  //   data.comments.push(newComment);
+  //   setIsCommenting(false);
+  //   setCommentText("");
+  // };
 
   return (
     <div className="  w-96   md:w-auto lg:w-4/5 xl:w-auto mx-auto rounded-md overflow-hidden shadow-md bg-white">
@@ -45,8 +45,8 @@ const Publication: React.FC<Props> = ({ data}) => {
         <div className="flex items-center">
           <img src={data.author.avatarUrl} alt="Avatar" className="w-10 h-10 rounded-full mr-2" />
           <div>
-            <div className="font-semibold  text-green-800">{data.author.name}</div>
-            <div className=" text-green-800">@{data.author.username}</div>
+            <div className="font-semibold  text-green-800">-TODO: name-</div>
+            <div className=" text-green-800">-TODO: tag-</div>
           </div>
         </div>
         <FaEllipsisH className="w-5 h-5  text-green-800 mr-1 ml-1" />
@@ -78,7 +78,7 @@ const Publication: React.FC<Props> = ({ data}) => {
           </button>
           <button onClick={handleComment} className="flex items-center text-green-700">
             <FaComment className="w-5 h-5 mr-2" />
-            <span>{data.comments.length}</span>
+            {/* <span>{data.comments.length}</span> */}
           </button>
         </div>
         <button onClick={handleSave} className="bg-green-700 text-white rounded-lg px-4 py-2 mb-1">
@@ -87,7 +87,7 @@ const Publication: React.FC<Props> = ({ data}) => {
       </div>
       {isCommenting && (
         <div className="mt-4 mr-2 ml-2">
-          <form onSubmit={handleCommentSubmit}>
+          <form onSubmit={()=>console.log()}>
             <textarea
               value={commentText}
               onChange={(event) => setCommentText(event.target.value)}

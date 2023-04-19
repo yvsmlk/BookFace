@@ -75,7 +75,7 @@ export class User extends DbConnect {
 
     async getTag(tag:string){
         let query = `
-        SELECT * FROM bf_tags WHERE tag = '${tag}'
+        SELECT * FROM bf_tags WHERE tag = '${tag}' 
         `
         return new Promise<Type.ResponseMsg>((resolve, reject) => {
             this.connection.query(query, (err:any, rows:[], fields:any)=>{
@@ -102,6 +102,41 @@ export class User extends DbConnect {
                     status:100,
                     message: Type.StatusTypes[100],
                     content: rows
+                })
+            })
+        })
+
+    }
+
+    async getProfile(tag:string){
+        let query = this.PROFILE_QUERY(tag)
+        return new Promise<Type.ResponseMsg>((resolve, reject) => {
+            this.connection.query(query, (err:any, rows:any, fields:any)=>{
+                if (err){
+                    resolve({
+                        status:202,
+                        message: Type.StatusTypes[202],
+                        content : {}
+                    })
+                    console.log(err)
+                    return
+                }
+
+                resolve({
+                    status:100,
+                    message: Type.StatusTypes[100],
+                    content: {
+                        tag:rows[0]['tag'],
+                        avatar:rows[0]['avatar'],
+                        email:rows[0]['email'],
+                        username:rows[0]['username'],
+                        followers:rows[0]['followers']||0,
+                        follows:rows[0]['follows']||0,
+                        status:rows[0]['status']||0,
+                        banner:rows[0]['banner'],
+                        created_at:rows[0]['created_at'],
+
+                    }
                 })
             })
         })
@@ -422,5 +457,33 @@ export class User extends DbConnect {
         })
 
     }
+
+    private PROFILE_QUERY = (u_tag:string)=>{
+        return `
+        SELECT 
+        UTags.tag, 
+        Media.link as avatar,
+        U.email,
+        U.username,
+        U.status,
+        U.banner,
+        U.created_at,
+        FTable.followers,
+        FTable.follows
+        FROM bf_tags UTags
+        LEFT JOIN bf_users U ON U.id = UTags.context_id
+        LEFT JOIN bf_media Media ON Media.id = U.picture
+        CROSS JOIN (
+            SELECT
+                SUM(CASE WHEN user_id = T.context_id THEN 1 ELSE 0 END) AS followers,
+                SUM(CASE WHEN follower_id = T.context_id THEN 1 ELSE 0 END) AS follows
+            FROM bf_userfollow
+            CROSS JOIN (
+                SELECT context_id FROM bf_tags WHERE tag = '${u_tag}' AND type = 'USER'
+            ) T
+        ) FTable
+        WHERE UTags.tag = '${u_tag}' AND UTags.type = 'USER';
+        `
+    } 
 
 }

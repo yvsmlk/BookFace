@@ -55,6 +55,8 @@ app.use('/logout',require('./routes/logout.routes'))
 
 app.use('/posts',require('./routes/posts.routes'))
 app.use('/comments',require('./routes/comments.routes'))
+app.use('/profiles',require('./routes/profiles.routes'))
+app.use('/media',require('./routes/medias.routes'))
 
 
 app.listen(PORT,() =>{

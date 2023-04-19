@@ -1,5 +1,5 @@
 
-import React from 'react'
+import React, { useState } from 'react'
 import Followings from '../Components/Followings/Followings'
 import people from "../Components/Followings/people"
 import PostCard from "../Components/Postcard/Postcard"
@@ -12,14 +12,19 @@ import GreenWave2 from '../images/GreenWave2.jpg'
 import SearchBar from '../Components/Search/SearchBar'
 import BottomNavigationBar from '../Components/BottomNavigationBar/BottomNavigationBar'
 
-
-
+import { generateRandomPostData } from '../Components/Publication/PostData'
+import Feed from '../Components/Publication/Feed'
 
 
 
 
 const Home = () => {
-  const [isMobile, setIsMobile] = React.useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+  const [rerender_feed,setRerenderFeed] = useState(0)
+
+  const feedFRender = ()=>{
+    setRerenderFeed(Math.random)
+  }
 
   React.useEffect(() => {
     const handleResize = () => {
@@ -42,7 +47,7 @@ const Home = () => {
 
     return (
       
-      <div className=' flex flex-1  overflow-scroll 'style={backgroundImageStyle}>
+      <div className=' flex flex-1 'style={backgroundImageStyle}>
             {isMobile ? (
         <BottomNavigationBar children={undefined} />
       ) : (
@@ -51,7 +56,7 @@ const Home = () => {
         <section className="flex flex-wrap mt-2 md:flex-1">
   <div className="w-full md:w-5/5 xl:flex-1">
     <div className="mb-2 md:ml-2 xl:ml-0">
-      <VCard name="John Doe" username="johndoe" followers={1000} following={500} />
+      <VCard/>
     </div>
     <div className="mb-2 md:ml-2 xl:ml-0">
       <Followings suggestions={people} />
@@ -59,58 +64,26 @@ const Home = () => {
   </div>
   <div className=" min-h-screen mx-auto overflow-hidden w-full md:w-4/5 xl:flex-1">
     <div className="mb-2 md:ml-2 xl:ml-0">
-      <PostCard profilePictureUrl="https://randomuser.me/api/portraits/women/8.jpg" />
+      <PostCard profilePictureUrl="" feedFRender={feedFRender} />
     </div>
+  
     <div className="mb-2 md:ml-2 xl:ml-0">
-      <Publication
-        data={{
-          id: 0,
-          author: {
-            name: "John Doe",
-            username: "johndoe",
-            avatarUrl: "https://randomuser.me/api/portraits/women/8.jpg"
-          },
-          content:
-            "Ces services permettent de trouver les sources des photographies et donc de mieux comprendre les restrictions d’usage des images trouvées ici et là sur Internet. Dans tous les cas, méfiez-vous des images trop « parfaites » : généralement issues de banques d’images, leur utilisation est rarement gratuite !",
-          imageUrl: undefined,
-          videoUrl: undefined,
-          postedAt: "",
-          likes: 0,
-          shares: 0,
-          comments: 0
-        }}
-      />
-    </div>
-    <div className="mb-2 md:ml-2 xl:ml-0">
-      <Publication
-        data={{
-          id: 0,
-          author: {
-            name: "Carla Davis",
-            username: "carladavis",
-            avatarUrl: "https://randomuser.me/api/portraits/women/3.jpg"
-          },
-          content: undefined,
-          imageUrl: "https://randomuser.me/api/portraits/women/3.jpg",
-          videoUrl: undefined,
-          postedAt: "",
-          likes: 0,
-          shares: 0,
-          comments: 0
-        }}
-      />
+      {/* <Publication
+        data={generateRandomPostData()}
+      /> */}
+      <Feed type={0} rerender_feed={rerender_feed} tag=''></Feed>
     </div>
   </div>
   <div className="w-full md:w-5/5 xl:flex-1">
-    <div className="mb-2 md:ml-2 xl:ml-0">
+    {/* <div className="mb-2 md:ml-2 xl:ml-0">
       <SearchBar />
-    </div>
+    </div> */}
     <div className="mb-2 md:ml-2 xl:ml-0">
       <NatureCard />
     </div>
-    <div className="mb-2 md:ml-2 xl:ml-0">
+    {/* <div className="mb-2 md:ml-2 xl:ml-0">
       <NatureTrendCard />
-    </div>
+    </div> */}
   </div>
 </section>
 
