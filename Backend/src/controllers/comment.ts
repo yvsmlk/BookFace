@@ -111,7 +111,7 @@ export const likeComment = async (req:Request, res:Response)=>{
         {
             status:100,
             message:Type.StatusTypes[100],
-            content: {}
+            content: like_response.content
         }
     )
 }

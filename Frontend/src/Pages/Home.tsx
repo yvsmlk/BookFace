@@ -14,6 +14,8 @@ import BottomNavigationBar from '../Components/BottomNavigationBar/BottomNavigat
 
 import { generateRandomPostData } from '../Components/Publication/PostData'
 import Feed from '../Components/Publication/Feed'
+import { Person, ResponseMsg, StatusTypes } from '../utils/Types'
+
 
 
 
@@ -21,6 +23,7 @@ import Feed from '../Components/Publication/Feed'
 const Home = () => {
   const [isMobile, setIsMobile] = useState(false);
   const [rerender_feed,setRerenderFeed] = useState(0)
+  const [rerender_feed_VCard,setRerenderFeedVCard] = useState(0)
 
   const feedFRender = ()=>{
     setRerenderFeed(Math.random)
@@ -39,60 +42,50 @@ const Home = () => {
     };
   }, []);
 
-    const backgroundImageStyle = {
-        backgroundImage: `url("${GreenWave2}")`,
-        backgroundSize: 'cover', 
+  const backgroundImageStyle = {
+      backgroundImage: `url("${GreenWave2}")`,
+      backgroundSize: 'cover', 
 
-      };
+    };
 
     return (
+
+      <div className=' flex flex-col md:flex-row  overflow-hidden' style={backgroundImageStyle}>
+            {/* {isMobile ? 
+      <BottomNavigationBar children={undefined} /> 
+      :
+      <SideBar children={undefined} />
+      }  */}
+        {
+          isMobile?
+          <BottomNavigationBar children={undefined} />
+          :
+          <SideBar children={undefined} />
+        }
+
+        <div className=' flex flex-col md:flex-[0_1_350px] gap-4  p-4'>
+          
+          <VCard vCardRerender={rerender_feed_VCard}/>
+          <Followings vCardRerender={setRerenderFeedVCard} />
+          <NatureCard />
+          {/* <div className=' flex-1 md:flex-[0_1_40%] bg-red-900'>
+            <VCard/>
+          </div>
+          <div className=' flex-1'>
+          </div> */}
+        </div>
+        <div className=' flex flex-col gap-4 md:flex-1  p-4 ld:overflow-y-scroll '>
+
+          <div className=' flex-1'>
+            <PostCard profilePictureUrl="" feedFRender={feedFRender} />
+          </div>
+          <Feed rerender_feed={rerender_feed} ></Feed>
+        </div>
+        
+
+      </div>
       
-      <div className=' flex flex-1 'style={backgroundImageStyle}>
-            {isMobile ? (
-        <BottomNavigationBar children={undefined} />
-      ) : (
-        <SideBar children={undefined} />
-      )} 
-        <section className="flex flex-wrap mt-2 md:flex-1">
-  <div className="w-full md:w-5/5 xl:flex-1">
-    <div className="mb-2 md:ml-2 xl:ml-0">
-      <VCard/>
-    </div>
-    <div className="mb-2 md:ml-2 xl:ml-0">
-      <Followings suggestions={people} />
-    </div>
-  </div>
-  <div className=" min-h-screen mx-auto overflow-hidden w-full md:w-4/5 xl:flex-1">
-    <div className="mb-2 md:ml-2 xl:ml-0">
-      <PostCard profilePictureUrl="" feedFRender={feedFRender} />
-    </div>
-  
-    <div className="mb-2 md:ml-2 xl:ml-0">
-      {/* <Publication
-        data={generateRandomPostData()}
-      /> */}
-      <Feed type={0} rerender_feed={rerender_feed} tag=''></Feed>
-    </div>
-  </div>
-  <div className="w-full md:w-5/5 xl:flex-1">
-    {/* <div className="mb-2 md:ml-2 xl:ml-0">
-      <SearchBar />
-    </div> */}
-    <div className="mb-2 md:ml-2 xl:ml-0">
-      <NatureCard />
-    </div>
-    {/* <div className="mb-2 md:ml-2 xl:ml-0">
-      <NatureTrendCard />
-    </div> */}
-  </div>
-</section>
 
-
-
-
-       
-      
-     </div>
     )
   }
 

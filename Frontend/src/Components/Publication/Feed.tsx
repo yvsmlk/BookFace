@@ -97,7 +97,7 @@ const fetchPost = async (type:FeedType,tag:string)=>{
 }
 
 
-const Feed = ( {type,tag,rerender_feed}:FeedProps)=>{
+const Feed = ( {rerender_feed}:{rerender_feed:number})=>{
 
     let [posts,setPost] = useState<PostType[]>([])
     
@@ -112,7 +112,7 @@ const Feed = ( {type,tag,rerender_feed}:FeedProps)=>{
     },[rerender_feed])
 
     return(
-        <div className=" flex flex-col gap-4 mb-4 "> 
+        <div className=" flex flex-col gap-4 mb-4"> 
             {posts.map((post)=><PostDisplayCard key={post.post_id} post_info={post}></PostDisplayCard>)}
         </div>
     )

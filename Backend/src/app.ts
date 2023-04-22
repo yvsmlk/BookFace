@@ -57,6 +57,8 @@ app.use('/posts',require('./routes/posts.routes'))
 app.use('/comments',require('./routes/comments.routes'))
 app.use('/profiles',require('./routes/profiles.routes'))
 app.use('/media',require('./routes/medias.routes'))
+app.use('/users',require('./routes/follows.routes'))
+app.use('/groups',require('./routes/groups.routes'))
 
 
 app.listen(PORT,() =>{

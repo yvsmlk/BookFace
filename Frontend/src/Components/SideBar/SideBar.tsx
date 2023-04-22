@@ -9,40 +9,33 @@ const SideBar: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const toggle = () => setIsOpen(!isOpen);
 
   return (
-    <div className="container w-40 min-h-screen z-50 ">
+    <div className=" min-h-screen ">
       <div
-        style={{ width: isOpen ? '160px' : '50px' }}
-        className="sidebar bg-green-700 text-white h-screen py-8 px-4 transition-all duration-500 ease-in-out"
+        
+        className="sidebar h-full  bg-green-700 text-white py-8 px-4 transition-all duration-500 ease-in-out"
       >
-        <div className="top_section flex justify-between items-center mb-8">
-          <h1
-            style={{ display: isOpen ? 'block' : 'none' }}
-            className="logo text-xl font-bold"
-          >
-            PHYSYS
-          </h1>
-          <div
-            style={{ marginLeft: isOpen ? '50px' : '0px' }}
-            className="bars cursor-pointer"
-          >
-            <FaBars onClick={toggle} />
-          </div>
+        <div className=" flex justify-between gap-4 items-center mb-8">
+          {isOpen&&<h1 className='text-xl font-bold'>PHYSYS</h1>}
+          <div className=' cursor-pointer'> <FaBars onClick={toggle} /></div>
         </div >
         {SidebarData.map((item, index) => (
-          <NavLink
-            to={item.path}
-            key={index}
-            className="link flex items-center py-2 px-4 hover:bg-green-700 hover:text-white"
-            
-          >
-            <div className="icon"  style={{ marginLeft: isOpen ? '-15px' : '0px' }}     >{item.icon}</div>
-            <div
-              style={{ display: isOpen ? 'block' : 'none' }}
-              className="link_text ml-2"
+          <div className=' flex gap-4 h-[50px]'>
+            <NavLink
+              to={item.path}
+              key={index}
+              className=" flex justify-center items-center gap-4 hover:bg-green-700 hover:text-white"
             >
-              {item.title}
-            </div>
-          </NavLink>
+              <div className="icon"  >
+                {item.icon}
+              </div>
+              <div
+                style={{ display: isOpen ? 'block' : 'none' }}
+                className="link_text ml-2"
+              >
+                {item.title}
+              </div>
+            </NavLink>
+          </div>
         ))}
       </div>
       <main className="ml-0 sm:ml-50">{children}</main>

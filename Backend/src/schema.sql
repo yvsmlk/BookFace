@@ -35,9 +35,8 @@ CREATE TABLE bf_tags (
 CREATE TABLE bf_grouplist (
     id int PRIMARY KEY AUTO_INCREMENT ,
     user_id int not null,
-    name VARCHAR(100) DEFAULT 'group',
+    name VARCHAR(100) DEFAULT not NULL unique,
     created_at datetime not null,
-    INDEX UX (name)
 );
 
 CREATE TABLE bf_events (
@@ -95,19 +94,19 @@ CREATE TABLE bf_userFollow (
     PRIMARY KEY (user_id, follower_id)
 );
 
-CREATE TABLE bf_userGroup (
+CREATE TABLE bf_userproup (
     user_id int not null,
     group_id int not null,
     PRIMARY KEY (user_id, group_id)
 );
 
-CREATE TABLE bf_groupPosts (
+CREATE TABLE bf_groupposts (
     post_id int not null,
     group_id int not null,
     PRIMARY KEY (post_id, group_id)
 );
 
-CREATE TABLE bf_registeredPosts (
+CREATE TABLE bf_registeredposts (
     user_id int not null,
     post_id int not null,
     PRIMARY KEY (user_id, post_id)

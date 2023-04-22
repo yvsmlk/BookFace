@@ -40,13 +40,99 @@ type ResponseMsg = {
     content: object | []
 }
 
-const ComDisplayCard = ({com_info}:{com_info:CommentType})=>{
+const fetchLike = (context_id:number,type="posts")=>{
 
-    const handleLike = () => {
+    /*
+    
+    {
+    "context_id": 7
+    }
+    
+    */
+
+    let option = {
+        method: 'POST',
+        headers: {
+        'accept': 'application/json',
+        'Content-Type': 'application/json',
         
+        },
+        credentials: "include" as RequestCredentials,
+        body: JSON.stringify({
+            context_id:context_id
+        }),
+    
+    }
+
+    const DEVELOP = "http://localhost:3535"
+    const PRODUCTION = "https://book-face-backend.vercel.app"
+    let URL = `${DEVELOP}/${type}/like` 
+
+    
+    return new Promise<ResponseMsg>(async (resolve, reject) => {
+
+        try {
+    
+          let response = await fetch(URL,option)
+          let data:ResponseMsg = await response.json()
+    
+          resolve(data) 
+          
+        } catch (err) {
+          resolve({
+            status:404,
+            message:"System error",
+            content: {err}
+          }) 
+        }
+        
+      })
+
+
+
+
+}
+
+const ComDisplayCard = ({com_info,post_id,setComRerender}:{com_info:CommentType,post_id:number,setComRerender:React.Dispatch<React.SetStateAction<number>>})=>{
+
+    const [likes,setLikes] =  useState(com_info.likes)
+    const [isOpenResponse,setIsOpenResponse] = useState(false)
+    const [commentText,setCommentText] = useState("")
+
+    const handleLike = async () => {
+        let resp_like = await fetchLike(com_info.id,"comments")
+        let {isLiked} = resp_like.content as {isLiked :boolean}
+
+        if (isLiked){
+            setLikes(likes +1)
+        }else{
+            setLikes(likes -1)
+        }
+
+        
+
     };
 
-    const handleResponse = () => {
+    const resetInput = ()=>{
+        setCommentText("")
+        setComRerender(Math.random())
+      }
+
+    const handleResponse = async () => {
+        if (commentText.length == 0 ) return
+
+        let response = await addComment(commentText,post_id)
+        if (response.status == 100){
+        resetInput()
+        }
+        else{
+            toast.error(response.message, {
+                position: "top-center",
+                hideProgressBar:true,
+                pauseOnHover:true,
+                autoClose: 5000
+            })
+        }
         
     };
 
@@ -78,11 +164,15 @@ const ComDisplayCard = ({com_info}:{com_info:CommentType})=>{
 
             <div className="flex flex-[0_1_20%] items-center gap-2 ">
                 <div className="flex items-center">
-                    <button onClick={handleLike} className="flex items-center mr-4 text-green-700">
-                        <FaHeart className="w-5 h-5 mr-2" />
-                        <span>{com_info.likes}</span>
+                    <button  className="flex items-center mr-4 text-green-700">
+                        <FaHeart onClick={()=>handleLike()} className="w-5 h-5 mr-2" />
+                        <span>{likes}</span>
                     </button>
                 </div>
+                <button onClick={()=>setIsOpenResponse(!isOpenResponse)} className="flex items-center px-3 rounded-lg text-neutral-50 font-semibold bg-green-600 hover:bg-green-900">
+                    Respond
+                </button>
+                
                 {/* <div className="flex items-center">
                     <button onClick={handleResponse} className="flex items-center px-3 rounded-lg text-neutral-50 font-semibold bg-green-600 hover:bg-green-900">
                         Respond
@@ -92,6 +182,37 @@ const ComDisplayCard = ({com_info}:{com_info:CommentType})=>{
                 {isSaved ? "Saved" : <BiSave className="w-4 h-3 mr-2" />} {isSaved ? "" : "Save"}
                 </button> */}
             </div>
+            {
+                isOpenResponse ?
+                <div className=" ">
+                    <textarea
+                    value={commentText}
+                    onChange={(event) => setCommentText(event.target.value)}
+                    className="
+                        w-full
+                        rounded-md
+                        border-gray-300
+                        focus:outline-none
+                        focus:ring
+                        focus:ring-green-800
+                        py-2
+                        px-4
+                        
+                    "
+                    placeholder="Write a comment..."
+                    />
+                    <div className=" flex justify-end px-4">
+                        <button
+                            onClick={handleResponse}
+                            className="text-neutral-50 font-semibold bg-green-600 hover:bg-green-900 px-3 rounded-lg"
+                            >
+                            Send
+                        </button>
+                    </div>
+                </div>
+                :
+                <></>
+            }
         </div>
         
         
@@ -143,6 +264,9 @@ const CommentSection =  ({post_id,comRerender}:{post_id:number,comRerender:numbe
 
     const [loading, setLoading] = useState(true);
     const [comments, setComments] = useState<CommentType[]>([]);
+    const [reRender, setRerender] = useState(0)
+    
+    
 
     useEffect( ()=>{
         setLoading(true)
@@ -157,12 +281,14 @@ const CommentSection =  ({post_id,comRerender}:{post_id:number,comRerender:numbe
         .catch(err=>console.log())
 
         
-    },[comRerender])
+    },[comRerender,reRender])
+
+
 
     return (
         <div className=" flex flex-col gap-4 flex-1 items-end  ">
             {
-                loading?<SPIN1/>:comments.length<=0? <div className=" flex w-full justify-center"> No Comment </div> : comments.map((comment)=>(<ComDisplayCard key={comment.id} com_info={comment}/>))
+                loading?<SPIN1/>:comments.length<=0? <div className=" flex w-full justify-center"> No Comment </div> : comments.map((comment)=>(<ComDisplayCard post_id={post_id} setComRerender={setRerender} key={comment.id} com_info={comment}/>))
             }
         </div>
     )
@@ -214,10 +340,35 @@ const PostDisplayCard = ({post_info}:{post_info:PostType})=>{
     const [commentText,setCommentText] = useState("")
     const [isOpenResponse,setIsOpenResponse] = useState(false)
     const [comRerender, setComRerender] = useState(0)
-    const handleLike = () => {
+    const [likes,setLikes] =  useState(post_info.likes)
+    const [HColor, setHColor] = useState(600);
+
+
+    // useEffect(()=>{
+    //     fetchLike(post_info.post_id)
+    //     .then(data=>{
+    //         let {isLiked} = data.content as {isLiked :boolean}
+    //         isLiked ?setHColor(900) :setHColor(600)
+    //     })
+
+    // },[])
+
+    const handleLike = async () => {
+        let resp_like = await fetchLike(post_info.post_id)
+        let {isLiked} = resp_like.content as {isLiked :boolean}
+
+        if (isLiked){
+            setLikes(likes +1)
+            setHColor(900)
+        }else{
+            setLikes(likes -1)
+            setHColor(600)
+        }
+
         
+
     };
-    
+
     const resetInput = ()=>{
         setCommentText("")
         setComRerender(Math.random())
@@ -232,12 +383,12 @@ const PostDisplayCard = ({post_info}:{post_info:PostType})=>{
         resetInput()
         }
         else{
-        toast.error(response.message, {
-            position: "top-center",
-            hideProgressBar:true,
-            pauseOnHover:true,
-            autoClose: 5000
-        })
+            toast.error(response.message, {
+                position: "top-center",
+                hideProgressBar:true,
+                pauseOnHover:true,
+                autoClose: 5000
+            })
         }
         
     };
@@ -277,9 +428,9 @@ const PostDisplayCard = ({post_info}:{post_info:PostType})=>{
 
             <div className="flex flex-[0_1_20%] items-center justify-between mr-2 ml-2 ">
                 <div className="flex items-center gap-2">
-                    <button onClick={handleLike} className="flex items-center mr-4 text-green-700">
+                    <button onClick={()=>handleLike()} className={`flex items-center mr-4 text-green-${HColor} hover:text-green-900`}>
                         <FaHeart className="w-5 h-5 mr-2" />
-                        <span>{post_info.likes}</span>
+                        <span>{likes}</span>
                     </button>
                     <button onClick={()=>handleComment(!isCommenting)} className="flex items-center text-green-700">
                         <FaComment className="w-5 h-5 mr-2" />

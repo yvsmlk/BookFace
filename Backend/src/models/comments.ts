@@ -137,7 +137,7 @@ export class Comment extends DbConnect{
     private async createComments(post_id:number){
 
         // make request here
-
+        //https://s3.amazonaws.com/37assets/svn/765-default-avatar.png
         let comments_query = `
         SELECT comments.id, tags.tag, 
         Media.link as avatar,

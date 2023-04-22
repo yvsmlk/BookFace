@@ -4,11 +4,7 @@ import { SidebarData } from '../SideBar/SideBarData';
 
 const BottomNavigationBar: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   return (
-    <div className="fixed bottom-0 w-full z-50 sm:hidden bg-green-700 text-white py-1 px-2">
-      <div className="flex justify-between items-center">
-        <h1 className="font-bold">PHYSYS</h1>
-        
-      </div>
+    <div className="fixed bottom-0 w-full z-50 lg:hidden bg-green-700 text-white py-1 px-2">
       <div className="flex">
         {SidebarData.map((item, index) => (
           <NavLink

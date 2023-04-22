@@ -50,7 +50,7 @@ const getProfile = async ()=>{
 }
 
 
-const VCard= () => {
+const VCard= ({vCardRerender}:{vCardRerender:number}) => {
 
 
   const [profile,setProfile] = useState<VCardProps>() 
@@ -59,7 +59,7 @@ const VCard= () => {
 
     getProfile()
     .then(data=>{
-
+      
       let {
 
         tag,
@@ -97,10 +97,10 @@ const VCard= () => {
     })
     .catch(err=>console.log())
 
-  },[])  
+  },[vCardRerender])  
 
   return (
-    <div className="  w-96   md:w-4/5 lg:w-4/5 xl:w-4/5 mx-auto rounded-md overflow-hidden shadow-md bg-white">
+    <div className=" rounded-md overflow-hidden shadow-md bg-white">
       <div className="bg-green-700 h-28 flex justify-center items-center">
         <div className="h-28 flex items-center mt-12 z-30">
           <img
@@ -113,16 +113,16 @@ const VCard= () => {
         </div>
       </div>
       <div className="text-center py-6 mt-5">
-        <h2 className="text-2xl font-bold text-green-800">{profile? profile.tag : ""}</h2>
+        <h2 className="text-2xl font-bold text-green-800 select-none">{profile? profile.tag : ""}</h2>
       </div>
-      <div className="flex justify-between px-6 py-4 border-t border-gray-200">
+      <div className="flex justify-between px-6 py-4 border-t border-gray-200 select-none">
         <div>
-          <p className="text-gray-600 font-medium">{profile? profile.followers : 0}</p>
-          <p className="text-gray-400">Followers</p>
+          <p className="text-gray-600 font-medium select-none">{profile? profile.followers : 0}</p>
+          <p className=" font-semibold text-green-600 hover:text-green-900 cursor-pointer">Followers</p>
         </div>
         <div>
-          <p className="text-gray-600 font-medium">{profile? profile.following : 0}</p>
-          <p className="text-gray-400">Following</p>
+          <p className="text-gray-600 font-medium select-none">{profile? profile.following : 0}</p>
+          <p className=" font-semibold text-green-600 hover:text-green-900 cursor-pointer">Following</p>
         </div>
       </div>
     </div>

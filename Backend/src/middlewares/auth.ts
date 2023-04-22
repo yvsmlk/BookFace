@@ -3,6 +3,7 @@ import { Request, Response, NextFunction } from "express";
 import * as Type from "../models/types";
 import { verifyJWT } from "../utils/token";
 import { Session } from "../models/sessions";
+import { Tags } from "../models/tags";
 
 const verifyJwt =async (req: Request, res: Response, next: NextFunction) => {
   const {VAToken} = req.cookies;
@@ -47,22 +48,29 @@ const verifyJwt =async (req: Request, res: Response, next: NextFunction) => {
   let resSession = await session.getSession(payload.id) 
   session.close()
   
-    if ( resSession.status != 100){
-      console.log("wrong session");
-        res.status(403).json(
-          {
-            status:407,
-            message:Type.StatusTypes[407],
-            content: {message:"Try reconnecting"}
-          }
-        );
-        
-        return
-    }
+  if ( resSession.status != 100){
+    console.log("wrong session");
+      res.status(403).json(
+        {
+          status:407,
+          message:Type.StatusTypes[407],
+          content: {message:"Try reconnecting"}
+        }
+      );
+      
+      return
+  }
+
+  let tags = new Tags()
+  let resp_tag = await tags.getTagById(payload.id,Type.TagTypes.USER)
+  tags.close()
+
+  let {tag} =  resp_tag.content as {tag:string}
   
   req.params.user_id = `${payload.id}`
   req.params.email = `${payload.email}`
-  req.params.user_tag = `${payload.user_tag}`
+  req.params.user_tag = `${tag}`
+
   
   next();
 

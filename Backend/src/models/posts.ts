@@ -321,7 +321,7 @@ export class Post extends DbConnect{
                         {
                             post_id: x['id'],
                             publisher: x['publisher'],
-                            avatar: x['avatar'],
+                            avatar: x['avatar'] || "https://s3.amazonaws.com/37assets/svn/765-default-avatar.png",
                             media: x['media_id'],
                             content: x['content'],
                             created_at: x['created_at'],

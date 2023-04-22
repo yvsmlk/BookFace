@@ -139,7 +139,7 @@ const PostCard = ({ profilePictureUrl,feedFRender }:
   };
 
   return (
-    <div className="  w-96   md:w-auto lg:w-auto xl:w-auto mx-auto rounded-md overflow-hidden shadow-md bg-white p-3">
+    <div className=" rounded-md overflow-hidden shadow-md bg-white p-3">
       {/* <img className="h-12 w-12 rounded-full" src={profilePictureUrl} alt="Profile" /> */}
       <div className="flex-1 ml-4 mr-4">
           <textarea

@@ -122,6 +122,9 @@ export class User extends DbConnect {
                     return
                 }
 
+                console.log(rows);
+                
+
                 resolve({
                     status:100,
                     message: Type.StatusTypes[100],
@@ -143,11 +146,21 @@ export class User extends DbConnect {
 
     }
 
-    findRandomTag = async ( attemptLeft=5):Promise<Type.ResponseMsg> =>{
-        let current = randomTag()
-        let output = await this.getTag(current)
+    findRandomTag = async ( tagAttempt:string,attemptLeft=5):Promise<Type.ResponseMsg> =>{
+        let current = tagAttempt || randomTag()
+        let output =  await this.getTag(current)
 
-        if (attemptLeft ==0){
+        if (current.length<4 || output.status != 100){
+            return new Promise<Type.ResponseMsg>((resolve, reject) => {
+                resolve({
+                    status:404,
+                    message:Type.StatusTypes[400],
+                    content: {}
+                })
+            })
+        }
+
+        if (output.status != 100 && attemptLeft ==0){
             return new Promise<Type.ResponseMsg>((resolve, reject) => {
                 resolve({
                     status:404,
@@ -168,9 +181,37 @@ export class User extends DbConnect {
 
         }
         else{
-            return this.findRandomTag(attemptLeft -1)
+            return this.findRandomTag("",attemptLeft -1)
         }
     
+    }
+
+    async changeTag (old_tag:string,new_tag:string){
+
+        // let resp_tag = await this.findRandomTag(new_tag,0)
+
+        return new Promise<Type.ResponseMsg>(async (resolve, reject) => {
+
+            let tag = new Tags()
+            let tagRes = await tag.updateTag(old_tag,new_tag)
+            tag.close()
+
+            if (tagRes.status != 100 ){
+                resolve({
+                    status:tagRes.status,
+                    message:tagRes.message,
+                    content: tagRes.content
+                })
+            }
+
+            resolve({
+                status:100,
+                message:Type.StatusTypes[100],
+                content: {}
+            })
+        })
+        
+
     }
 
 
@@ -180,7 +221,7 @@ export class User extends DbConnect {
         let hashedPWD = await bcrypt.hash(pwd, 10)
         
         // verify uniqueness of the timestamp return status accordingly 
-        let {tagname} = (await this.findRandomTag()).content as {tagname:string}
+        let {tagname} = (await this.findRandomTag("",0)).content as {tagname:string}
         let sql_register = `
         INSERT INTO bf_users (email,pwd,created_at)
         VALUES('${email}','${hashedPWD}',TIMESTAMP('${timestamp}','0:0:0'))
@@ -232,7 +273,7 @@ export class User extends DbConnect {
                 let {id} = dbUser.content as {
                     id:number
                 }
-
+                
                 let tagRes = await tag.addTag(id,tagname,Type.TagTypes.USER)
                 tag.close()
 
@@ -364,7 +405,6 @@ export class User extends DbConnect {
     }
 
     
-
     async login(email:string,pwd:string){
 
         const hashedPwd =  await bcrypt.hash(pwd, 10)
@@ -462,7 +502,7 @@ export class User extends DbConnect {
         return `
         SELECT 
         UTags.tag, 
-        Media.link as avatar,
+        Media.link AS avatar,
         U.email,
         U.username,
         U.status,

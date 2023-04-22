@@ -99,7 +99,7 @@ function Login (){
               position: "top-center",
               autoClose: 1000,
             onClose: () => {
-              // window.location.href = "/Home";
+              window.location.href = "/Home";
             }})
           }
           else{

@@ -26,11 +26,15 @@ export class Like extends DbConnect{
         `
  
          return new Promise<Type.ResponseMsg>(async (resolve, reject) => {
- 
- 
+            
+             
              this.connection.query(like_query, 
-                 (err:any, rows:any, fields:any)=>{
- 
+                (err:any, rows:any, fields:any)=>{
+                    console.log("R",rows);
+                    console.log("F",fields);
+                    let {affectedRows} = rows
+
+                    
                  if (err){
                      resolve({
                          status:404,
@@ -41,6 +45,7 @@ export class Like extends DbConnect{
                  }
 
                  this.connection.query(del_query,(err:any, rows:any, fields:any)=>{
+                    
                     if (err){
                         resolve({
                             status:404,
@@ -54,7 +59,9 @@ export class Like extends DbConnect{
                  resolve({
                      status:100,
                      message:Type.StatusTypes[100],
-                     content: {}
+                     content: {
+                        isLiked: affectedRows == 1
+                     }
                  })
  
              })
