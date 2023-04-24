@@ -20,6 +20,10 @@ import SearchBar from "./Components/Search/SearchBar"
 import Notifications from "./Pages/Notifications"
 import { APIDoc } from "./Pages/API"
 import Profile from "./Pages/Profile"
+import PrivateRoutes from "./utils/privateRoutes"
+import BookMarks from "./Pages/BookMarks"
+import LandingCheck from "./utils/reroot"
+import Prof from "./Pages/Prof"
 
 let example_User = {
     id: 0,
@@ -41,81 +45,25 @@ let example_User = {
 
 export function routes() {
     return <Routes>
-            <Route path='/' element={<LandingPage />} />
+            <Route path= '/' element={<LandingCheck />} />
             <Route path= '/Register' element={<Register/>} />
             <Route path= '/Login' element={<Login/>} />
-            {/* <Route path= '/ModalCookies' element={<ModalCookies/>} /> */}
-            <Route path='SideBar/' element={<SideBar isOpen={true} />} />
-            <Route path='SideBarStat/' element={<SideBar isOpen={true} />} />
-            <Route path='/VCard' element={<VCard name="John Doe" username="johndoe" followers={1000} following={500} />} />
-            <Route path='/Followings' element={<Followings suggestions={people} />} />
-            <Route path='/post' element={<PostCard profilePictureUrl="https://randomuser.me/api/portraits/women/8.jpg" />} />
-            <Route path='NatureCard/' element={<NatureCard />} />
-            <Route path='Profile/' element={<Profile data={{
-            id: 0,
-            author: {
-                name: "",
-                username: "",
-                avatarUrl: ""
-            },
-            profileDescription: undefined,
-            address: undefined,
-            country: undefined,
-            content: undefined,
-            imageUrl: undefined,
-            videoUrl: undefined,
-            postedAt: "",
-            following: 0,
-            followedBy: undefined,
-            followers: 0,
-            likes: 0,
-            shares: 0,
-            comments: 0
-        }} />} />
-            <Route path='NatureTrendCard/' element={<NatureTrendCard />} />
-            <Route path='/ProfileCard' element={<ProfileCard data={{
-                id: 0,
-                author: {
-                name: "John Doe",
-                username: "johndoe",
-                avatarUrl: "https://randomuser.me/api/portraits/men/4.jpg"
-                
+            <Route path= '/LandingPage' element={<LandingPage/>} />
+            <Route path= '/profileTest' element={<Prof/>} />
 
-                },
+            <Route element={<PrivateRoutes />}>
+                <Route path= '/Home' element={<Home />} />
+                <Route path= '/Login' element={<Login/>} />
+                <Route path= '/Profile' element={<Profile/>} />
+                <Route path= '/Notifications' element={<Notifications/>} />
+                <Route path= '/Bookmark' element={<BookMarks/>} /> 
+            </Route>
 
-                profileDescription: "Passionate traveler and amateur photographer exploring the world one shot at a time. Always seeking new adventures and experiences.",
-                address: "123 Main St.",
-                country: "USA",
-                following: 100,
-                followers: 500,
-                followedBy: "Jane Smith, Bob Johnson and Mike Davis"
-
-            }} />} />
-
-            <Route path='Publication/' element={<Publication data={{
-            id: 0,
-            author: {
-                name: "John Doe",
-                username: "johndoe",
-                avatarUrl: "https://randomuser.me/api/portraits/women/8.jpg"
-            },
-            content: "Ces services permettent de trouver les sources des photographies et donc de mieux comprendre les restrictions d’usage des images trouvées ici et là sur Internet. Dans tous les cas, méfiez-vous des images trop « parfaites » : généralement issues de banques d’images, leur utilisation est rarement gratuite !",
-            imageUrl: undefined,
-            videoUrl: undefined,
-            postedAt: "",
-            likes: 0,
-            shares: 0,
-            comments: 0
-        }} />} />
-            <Route path='/Home' element={<Home />} />
-        
-         
-          
-            <Route path= '/Register' element={<Register/>} />
-            <Route path= '/Login' element={<Login/>} />
             
-            <Route path= '/Notifications' element={<Notifications/>} />
-          
+            {/* <Route element={<ReRoot />}>
+                <Route path= '/' element={<LandingCheck />} />
+            </Route> */}
+
           
             <Route path= '/api-doc' element={<APIDoc/>} />
         

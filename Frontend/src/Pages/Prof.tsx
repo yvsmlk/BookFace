@@ -10,8 +10,6 @@ import GreenWave2 from '../images/GreenWave2.jpg'
 import BottomNavigationBar from '../Components/BottomNavigationBar/BottomNavigationBar';
 import SideBar from '../Components/SideBar/SideBar';
 import VCard from '../Components/VCard/VCard';
-import Feed from '../Components/Publication/Feed';
-import { FeedType } from '../utils/Types';
 
 // interface ProfileCardProps {
 //     data: PostData;
@@ -38,20 +36,8 @@ const S_BUTTON = ({text, activeButton, setActiveButton}:buttonProps)=>{
     )
 }
 
-const SPIN1 = ()=>{
-    return (
-        <div className=" flex w-full justify-center">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
-                <path fill="green" d="M12,23a9.63,9.63,0,0,1-8-9.5,9.51,9.51,0,0,1,6.79-9.1A1.66,1.66,0,0,0,12,2.81h0a1.67,1.67,0,0,0-1.94-1.64A11,11,0,0,0,12,23Z">
-                    <animateTransform attributeName="transform" dur="0.75s" repeatCount="indefinite" type="rotate" values="0 12 12;360 12 12"/>
-                </path>
-            </svg>
-        </div>
-    )
-}
 
-
-    const Profile = () => {
+    const Prof = () => {
 
     const [active, setActive] = useState(0);
 
@@ -60,11 +46,7 @@ const SPIN1 = ()=>{
     const [post2, setPost2] = useState('');
     const [isMobile, setIsMobile] = useState(false);
     const [rerender_feed_VCard,setRerenderFeedVCard] = useState(0)
-    const [activeButton, setActiveButton] = useState('Event')
-    const [rerender_feed,setRerenderFeed] = useState(0)
-    const [loading, setLoading] = useState(true);
-    const [reRender, setRerender] = useState(0)
-    
+    const [activeButton, setActiveButton] = useState('Development')
     // const [rerender_feed,setRerenderFeed] = useState(0)
     // const [rerender_feed_VCard,setRerenderFeedVCard] = useState(0)
 
@@ -88,7 +70,7 @@ const SPIN1 = ()=>{
       }, []);
 
     return (
-        <div className=' flex flex-col flex-1 md:flex-row  min-h-screen' style={backgroundImageStyle}>
+        <div className=' flex flex-col md:flex-row ' style={backgroundImageStyle}>
       
         {
           !isMobile && <SideBar children={undefined} />
@@ -101,21 +83,13 @@ const SPIN1 = ()=>{
         <div  className=" flex-1 flex flex-col p-3 ">
             <div className=" flex items-end gap-8 flex-[0_1_5%] pl-2 ">
                 <S_BUTTON text="Event" activeButton={activeButton} setActiveButton={setActiveButton}/>
-                <S_BUTTON text="Posts" activeButton={activeButton} setActiveButton={setActiveButton}/>
+                <S_BUTTON text="Post" activeButton={activeButton} setActiveButton={setActiveButton}/>
                 <S_BUTTON text="Community" activeButton={activeButton} setActiveButton={setActiveButton}/>
 
             </div>
-            <div className=" flex-[0_1_95%] rounded-lg p-3">
-                {
-                    activeButton == "Event" && <div  ></div>
-                }
-                {
-                    // loading?<SPIN1/>:<Feed type={2} rerender_feed={rerender_feed} isReg={true} ></Feed>
-                    activeButton == "Posts" && <Feed type={2} rerender_feed={rerender_feed} isReg={true} ></Feed>
-                }
-                {
-                    activeButton == "Community" && <Feed type={3} rerender_feed={rerender_feed} isReg={true} ></Feed>
-                }
+            <div className=" flex-[0_1_95%] rounded-lg ">
+                
+                
             </div>
         </div>
         
@@ -134,4 +108,4 @@ const SPIN1 = ()=>{
 
 
 
-export default Profile;
+export default Prof;

@@ -18,6 +18,12 @@ export const StatusTypes = {
     407: 'Token does not correspond to any session'
 };
 
+export enum FeedType {
+    'PUBLIC',
+    'GROUP',
+    'USER'
+}
+
 export const TagTypes = {
     USER: 'USER',
     GROUP: 'GROUP',

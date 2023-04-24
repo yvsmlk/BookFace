@@ -4,7 +4,9 @@ import PostDisplayCard from "./PostDisplayCard"
 enum FeedType {
     'PUBLIC',
     'GROUP',
-    'USER'
+    'USER',
+    'GROUP_ALL'
+
 }
 
 type ResponseMsg = {
@@ -47,28 +49,6 @@ type CommentResponseType = {
 
 }
 
-const sample_posts = [
-    {
-        post_id:1,
-        publisher: "@John",
-        avatar: "https://randomuser.me/api/portraits/men/7.jpg",
-        content:"just a simple test",
-        media:0,
-        likes:200,
-        created_at:""
-    }
-    ,
-    {
-        post_id:1,
-        publisher: "@Fred",
-        avatar: "https://randomuser.me/api/portraits/men/8.jpg",
-        content:"wow this card looks really good isn't it",
-        media:0,
-        likes:15,
-        created_at:""
-    }
-]
-
 const DEVELOP = "http://localhost:3535"
 const PRODUCTION = "https://book-face-backend.vercel.app"
 
@@ -76,6 +56,8 @@ const PRODUCTION = "https://book-face-backend.vercel.app"
 const fetchPost = async (type:FeedType,tag:string)=>{
     let URL_PUBLIC = `${DEVELOP}/posts/public`
     let URL_GROUP = `${DEVELOP}/posts/group?group_tag=${tag}`
+    let URL_USER = `${DEVELOP}/posts/registered`
+    let URL_GROUP_ALL = `${DEVELOP}/posts/group_all`
 
     let option = {
         method: 'GET',
@@ -83,7 +65,26 @@ const fetchPost = async (type:FeedType,tag:string)=>{
     }
     
     return new Promise<PostType[]>(async (resolve, reject) => {
-        let URL = type == FeedType.PUBLIC ? URL_PUBLIC : URL_GROUP
+        let URL = URL_PUBLIC
+
+        switch (type) {
+            case 0:
+                URL = URL_PUBLIC
+                break;
+            case 1:
+                URL = URL_GROUP
+                break;
+            case 2:
+                URL = URL_USER
+                break;
+            case 3:
+                URL = URL_GROUP_ALL
+                break;
+
+            default:
+                break;
+        }
+
         let response = await fetch(URL,option)
         let data = await response.json() as ResponseMsg
 
@@ -97,13 +98,13 @@ const fetchPost = async (type:FeedType,tag:string)=>{
 }
 
 
-const Feed = ( {rerender_feed}:{rerender_feed:number})=>{
+const Feed = ( {type,rerender_feed, isReg}:{type:number,rerender_feed:number,isReg:boolean})=>{
 
     let [posts,setPost] = useState<PostType[]>([])
     
 
     useEffect(()=>{
-        fetchPost(FeedType.PUBLIC,"")
+        fetchPost(type,"")
         .then(data=>{
             setPost(data)
         })
@@ -113,7 +114,7 @@ const Feed = ( {rerender_feed}:{rerender_feed:number})=>{
 
     return(
         <div className=" flex flex-col gap-4 mb-4"> 
-            {posts.map((post)=><PostDisplayCard key={post.post_id} post_info={post}></PostDisplayCard>)}
+            {posts.map((post)=><PostDisplayCard isReg={isReg} key={post.post_id} post_info={post}></PostDisplayCard>)}
         </div>
     )
 

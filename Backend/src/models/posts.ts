@@ -35,23 +35,18 @@ export class Post extends DbConnect{
                 (SELECT id  FROM bf_users WHERE id = ${user_id}) AS user_id,
                 (SELECT id  FROM bf_posts WHERE id = ${post_id}) AS post_id
             ) t
-            WHERE user_id IS NOT NULL AND post_id IS NOT NULL;
+            WHERE user_id IS NOT NULL AND post_id IS NOT NULL
+            ON DUPLICATE KEY UPDATE do_delete = true;
+            `
+
+            let del_query = `
+            DELETE FROM bf_registeredposts
+            WHERE do_delete = true;
             `
             
             this.connection.query(register_post_query, (err:any, rows:any, fields:any)=>{
-                
+                let {affectedRows} = rows
                 if (err){
-
-                    const {code} = err
-
-                    if (code == 'ER_DUP_ENTRY'){
-                        resolve({
-                            status:200,
-                            message:Type.StatusTypes[200],
-                            content: {}
-                        })
-                        return
-                    }
 
                     resolve({
                         status:404,
@@ -60,12 +55,26 @@ export class Post extends DbConnect{
                     })
                     return
                 }
+
+                this.connection.query(del_query,(err:any, rows:any, fields:any)=>{
+                    
+                    if (err){
+                        resolve({
+                            status:404,
+                            message:Type.StatusTypes[404],
+                            content: {error: err}
+                        })
+                        return
+                    }
+                })
                 
                 
                 resolve({
                     status:100,
                     message:Type.StatusTypes[100],
-                    content: {}
+                    content: {
+                        isReg: affectedRows == 1
+                    }
                 })
 
             })
@@ -240,7 +249,7 @@ export class Post extends DbConnect{
 
     }
 
-    private createSelectQuery(order:Type.PostOrderType,select:Type.PostSelectionType,tag:string,n:number){
+    private createSelectQuery(order:Type.PostOrderType,select:Type.PostSelectionType,tag:string,n:number,user_id:number){
 
         let base_query = ""
 
@@ -250,6 +259,9 @@ export class Post extends DbConnect{
             case 'GROUP':
                 base_query = this.SELECT_GROUP(tag)
                 break;
+            case 'GROUP_ALL':
+                base_query = this.SELECT_GROUP_ALL(user_id)
+                break
             case 'USER':
                 base_query = this.SELECT_USER(tag)
                 break;
@@ -287,9 +299,9 @@ export class Post extends DbConnect{
     }
 
     async select(tag:string,order:Type.PostOrderType = 'LATEST',
-    selection:Type.PostSelectionType ='PUBLIC',n=5){
+    selection:Type.PostSelectionType ='PUBLIC',n=5,user_id:number){
 
-        let get_query = this.createSelectQuery(order,selection,tag,n)
+        let get_query = this.createSelectQuery(order,selection,tag,n,user_id)
         
         return new Promise<Type.ResponseMsg>( async (resolve, reject) => {
 
@@ -325,7 +337,8 @@ export class Post extends DbConnect{
                             media: x['media_id'],
                             content: x['content'],
                             created_at: x['created_at'],
-                            likes: x['likes']
+                            likes: x['likes'],
+                            gp_tag: selection == 'GROUP_ALL'? x['G_tag'] : ""
                         }
                     )
                 }
@@ -500,7 +513,7 @@ export class Post extends DbConnect{
                 WHERE type = 'POST'
                 GROUP BY context_id
             ) likes ON regPost.post_id = likes.context_id 
-            WHERE regUTag.tag = ${u_tag}'
+            WHERE regUTag.tag = '${u_tag}'
             `
 
         )
@@ -534,5 +547,34 @@ export class Post extends DbConnect{
 
         )
     } 
+
+    private SELECT_GROUP_ALL (user_id:number){
+        return (
+            `
+            SELECT 
+            P.id, 
+            P.created_at,
+            COALESCE(T.tag, '') AS publisher,
+            COALESCE(Media.link, '') AS avatar,
+            P.content,
+            GT.tag AS G_tag,
+            COALESCE(likes.likes, 0) AS likes 
+            FROM bf_usergroup UG
+            RIGHT JOIN bf_groupposts GP ON GP.group_id = UG.group_id
+            LEFT JOIN bf_posts P ON P.id = GP.post_id
+            LEFT JOIN bf_tags T  ON T.context_id = P.user_id 
+            LEFT JOIN bf_users User ON User.id = P.user_id 
+            LEFT JOIN bf_media Media ON Media.id = User.picture
+            LEFT JOIN (
+                SELECT context_id, count(*) AS likes 
+                FROM bf_likes 
+                WHERE type = 'POST'
+                GROUP BY context_id
+            ) likes ON P.id = likes.context_id 
+            LEFT JOIN bf_tags GT on GT.context_id = UG.group_id
+            WHERE UG.user_id = ${user_id}
+            `
+        )
+    }
     
 }

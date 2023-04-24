@@ -16,10 +16,6 @@ import { generateRandomPostData } from '../Components/Publication/PostData'
 import Feed from '../Components/Publication/Feed'
 import { Person, ResponseMsg, StatusTypes } from '../utils/Types'
 
-
-
-
-
 const Home = () => {
   const [isMobile, setIsMobile] = useState(false);
   const [rerender_feed,setRerenderFeed] = useState(0)
@@ -46,24 +42,18 @@ const Home = () => {
       backgroundImage: `url("${GreenWave2}")`,
       backgroundSize: 'cover', 
 
-    };
+  };
 
     return (
 
-      <div className=' flex flex-col md:flex-row  overflow-hidden' style={backgroundImageStyle}>
-            {/* {isMobile ? 
-      <BottomNavigationBar children={undefined} /> 
-      :
-      <SideBar children={undefined} />
-      }  */}
+      <div className=' flex flex-col md:flex-row ' style={backgroundImageStyle}>
+      
         {
-          isMobile?
-          <BottomNavigationBar children={undefined} />
-          :
-          <SideBar children={undefined} />
+          !isMobile && <SideBar children={undefined} />
+          
         }
 
-        <div className=' flex flex-col md:flex-[0_1_350px] gap-4  p-4'>
+        <div className=' flex flex-col md:flex-[0_1_300px] gap-4  p-4'>
           
           <VCard vCardRerender={rerender_feed_VCard}/>
           <Followings vCardRerender={setRerenderFeedVCard} />
@@ -74,17 +64,19 @@ const Home = () => {
           <div className=' flex-1'>
           </div> */}
         </div>
-        <div className=' flex flex-col gap-4 md:flex-1  p-4 ld:overflow-y-scroll '>
+        <div className=' flex flex-col gap-4 md:flex-1  p-4  '>
 
           <div className=' flex-1'>
             <PostCard profilePictureUrl="" feedFRender={feedFRender} />
           </div>
-          <Feed rerender_feed={rerender_feed} ></Feed>
+          <Feed type={0} rerender_feed={rerender_feed} isReg={false} ></Feed>
         </div>
-        
+        {
+          isMobile && <BottomNavigationBar children={undefined} />
+          
+        }
 
       </div>
-      
 
     )
   }

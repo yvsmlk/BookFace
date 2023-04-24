@@ -53,6 +53,7 @@ app.use('/login',require('./routes/login.routes'))
 app.use('/register',require('./routes/register.routes'))
 app.use('/logout',require('./routes/logout.routes'))
 
+
 app.use('/posts',require('./routes/posts.routes'))
 app.use('/comments',require('./routes/comments.routes'))
 app.use('/profiles',require('./routes/profiles.routes'))

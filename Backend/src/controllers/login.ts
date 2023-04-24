@@ -83,3 +83,27 @@ export const login = async (req:Request, res:Response)=>{
     
     basicConnect(email,pwd,hashedPWD,user_id,user_tag,req, res)
 }
+
+export const auth = async (req:Request, res:Response)=>{
+
+    let {user_id} = req.params
+
+    if ( !user_id){
+        res.status(403).json(
+            {
+                status:403,
+                message:Type.StatusTypes[403],
+                content: {}
+            }
+            )
+            return
+    }
+
+    res.status(200).json(
+        {
+            status:100,
+            message:Type.StatusTypes[100],
+            content: {}
+        }
+    )
+}

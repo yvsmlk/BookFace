@@ -37,11 +37,12 @@ export const PostOrder = {
 }
 
 
-export type PostSelectionType = 'PUBLIC'|'USER'|'GROUP'
+export type PostSelectionType = 'PUBLIC'|'USER'|'GROUP'|'GROUP_ALL'
 export const PostSelection = {
     PUBLIC:'PUBLIC',
     USER: 'USER',
-    GROUP: 'GROUP'
+    GROUP: 'GROUP',
+    GROUP_ALL: 'GROUP_ALL'
 }
 
 export type ResponseMsg = {

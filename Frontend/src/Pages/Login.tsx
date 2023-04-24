@@ -118,7 +118,7 @@ function Login (){
     return (
 
 
-<div className = "h-screen py-40" style={backgroundImageStyle}>
+<div className = "h-screen flex justify-center items-center py-4" style={backgroundImageStyle}>
     <div className = "container mx-auto">
         <div className = "flex flex-col md:flex-row lg:flex-row w-9/12 md:w-11/12 lg:w-8/12 bg-green-50 rounded-xl mx-auto overflow-hidden" style={{ boxShadow: "10px 10px 20px #888888" }}>
             <div className = "w-full lg:w-1/2 flex flex-col items-center justify-center p-12 bg-no-repeat bg-cover bg-center">

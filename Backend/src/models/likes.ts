@@ -36,6 +36,7 @@ export class Like extends DbConnect{
 
                     
                  if (err){
+
                      resolve({
                          status:404,
                          message:Type.StatusTypes[404],

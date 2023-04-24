@@ -93,6 +93,59 @@ const fetchLike = (context_id:number,type="posts")=>{
 
 }
 
+const fetchRegister = (context_id:number)=>{
+
+    /*
+    
+    {
+    "context_id": 7
+    }
+    
+    */
+
+    let option = {
+        method: 'POST',
+        headers: {
+        'accept': 'application/json',
+        'Content-Type': 'application/json',
+        
+        },
+        credentials: "include" as RequestCredentials,
+        body: JSON.stringify({
+            posts_id:context_id
+        }),
+    
+    }
+
+    const DEVELOP = "http://localhost:3535"
+    const PRODUCTION = "https://book-face-backend.vercel.app"
+    let URL = `${DEVELOP}/posts/register` 
+
+    
+    return new Promise<ResponseMsg>(async (resolve, reject) => {
+
+        try {
+    
+          let response = await fetch(URL,option)
+          let data:ResponseMsg = await response.json()
+    
+          resolve(data) 
+          
+        } catch (err) {
+          resolve({
+            status:404,
+            message:"System error",
+            content: {err}
+          }) 
+        }
+        
+      })
+
+
+
+
+}
+
 const ComDisplayCard = ({com_info,post_id,setComRerender}:{com_info:CommentType,post_id:number,setComRerender:React.Dispatch<React.SetStateAction<number>>})=>{
 
     const [likes,setLikes] =  useState(com_info.likes)
@@ -162,25 +215,24 @@ const ComDisplayCard = ({com_info,post_id,setComRerender}:{com_info:CommentType,
 
             </div>
 
-            <div className="flex flex-[0_1_20%] items-center gap-2 ">
-                <div className="flex items-center">
-                    <button  className="flex items-center mr-4 text-green-700">
-                        <FaHeart onClick={()=>handleLike()} className="w-5 h-5 mr-2" />
-                        <span>{likes}</span>
-                    </button>
+            <div className="flex flex-[0_1_20%] items-center justify-between mr-2 ml-2 ">
+                <div className="flex flex-1 justify-between items-center gap-2">
+                    <div className=" flex ">
+                        <button onClick={()=>handleLike()} className={`flex items-center mr-4 text-green-600 hover:text-green-900`}>
+                            <FaHeart className="w-5 h-5 mr-2" />
+                            <span>{likes}</span>
+                        </button>
+                        
+
+                    </div>
+                    <div className=" flex flex-1 justify-end">
+                        <button onClick={()=>setIsOpenResponse(!isOpenResponse)} className="flex items-center px-3 rounded-lg text-neutral-50 font-semibold bg-green-600 hover:bg-green-900">
+                            Respond
+                        </button>
+
+                    </div>
                 </div>
-                <button onClick={()=>setIsOpenResponse(!isOpenResponse)} className="flex items-center px-3 rounded-lg text-neutral-50 font-semibold bg-green-600 hover:bg-green-900">
-                    Respond
-                </button>
                 
-                {/* <div className="flex items-center">
-                    <button onClick={handleResponse} className="flex items-center px-3 rounded-lg text-neutral-50 font-semibold bg-green-600 hover:bg-green-900">
-                        Respond
-                    </button>
-                </div> */}
-                {/* <button onClick={handleSave} className="bg-green-700 text-white rounded-lg px-4 py-2 mb-1">
-                {isSaved ? "Saved" : <BiSave className="w-4 h-3 mr-2" />} {isSaved ? "" : "Save"}
-                </button> */}
             </div>
             {
                 isOpenResponse ?
@@ -333,7 +385,7 @@ const addComment = async (content:string, post_id:number,parent=-1)=>{
       })
 }
 
-const PostDisplayCard = ({post_info}:{post_info:PostType})=>{
+const PostDisplayCard = ({post_info,isReg=false}:{post_info:PostType,isReg:boolean})=>{
     const [isSaved, setIsSaved] = useState(false);
     const [isCommenting, setIsCommenting] = useState(false);
     const [comment_n, setComment_n] = useState(0);
@@ -342,16 +394,6 @@ const PostDisplayCard = ({post_info}:{post_info:PostType})=>{
     const [comRerender, setComRerender] = useState(0)
     const [likes,setLikes] =  useState(post_info.likes)
     const [HColor, setHColor] = useState(600);
-
-
-    // useEffect(()=>{
-    //     fetchLike(post_info.post_id)
-    //     .then(data=>{
-    //         let {isLiked} = data.content as {isLiked :boolean}
-    //         isLiked ?setHColor(900) :setHColor(600)
-    //     })
-
-    // },[])
 
     const handleLike = async () => {
         let resp_like = await fetchLike(post_info.post_id)
@@ -397,8 +439,25 @@ const PostDisplayCard = ({post_info}:{post_info:PostType})=>{
         
     };
 
-    const handleSave = () => {
-        setIsSaved(true);
+    const handleSave = async () => {
+        let response = await fetchRegister(post_info.post_id)
+        let {isReg} = response.content as {isReg :boolean}
+        if (response.status == 100){
+            toast.success(isReg? "Post saved":"Post removed", {
+                position: "top-center",
+                hideProgressBar:true,
+                pauseOnHover:true,
+                autoClose: 3000
+            })
+        }
+        else{
+            toast.error(response.message, {
+                position: "top-center",
+                hideProgressBar:true,
+                pauseOnHover:true,
+                autoClose: 3000
+            })
+        }
     };
 
     const handleComment = (value:boolean) => {
@@ -427,18 +486,31 @@ const PostDisplayCard = ({post_info}:{post_info:PostType})=>{
             </div>
 
             <div className="flex flex-[0_1_20%] items-center justify-between mr-2 ml-2 ">
-                <div className="flex items-center gap-2">
-                    <button onClick={()=>handleLike()} className={`flex items-center mr-4 text-green-${HColor} hover:text-green-900`}>
-                        <FaHeart className="w-5 h-5 mr-2" />
-                        <span>{likes}</span>
-                    </button>
-                    <button onClick={()=>handleComment(!isCommenting)} className="flex items-center text-green-700">
-                        <FaComment className="w-5 h-5 mr-2" />
-                        {/* <span>{comment_n}</span> */}
-                    </button>
-                    <button onClick={()=>setIsOpenResponse(!isOpenResponse)} className="flex items-center px-3 rounded-lg text-neutral-50 font-semibold bg-green-600 hover:bg-green-900">
-                        Respond
-                    </button>
+                <div className="flex flex-1 justify-between items-center gap-2">
+                    <div className=" flex gap-4 ">
+                        <button onClick={()=>handleLike()} className={`flex items-center mr-4 text-green-${HColor} hover:text-green-900`}>
+                            <FaHeart className="w-5 h-5 mr-2" />
+                            <span>{likes}</span>
+                        </button>
+                        <button onClick={()=>handleComment(!isCommenting)} className="flex items-center text-green-600 hover:text-green-900">
+                            <FaComment className="w-5 h-5 mr-2" />
+                            {/* <span>{comment_n}</span> */}
+                        </button>
+                        {
+                            ! isReg && 
+                            <button onClick={()=>handleSave()} className={`flex items-center mr-4 text-green-600 hover:text-green-900`}>
+                                <FaShare className="w-5 h-5 mr-2" />
+                            </button>
+                            
+                        }
+
+                    </div>
+                    <div className=" flex flex-1 justify-end">
+                        <button onClick={()=>setIsOpenResponse(!isOpenResponse)} className="flex items-center px-3 rounded-lg text-neutral-50 font-semibold bg-green-600 hover:bg-green-900">
+                            Respond
+                        </button>
+
+                    </div>
                 </div>
                 
             </div>

@@ -89,7 +89,7 @@ const VCard= ({vCardRerender}:{vCardRerender:number}) => {
         username: username||"",
         followers: followers,
         following: follows,
-        avatar: avatar,
+        avatar: avatar || "https://s3.amazonaws.com/37assets/svn/765-default-avatar.png",
       }
 
       setProfile(card)
