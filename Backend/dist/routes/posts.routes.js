@@ -14,6 +14,8 @@ router.post('/like', auth_1.default, posts_1.likePost);
 router.post('/register', auth_1.default, posts_1.registerPost);
 router.get('/registered', auth_1.default, posts_1.getRegisteredPost);
 router.get('/group', auth_1.default, posts_1.getGroupPost);
+router.get('/group_all', auth_1.default, posts_1.getAllGroupPost);
+// router.get('/target',verifyJwt,getUserTargetPost)
 router.get('/public', auth_1.default, posts_1.getPublicPost);
 router.get('/comment', auth_1.default, comment_1.getComment);
 module.exports = router;

@@ -23,7 +23,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.likePost = exports.getPublicPost = exports.getRegisteredPost = exports.getGroupPost = exports.registerPost = exports.addGroupPost = exports.addPost = void 0;
+exports.likePost = exports.getPublicPost = exports.getUserTargetPost = exports.getRegisteredPost = exports.getAllGroupPost = exports.getGroupPost = exports.registerPost = exports.addGroupPost = exports.addPost = void 0;
 const posts_1 = require("../models/posts");
 const Type = __importStar(require("../models/types"));
 const tags_1 = require("../models/tags");
@@ -47,22 +47,8 @@ const addPost = async (req, res) => {
         return;
     }
     let post_obj = new posts_1.Post();
-    // let tag_obj = new Tags()
-    // //check tag 
-    // let tag_response = await tag_obj.getTag(tag)
-    // if (!checkResponse(tag_response,res))return
-    // const {id,type} = tag_response.content as {id:number,type:string}
-    // if (type != Type.TagTypes.USER){
-    //     res.status(400).json(
-    //         {
-    //             status:401,
-    //             message:Type.StatusTypes[401],
-    //             content: "Wrong tag type: "+tag 
-    //         }
-    //     )
-    //     return
-    // }
     let post_response = await post_obj.add(parseInt(req.params.user_id), content, media || 0);
+    post_obj.close();
     if (!(0, response_1.checkResponse)(post_response, res))
         return;
     res.status(200).json({
@@ -95,19 +81,7 @@ const addGroupPost = async (req, res) => {
     // //check tag 
     // let user_tag_response = await tag_obj.getTag(user_tag)
     let group_tag_response = await tag_obj.getTag(group_tag);
-    // if (!checkResponse(user_tag_response,res))return
-    // if (!checkResponse(group_tag_response,res))return
-    // let uinfo = user_tag_response.content as {id:number,type:string}
-    // if (uinfo.type != Type.TagTypes.USER){
-    //     res.status(400).json(
-    //         {
-    //             status:401,
-    //             message:Type.StatusTypes[401],
-    //             content: "Wrong tag type: "+user_tag 
-    //         }
-    //     )
-    //     return
-    // }
+    tag_obj.close();
     let ginfo = group_tag_response.content;
     if (ginfo.type != Type.TagTypes.GROUP) {
         res.status(400).json({
@@ -118,6 +92,7 @@ const addGroupPost = async (req, res) => {
         return;
     }
     let post_response = await post_obj.addGroupPost(ginfo.id, parseInt(req.params.user_id), content, media || 0);
+    post_obj.close();
     if (!(0, response_1.checkResponse)(post_response, res))
         return;
     res.status(200).json({
@@ -144,28 +119,14 @@ const registerPost = async (req, res) => {
         return;
     }
     let post_obj = new posts_1.Post();
-    let tag_obj = new tags_1.Tags();
-    //check tag 
-    // let user_tag_response = await tag_obj.getTag(user_tag)
-    // if (!checkResponse(user_tag_response,res))return
-    // let uinfo = user_tag_response.content as {id:number,type:string}
-    // if (uinfo.type != Type.TagTypes.USER){
-    //     res.status(400).json(
-    //         {
-    //             status:401,
-    //             message:Type.StatusTypes[401],
-    //             content: "Wrong tag type: "+parseInt(req.params.user_tag)
-    //         }
-    //     )
-    //     return
-    // }
     let post_response = await post_obj.register(parseInt(req.params.user_id), posts_id);
+    post_obj.close();
     if (!(0, response_1.checkResponse)(post_response, res))
         return;
     res.status(200).json({
         status: 100,
         message: Type.StatusTypes[100],
-        content: {}
+        content: post_response.content
     });
 };
 exports.registerPost = registerPost;
@@ -184,7 +145,7 @@ const getGroupPost = async (req, res) => {
     }
     let post_obj = new posts_1.Post();
     let limit = n == undefined ? 5 : parseInt(n);
-    let post_response = await post_obj.select(group_tag, (order || 'LATEST'), 'GROUP', isNaN(limit) ? 5 : limit);
+    let post_response = await post_obj.select(group_tag, (order || 'LATEST'), 'GROUP', isNaN(limit) ? 5 : limit, 0);
     post_obj.close();
     if (!(0, response_1.checkResponse)(post_response, res))
         return;
@@ -195,23 +156,11 @@ const getGroupPost = async (req, res) => {
     });
 };
 exports.getGroupPost = getGroupPost;
-const getRegisteredPost = async (req, res) => {
-    const { n, order } = req.query;
-    // if (!user_tag){
-    //     res.status(400).json(
-    //         {
-    //             status:201,
-    //             message:Type.StatusTypes[201],
-    //             content: {
-    //                 example: 'host/posts/registered?user_tag=@xyz&order=LATEST&n=5'
-    //             }
-    //         }
-    //     )
-    //     return
-    // }
+const getAllGroupPost = async (req, res) => {
+    const { order, n } = req.query;
     let post_obj = new posts_1.Post();
     let limit = n == undefined ? 5 : parseInt(n);
-    let post_response = await post_obj.select(req.params.user_tag, (order || 'LATEST'), 'USER', isNaN(limit) ? 5 : limit);
+    let post_response = await post_obj.select("", (order || 'LATEST'), 'GROUP_ALL', isNaN(limit) ? 5 : limit, parseInt(req.params.user_id));
     post_obj.close();
     if (!(0, response_1.checkResponse)(post_response, res))
         return;
@@ -221,12 +170,40 @@ const getRegisteredPost = async (req, res) => {
         content: post_response.content
     });
 };
+exports.getAllGroupPost = getAllGroupPost;
+const getRegisteredPost = async (req, res) => {
+    const { n, order } = req.query;
+    let post_obj = new posts_1.Post();
+    let limit = n == undefined ? 5 : parseInt(n);
+    let post_response = await post_obj.select(req.params.user_tag, (order || 'LATEST'), 'USER', isNaN(limit) ? 5 : limit, 0);
+    post_obj.close();
+    res.status(200).json({
+        status: post_response.status,
+        message: post_response.message,
+        content: post_response.content
+    });
+};
 exports.getRegisteredPost = getRegisteredPost;
+const getUserTargetPost = async (req, res) => {
+    const { n, order } = req.query;
+    let post_obj = new posts_1.Post();
+    let limit = n == undefined ? 5 : parseInt(n);
+    let post_response = await post_obj.select("", (order || 'LATEST'), 'TARGET', isNaN(limit) ? 5 : limit, 0);
+    post_obj.close();
+    if (!(0, response_1.checkResponse)(post_response, res))
+        return;
+    res.status(200).json({
+        status: 100,
+        message: Type.StatusTypes[100],
+        content: post_response.content
+    });
+};
+exports.getUserTargetPost = getUserTargetPost;
 const getPublicPost = async (req, res) => {
     const { n, order } = req.query;
     let post_obj = new posts_1.Post();
     let limit = n == undefined ? 5 : parseInt(n);
-    let post_response = await post_obj.select("", (order || 'LATEST'), 'PUBLIC', isNaN(limit) ? 5 : limit);
+    let post_response = await post_obj.select("", (order || 'LATEST'), 'PUBLIC', isNaN(limit) ? 5 : limit, 0);
     post_obj.close();
     if (!(0, response_1.checkResponse)(post_response, res))
         return;
@@ -253,27 +230,14 @@ const likePost = async (req, res) => {
         return;
     }
     let like_obj = new likes_1.Like();
-    // let tag_obj = new Tags()
-    // let tag_response = await tag_obj.getTag(tag)
-    // if (!checkResponse(tag_response,res))return
-    // const {id,type} = tag_response.content as {id:number,type:string}
-    // if (type != Type.TagTypes.USER){
-    //     res.status(400).json(
-    //         {
-    //             status:401,
-    //             message:Type.StatusTypes[401],
-    //             content: "Wrong tag type: "+tag 
-    //         }
-    //     )
-    //     return
-    // }
     let like_response = await like_obj.like(context_id, parseInt(req.params.user_id), Type.LikeType.POST);
+    like_obj.close();
     if (!(0, response_1.checkResponse)(like_response, res))
         return;
     res.status(200).json({
         status: 100,
         message: Type.StatusTypes[100],
-        content: {}
+        content: like_response.content
     });
 };
 exports.likePost = likePost;

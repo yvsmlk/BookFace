@@ -23,24 +23,35 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.logout = void 0;
+exports.getMedia = void 0;
 const Type = __importStar(require("../models/types"));
-const user_1 = require("../models/user");
-const logout = async (req, res) => {
-    let user = new user_1.User();
-    let resp = await user.logout(parseInt(req.params.user_id));
-    user.close();
+const media_1 = require("../models/media");
+const getMedia = async (req, res) => {
+    const { media_id } = req.query;
+    let m = parseInt(media_id);
+    if (isNaN(m)) {
+        res.status(400).json({
+            status: 401,
+            message: Type.StatusTypes[401],
+            content: {}
+        });
+        return;
+    }
+    let media = new media_1.Media();
+    let resp = await media.get(m);
+    media.close();
     if (resp.status != 100) {
         res.status(400).json({
             status: resp.status,
             message: resp.message,
-            content: resp.content
+            content: {}
         });
+        return;
     }
     res.status(200).json({
-        status: 100,
-        message: Type.StatusTypes[100],
-        content: {}
+        status: resp.status,
+        message: resp.message,
+        content: resp.content
     });
 };
-exports.logout = logout;
+exports.getMedia = getMedia;

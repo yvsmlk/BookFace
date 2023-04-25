@@ -26,28 +26,20 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Like = void 0;
+exports.Media = void 0;
 const dbConnect_1 = __importDefault(require("./dbConnect"));
 const Type = __importStar(require("./types"));
-class Like extends dbConnect_1.default {
+class Media extends dbConnect_1.default {
     constructor() {
         super();
     }
-    async like(context_id, user_id, type = Type.LikeType.POST) {
-        let like_query = `
-         INSERT INTO bf_likes (type,user_id,context_id)
-         VALUES ("${type}",${user_id},${context_id})
-         ON DUPLICATE KEY UPDATE do_delete = true;
-        `;
-        let del_query = `
-         DELETE FROM bf_likes
-         WHERE do_delete = true;
+    async get(media_id) {
+        let media_query = `
+            select * from bf_media
+            where id = ${media_id}
         `;
         return new Promise(async (resolve, reject) => {
-            this.connection.query(like_query, (err, rows, fields) => {
-                console.log("R", rows);
-                console.log("F", fields);
-                let { affectedRows } = rows;
+            this.connection.query(media_query, (err, rows, fields) => {
                 if (err) {
                     resolve({
                         status: 404,
@@ -56,48 +48,24 @@ class Like extends dbConnect_1.default {
                     });
                     return;
                 }
-                this.connection.query(del_query, (err, rows, fields) => {
-                    if (err) {
-                        resolve({
-                            status: 404,
-                            message: Type.StatusTypes[404],
-                            content: { error: err }
-                        });
-                        return;
-                    }
-                });
+                if (rows.length == 0) {
+                    resolve({
+                        status: 201,
+                        message: Type.StatusTypes[201],
+                        content: {}
+                    });
+                    return;
+                }
                 resolve({
                     status: 100,
                     message: Type.StatusTypes[100],
                     content: {
-                        isLiked: affectedRows == 1
+                        type: rows[0]['likes'],
+                        link: rows[0]['link']
                     }
-                });
-            });
-        });
-    }
-    async get(context_id) {
-        let like_query = `
-            select count(*) as likes from bf_likes
-            where context_id = ${context_id}
-        `;
-        return new Promise(async (resolve, reject) => {
-            this.connection.query(like_query, (err, rows, fields) => {
-                if (err) {
-                    resolve({
-                        status: 404,
-                        message: Type.StatusTypes[404],
-                        content: { error: err }
-                    });
-                    return;
-                }
-                resolve({
-                    status: 100,
-                    message: Type.StatusTypes[100],
-                    content: { likes: rows[0]['likes'] }
                 });
             });
         });
     }
 }
-exports.Like = Like;
+exports.Media = Media;

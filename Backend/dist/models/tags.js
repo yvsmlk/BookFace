@@ -139,6 +139,50 @@ class Tags extends dbConnect_1.default {
             });
         });
     }
+    updateTag(old_tag, new_tag) {
+        //
+        let sql_add_session = `
+        UPDATE bf_tags SET tag = '${new_tag}'
+        WHERE tag = '${old_tag}'
+        ;
+        `;
+        return new Promise((resolve, reject) => {
+            this.connection.query(sql_add_session, async (err, rows, fields) => {
+                if (err) {
+                    console.log(err);
+                    if (err.code == "ER_DUP_ENTRY") {
+                        resolve({
+                            status: 200,
+                            message: Type.StatusTypes[200],
+                            content: { new_tag: new_tag }
+                        });
+                        return;
+                    }
+                    resolve({
+                        status: 202,
+                        message: Type.StatusTypes[202],
+                        content: { error: err }
+                    });
+                    return;
+                }
+                if (!fields) {
+                    resolve({
+                        status: 200,
+                        message: Type.StatusTypes[200],
+                        content: {
+                            new_tag: new_tag
+                        }
+                    });
+                    return;
+                }
+                resolve({
+                    status: 100,
+                    message: Type.StatusTypes[100],
+                    content: {}
+                });
+            });
+        });
+    }
     deleteTag(id) {
         let sql_del_session = `
         DELETE FROM bf_tags 

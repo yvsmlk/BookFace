@@ -26,21 +26,21 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.login = void 0;
+exports.auth = exports.login = void 0;
 const user_1 = require("../models/user");
 const token_1 = require("../utils/token");
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const Type = __importStar(require("../models/types"));
 const basicConnect = async (email, pwd, hashedPwd, id, user_tag, req, res) => {
     if (bcrypt_1.default.compareSync(pwd, hashedPwd)) {
-        const accessToken = (0, token_1.signJWT)({ "email": email, "id": id, "user_tag": user_tag }, process.env.ACCESS_TOKEN_TTL || '1h');
+        const accessToken = (0, token_1.signJWT)({ "email": email, "id": id, "user_tag": user_tag }, process.env.ACCESS_TOKEN_TTL || '1d');
         const refreshToken = (0, token_1.signJWT)({ "email": email, "id": id, "user_tag": user_tag }, process.env.REFRESH_TOKEN_TTL || '1d');
         try {
             // await user.update("",0,refreshToken)
             // res.cookie("VRToken",refreshToken,{httpOnly:true,maxAge:24*60*60*1000, sameSite:"none" ,secure:true})
             // res.cookie("VAToken",accessToken,{httpOnly:true,maxAge:20*60*1000, sameSite:"none" ,secure:true})
             res.cookie("VRToken", refreshToken, { httpOnly: true, maxAge: 24 * 60 * 60 * 1000, sameSite: "none" });
-            res.cookie("VAToken", accessToken, { httpOnly: true, maxAge: 20 * 60 * 1000, sameSite: "none" });
+            res.cookie("VAToken", accessToken, { httpOnly: true, maxAge: 24 * 60 * 60 * 1000, sameSite: "none" });
             res.status(200).json({
                 status: 100,
                 message: Type.StatusTypes[100],
@@ -90,3 +90,20 @@ const login = async (req, res) => {
     basicConnect(email, pwd, hashedPWD, user_id, user_tag, req, res);
 };
 exports.login = login;
+const auth = async (req, res) => {
+    let { user_id } = req.params;
+    if (!user_id) {
+        res.status(403).json({
+            status: 403,
+            message: Type.StatusTypes[403],
+            content: {}
+        });
+        return;
+    }
+    res.status(200).json({
+        status: 100,
+        message: Type.StatusTypes[100],
+        content: {}
+    });
+};
+exports.auth = auth;
