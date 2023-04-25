@@ -1,15 +1,69 @@
 import React, { useState } from "react";
-import { FiCamera, FiVideo, FiCalendar, FiMoreHorizontal } from "react-icons/fi";
+import { FiArrowRight,FiCamera, FiVideo, FiCalendar, FiMoreHorizontal } from "react-icons/fi";
+import { toast } from "react-toastify";
 
 interface Props {
   profilePictureUrl: string;
 }
 
-const PostCard: React.FC<Props> = ({ profilePictureUrl }) => {
+type ResponseMsg = {
+  status: number,
+  message: string,
+  content: object | []
+}
+
+const DEVELOP = "http://localhost:3535"
+const PRODUCTION = "https://book-face-backend.vercel.app"
+
+const sendPost = async (content:string, media=0)=>{
+  let url = `${PRODUCTION}/posts/add`
+
+  let option = {
+    method: 'POST',
+    headers: {
+      'accept': 'application/json',
+      'Content-Type': 'application/json',
+      
+    },
+    credentials: "include" as RequestCredentials,
+    body: JSON.stringify({
+      content: content,
+      media: media
+    }),
+    
+  }
+
+  
+  return new Promise<ResponseMsg>(async (resolve, reject) => {
+
+    try {
+
+      let response = await fetch(url,option)
+      let data:ResponseMsg = await response.json()
+
+      resolve(data) 
+      
+    } catch (err) {
+      resolve({
+        status:404,
+        message:"System error",
+        content: {err}
+      }) 
+    }
+    
+  })
+
+}
+
+
+const PostCard = ({ profilePictureUrl,feedFRender }:
+  {profilePictureUrl:string,feedFRender:Function}) => {
   const [text, setText] = useState("");
   const [image, setImage] = useState("");
   const [video, setVideo] = useState("");
   const [schedule, setSchedule] = useState(new Date());
+
+  
 
   const handleTextChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     setText(event.target.value);
@@ -42,14 +96,30 @@ const PostCard: React.FC<Props> = ({ profilePictureUrl }) => {
     setSchedule(date);
   };
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    console.log({
-      text,
-      image,
-      video,
-      schedule,
-    });
+  const resetInput = ()=>{
+    setText("")
+    setImage("")
+    setVideo("")
+    feedFRender()
+  }
+
+
+
+  const handleSubmit = async () => {
+    if (text.length == 0 ) return
+
+    let response = await sendPost(text)
+    if (response.status == 100){
+      resetInput()
+    }
+    else{
+      toast.error(response.message, {
+        position: "top-center",
+        hideProgressBar:true,
+        pauseOnHover:true,
+        autoClose: 5000
+      })
+    }
   };
 
   const handlePhotoUpload = () => {
@@ -69,39 +139,25 @@ const PostCard: React.FC<Props> = ({ profilePictureUrl }) => {
   };
 
   return (
-    <div className="  w-96   md:w-auto lg:w-auto xl:w-auto mx-auto rounded-md overflow-hidden shadow-md bg-white">
-      <img className="h-12 w-12 rounded-full" src={profilePictureUrl} alt="Profile" />
+    <div className=" rounded-md overflow-hidden shadow-md bg-white p-3">
+      {/* <img className="h-12 w-12 rounded-full" src={profilePictureUrl} alt="Profile" /> */}
       <div className="flex-1 ml-4 mr-4">
-        <form onSubmit={handleSubmit}>
           <textarea
-            className="block w-full border-green-900 rounded-md shadow-sm focus:border-gray-500 focus:ring-gray-500"
+            className="block w-full border-green-900 rounded-md shadow-sm focus:border-gray-500 focus:ring-gray-500 min-h-[5rem]"
             placeholder="What's happening?"
             value={text}
             onChange={handleTextChange}
           />
           <div className="flex justify-between items-center mt-2 ml-2 mr-2">
-            <div className="flex space-x-2">
-              <label className="flex items-center  border-green-900 text-green-800 hover:text-green-900">
-                <FiCamera className="w-5 h-5" />
-                <span className="ml-2 ">Photo</span>
-                <input type="file" accept="image/*" hidden onChange={handleImageChange} />
-              </label>
-              <label className="flex items-center  border-green-900 text-green-800 hover:text-green-900">
-                <FiVideo className="w-5 h-5" />
-                <span className="ml-2">Video</span>
-                <input type="file" accept="video/*" hidden onChange={handleVideoChange} />
-              </label>
-              <label className="flex items-center  border-green-900 text-green-800 hover:text-green-900">
-                <FiCalendar className="w-5 h-5" />
-                <span className="ml-2">Schedule</span>
-                <input type="datetime-local" onChange={handleScheduleChange} />
-              </label>
-            </div>
-            <button type="submit" className="flex items-center  border-green-900 text-green-800 hover:text-green-900">
-              <FiMoreHorizontal className="w-5 h-5" />
+            
+            <button
+              type="submit"
+              className="px-3 rounded-lg text-neutral-50 font-semibold bg-green-600 hover:bg-green-900"
+              onClick={handleSubmit}
+              >
+              Post
             </button>
           </div>
-        </form>
       </div>
     </div>
   );

@@ -26,7 +26,7 @@ const NatureTrendsCard = () => {
   }, []);
 
   return (
-    <div className="  w-96  sm:w-2/5 md:w-4/5 lg:w-4/5 xl:w-4/5 mx-auto rounded-md overflow-hidden shadow-md bg-white">
+    <div className=" sm:w-2/5 md:w-4/5 lg:w-4/5 xl:w-4/5 mx-auto rounded-md overflow-hidden shadow-md bg-white">
 
        <div className="h-16 flex justify-center items-center text-green-700">
       

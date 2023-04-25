@@ -30,7 +30,7 @@ const BookMarks: React.FC = () => {
  
 
   return (
-<div className=' flex flex-1  overflow-scroll 'style={backgroundImageStyle}>
+<div className=' flex flex-1 'style={backgroundImageStyle}>
     {isMobile ? (
        <BottomNavigationBar children={undefined} />
    ) : (

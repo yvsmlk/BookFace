@@ -1,4 +1,4 @@
-type PostData = {
+export type PostData = {
     id: number;
     author: {
       name: string;
@@ -33,7 +33,7 @@ type PostData = {
     { name: "Olivia Brown", username: "oliviabrown", avatarUrl: "https://randomuser.me/api/portraits/women/10.jpg" },
   ];
   
-  const generateRandomPostData = (): PostData => {
+  export const generateRandomPostData = (): PostData => {
     const author = users[Math.floor(Math.random() * users.length)];
     const profileDescription = Math.random() > 0.5 ? "Lorem ipsum dolor sit amet, consectetur adipiscing elit." : undefined;
     const address = Math.random() > 0.5 ? "Lorem ipsum dolor sit amet." : undefined;
@@ -69,7 +69,7 @@ type PostData = {
   };
   
   // Usage example
-  const postData = Array.from({ length: 10 }, generateRandomPostData);
-  console.log(postData);
-  export default PostData;
+  // const postData = Array.from({ length: 10 }, generateRandomPostData);
+  // console.log(postData);
+  // export default PostData;
   

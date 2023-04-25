@@ -45,6 +45,9 @@ class Like extends dbConnect_1.default {
         `;
         return new Promise(async (resolve, reject) => {
             this.connection.query(like_query, (err, rows, fields) => {
+                console.log("R", rows);
+                console.log("F", fields);
+                let { affectedRows } = rows;
                 if (err) {
                     resolve({
                         status: 404,
@@ -66,7 +69,9 @@ class Like extends dbConnect_1.default {
                 resolve({
                     status: 100,
                     message: Type.StatusTypes[100],
-                    content: {}
+                    content: {
+                        isLiked: affectedRows == 1
+                    }
                 });
             });
         });
