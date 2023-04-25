@@ -5,14 +5,18 @@ import GlobeImage from '../images/GlobeImage.png'
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-export type ResponseMsg = {
+type ResponseMsg = {
   status: number,
   message: string,
   content: object | []
 }
 
+const DEVELOP = "http://localhost:3535"
+const PRODUCTION = "https://book-face-backend.vercel.app"
+
+
 const fetchReg = async (email:string,pwd:string)=>{
-  let url = "https://book-face-backend.vercel.app/register/"
+  let url = `${PRODUCTION}/register/`
 
   let option = {
     method: 'POST',
@@ -113,7 +117,7 @@ function Register (){
             onClose: () => {
               window.location.href = "/Login";
             }})
-        }
+          }
         else{
           toast.error(response.message, {
             position: "top-center",

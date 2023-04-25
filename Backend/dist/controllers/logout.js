@@ -27,37 +27,6 @@ exports.logout = void 0;
 const Type = __importStar(require("../models/types"));
 const user_1 = require("../models/user");
 const logout = async (req, res) => {
-    console.log("PARAMS", req.params);
-    // const { VRToken, VAToken } = req.cookies;
-    // if (!VAToken) {
-    //     res.status(400).json({
-    //         status:406,
-    //         message:Type.StatusTypes[406],
-    //         content: {}
-    //     })
-    //     return
-    // }
-    // const { payload } = verifyJWT(VAToken);
-    // // For a valid access token
-    // if (!payload) {
-    //     // @ts-ignore
-    //     res.status(400).json({
-    //         status:405,
-    //         message:Type.StatusTypes[405],
-    //         content: {}
-    //     })
-    //     return
-    // }
-    // const {id} = payload as { email: string, id: number, iat: number, exp: number}
-    // if (!id) {
-    //     // @ts-ignore
-    //     res.status(400).json({
-    //         status:404,
-    //         message:Type.StatusTypes[404],
-    //         content: {}
-    //     })
-    //     return
-    // }
     let user = new user_1.User();
     let resp = await user.logout(parseInt(req.params.user_id));
     user.close();

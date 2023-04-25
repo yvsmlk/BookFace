@@ -75,7 +75,7 @@ export class User extends DbConnect {
 
     async getTag(tag:string){
         let query = `
-        SELECT * FROM bf_tags WHERE tag = '${tag}'
+        SELECT * FROM bf_tags WHERE tag = '${tag}' 
         `
         return new Promise<Type.ResponseMsg>((resolve, reject) => {
             this.connection.query(query, (err:any, rows:[], fields:any)=>{
@@ -108,11 +108,59 @@ export class User extends DbConnect {
 
     }
 
-    findRandomTag = async ( attemptLeft=5):Promise<Type.ResponseMsg> =>{
-        let current = randomTag()
-        let output = await this.getTag(current)
+    async getProfile(tag:string){
+        let query = this.PROFILE_QUERY(tag)
+        return new Promise<Type.ResponseMsg>((resolve, reject) => {
+            this.connection.query(query, (err:any, rows:any, fields:any)=>{
+                if (err || rows.length == 0){
+                    resolve({
+                        status:202,
+                        message: Type.StatusTypes[202],
+                        content : {}
+                    })
+                    console.log(err)
+                    return
+                }
 
-        if (attemptLeft ==0){
+               
+                
+
+                resolve({
+                    status:100,
+                    message: Type.StatusTypes[100],
+                    content: {
+                        tag:rows[0]['tag'],
+                        avatar:rows[0]['avatar'],
+                        email:rows[0]['email'],
+                        username:rows[0]['username'],
+                        followers:rows[0]['followers']||0,
+                        follows:rows[0]['follows']||0,
+                        status:rows[0]['status']||0,
+                        banner:rows[0]['banner'],
+                        created_at:rows[0]['created_at'],
+
+                    }
+                })
+            })
+        })
+
+    }
+
+    findRandomTag = async ( tagAttempt:string,attemptLeft=5):Promise<Type.ResponseMsg> =>{
+        let current = tagAttempt || randomTag()
+        let output =  await this.getTag(current)
+
+        if (current.length<4 || output.status != 100){
+            return new Promise<Type.ResponseMsg>((resolve, reject) => {
+                resolve({
+                    status:404,
+                    message:Type.StatusTypes[400],
+                    content: {}
+                })
+            })
+        }
+
+        if (output.status != 100 && attemptLeft ==0){
             return new Promise<Type.ResponseMsg>((resolve, reject) => {
                 resolve({
                     status:404,
@@ -133,9 +181,37 @@ export class User extends DbConnect {
 
         }
         else{
-            return this.findRandomTag(attemptLeft -1)
+            return this.findRandomTag("",attemptLeft -1)
         }
     
+    }
+
+    async changeTag (old_tag:string,new_tag:string){
+
+        // let resp_tag = await this.findRandomTag(new_tag,0)
+
+        return new Promise<Type.ResponseMsg>(async (resolve, reject) => {
+
+            let tag = new Tags()
+            let tagRes = await tag.updateTag(old_tag,new_tag)
+            tag.close()
+
+            if (tagRes.status != 100 ){
+                resolve({
+                    status:tagRes.status,
+                    message:tagRes.message,
+                    content: tagRes.content
+                })
+            }
+
+            resolve({
+                status:100,
+                message:Type.StatusTypes[100],
+                content: {}
+            })
+        })
+        
+
     }
 
 
@@ -145,7 +221,7 @@ export class User extends DbConnect {
         let hashedPWD = await bcrypt.hash(pwd, 10)
         
         // verify uniqueness of the timestamp return status accordingly 
-        let {tagname} = (await this.findRandomTag()).content as {tagname:string}
+        let {tagname} = (await this.findRandomTag("",0)).content as {tagname:string}
         let sql_register = `
         INSERT INTO bf_users (email,pwd,created_at)
         VALUES('${email}','${hashedPWD}',TIMESTAMP('${timestamp}','0:0:0'))
@@ -197,7 +273,7 @@ export class User extends DbConnect {
                 let {id} = dbUser.content as {
                     id:number
                 }
-
+                
                 let tagRes = await tag.addTag(id,tagname,Type.TagTypes.USER)
                 tag.close()
 
@@ -329,8 +405,7 @@ export class User extends DbConnect {
     }
 
     
-
-    async login(email:string,in_pwd:string){
+    async login(email:string,pwd:string){
 
         return new Promise<Type.ResponseMsg>(async (resolve, reject) => {
 
@@ -431,5 +506,33 @@ export class User extends DbConnect {
         })
 
     }
+
+    private PROFILE_QUERY = (u_tag:string)=>{
+        return `
+        SELECT 
+        UTags.tag, 
+        Media.link AS avatar,
+        U.email,
+        U.username,
+        U.status,
+        U.banner,
+        U.created_at,
+        FTable.followers,
+        FTable.follows
+        FROM bf_tags UTags
+        LEFT JOIN bf_users U ON U.id = UTags.context_id
+        LEFT JOIN bf_media Media ON Media.id = U.picture
+        CROSS JOIN (
+            SELECT
+                SUM(CASE WHEN user_id = T.context_id THEN 1 ELSE 0 END) AS followers,
+                SUM(CASE WHEN follower_id = T.context_id THEN 1 ELSE 0 END) AS follows
+            FROM bf_userfollow
+            CROSS JOIN (
+                SELECT context_id FROM bf_tags WHERE tag = '${u_tag}' AND type = 'USER'
+            ) T
+        ) FTable
+        WHERE UTags.tag = '${u_tag}' AND UTags.type = 'USER';
+        `
+    } 
 
 }

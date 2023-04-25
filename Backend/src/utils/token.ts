@@ -64,18 +64,18 @@ fwIDAQAB
 
 // sign jwt
 export function signJWT(payload: object, expiresIn: string | number) {
-    
-    return jwt.sign(payload, process.env.PRK || privateKey, { algorithm: "RS256", expiresIn });
+    return jwt.sign(payload, process.env.PRK || privateKey, { algorithm: "RS256", expiresIn: expiresIn });
   }
   
 // verify jwt
 export function verifyJWT(token: string) {
-    console.log("TOKEN",token);
     
     try {
         const decoded = jwt.verify(token, process.env.PK || publicKey);
         return { payload: decoded, expired: false };
     } catch (error) {
+        console.log(error);
+        
         //@ts-ignore
         return { payload: null, expired: error.message.includes("jwt expired") };
     }

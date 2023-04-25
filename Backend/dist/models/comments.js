@@ -90,26 +90,21 @@ class Comment extends dbConnect_1.default {
     }
     transformComment(rows) {
         let comment_map = new Map();
+        let leftResp = [];
         for (let com of rows) {
-            let { id, tag, parent_comment, created_at, content, likes } = com;
+            let { id, tag, avatar, parent_comment, created_at, content, likes } = com;
             if (parent_comment != -1) {
                 let map_item = comment_map.get(parent_comment);
                 let resp_com = {
                     id: id,
+                    avatar: avatar,
                     user: tag,
                     content: content,
                     created_at: created_at,
                     likes: likes
                 };
                 if (!map_item) {
-                    comment_map.set(parent_comment, {
-                        id: id,
-                        user: "",
-                        content: "",
-                        responses: [resp_com],
-                        created_at: "",
-                        likes: 0
-                    });
+                    leftResp.push({ parent: parent_comment, resp: resp_com });
                 }
                 else {
                     map_item.responses.push(resp_com);
@@ -119,6 +114,7 @@ class Comment extends dbConnect_1.default {
                 let com = {
                     id: id,
                     user: tag,
+                    avatar: avatar,
                     content: content,
                     created_at: created_at,
                     responses: [],
@@ -127,20 +123,34 @@ class Comment extends dbConnect_1.default {
                 comment_map.set(id, com);
             }
         }
+        for (let x of leftResp) {
+            let map_item = comment_map.get(x.parent);
+            if (map_item) {
+                map_item.responses.push(x.resp);
+            }
+        }
         return comment_map;
     }
     async createComments(post_id) {
         // make request here
+        //https://s3.amazonaws.com/37assets/svn/765-default-avatar.png
         let comments_query = `
-            SELECT comments.id, tags.tag, comments.parent_comment, comments.created_at, comments.content, COALESCE(likes.likes, 0) AS likes
-            FROM bf_comments comments
-            LEFT JOIN bf_tags tags ON comments.user_id = tags.context_id
-            LEFT JOIN (
-                SELECT count(*) as likes, context_id 
-                FROM bf_likes
-                GROUP BY context_id
-            ) likes ON comments.id = likes.context_id 
-            WHERE post_id = ${post_id};
+        SELECT comments.id, tags.tag, 
+        COALESCE(Media.link, 'https://s3.amazonaws.com/37assets/svn/765-default-avatar.png') AS avatar,
+        comments.parent_comment, comments.created_at, comments.content, COALESCE(likes.likes, 0) AS likes
+        FROM bf_comments comments
+        LEFT JOIN bf_tags tags ON comments.user_id = tags.context_id
+        LEFT JOIN bf_users User 
+            ON User.id = comments.user_id
+        LEFT JOIN bf_media Media 
+            ON Media.id = User.picture
+        LEFT JOIN (
+            SELECT count(*) as likes, context_id 
+            FROM bf_likes
+            WHERE type = 'COMMENT'
+            GROUP BY context_id
+        ) likes ON comments.id = likes.context_id 
+        WHERE post_id = ${post_id};
         `;
         return new Promise((resolve, reject) => {
             this.connection.query(comments_query, async (err, rows, fields) => {

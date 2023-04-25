@@ -86,7 +86,7 @@ class User extends dbConnect_1.default {
     }
     async getTag(tag) {
         let query = `
-        SELECT * FROM bf_tags WHERE tag = '${tag}'
+        SELECT * FROM bf_tags WHERE tag = '${tag}' 
         `;
         return new Promise((resolve, reject) => {
             this.connection.query(query, (err, rows, fields) => {
@@ -115,10 +115,50 @@ class User extends dbConnect_1.default {
             });
         });
     }
-    findRandomTag = async (attemptLeft = 5) => {
-        let current = (0, random_1.randomTag)();
+    async getProfile(tag) {
+        let query = this.PROFILE_QUERY(tag);
+        return new Promise((resolve, reject) => {
+            this.connection.query(query, (err, rows, fields) => {
+                if (err || rows.length == 0) {
+                    resolve({
+                        status: 202,
+                        message: Type.StatusTypes[202],
+                        content: {}
+                    });
+                    console.log(err);
+                    return;
+                }
+                resolve({
+                    status: 100,
+                    message: Type.StatusTypes[100],
+                    content: {
+                        tag: rows[0]['tag'],
+                        avatar: rows[0]['avatar'],
+                        email: rows[0]['email'],
+                        username: rows[0]['username'],
+                        followers: rows[0]['followers'] || 0,
+                        follows: rows[0]['follows'] || 0,
+                        status: rows[0]['status'] || 0,
+                        banner: rows[0]['banner'],
+                        created_at: rows[0]['created_at'],
+                    }
+                });
+            });
+        });
+    }
+    findRandomTag = async (tagAttempt, attemptLeft = 5) => {
+        let current = tagAttempt || (0, random_1.randomTag)();
         let output = await this.getTag(current);
-        if (attemptLeft == 0) {
+        if (current.length < 4 || output.status != 100) {
+            return new Promise((resolve, reject) => {
+                resolve({
+                    status: 404,
+                    message: Type.StatusTypes[400],
+                    content: {}
+                });
+            });
+        }
+        if (output.status != 100 && attemptLeft == 0) {
             return new Promise((resolve, reject) => {
                 resolve({
                     status: 404,
@@ -137,14 +177,34 @@ class User extends dbConnect_1.default {
             });
         }
         else {
-            return this.findRandomTag(attemptLeft - 1);
+            return this.findRandomTag("", attemptLeft - 1);
         }
     };
+    async changeTag(old_tag, new_tag) {
+        // let resp_tag = await this.findRandomTag(new_tag,0)
+        return new Promise(async (resolve, reject) => {
+            let tag = new tags_1.Tags();
+            let tagRes = await tag.updateTag(old_tag, new_tag);
+            tag.close();
+            if (tagRes.status != 100) {
+                resolve({
+                    status: tagRes.status,
+                    message: tagRes.message,
+                    content: tagRes.content
+                });
+            }
+            resolve({
+                status: 100,
+                message: Type.StatusTypes[100],
+                content: {}
+            });
+        });
+    }
     async register(email, pwd) {
         let timestamp = (0, time_1.getTimeStamp)();
         let hashedPWD = await bcrypt_1.default.hash(pwd, 10);
         // verify uniqueness of the timestamp return status accordingly 
-        let { tagname } = (await this.findRandomTag()).content;
+        let { tagname } = (await this.findRandomTag("", 0)).content;
         let sql_register = `
         INSERT INTO bf_users (email,pwd,created_at)
         VALUES('${email}','${hashedPWD}',TIMESTAMP('${timestamp}','0:0:0'))
@@ -365,5 +425,32 @@ class User extends dbConnect_1.default {
             });
         });
     }
+    PROFILE_QUERY = (u_tag) => {
+        return `
+        SELECT 
+        UTags.tag, 
+        Media.link AS avatar,
+        U.email,
+        U.username,
+        U.status,
+        U.banner,
+        U.created_at,
+        FTable.followers,
+        FTable.follows
+        FROM bf_tags UTags
+        LEFT JOIN bf_users U ON U.id = UTags.context_id
+        LEFT JOIN bf_media Media ON Media.id = U.picture
+        CROSS JOIN (
+            SELECT
+                SUM(CASE WHEN user_id = T.context_id THEN 1 ELSE 0 END) AS followers,
+                SUM(CASE WHEN follower_id = T.context_id THEN 1 ELSE 0 END) AS follows
+            FROM bf_userfollow
+            CROSS JOIN (
+                SELECT context_id FROM bf_tags WHERE tag = '${u_tag}' AND type = 'USER'
+            ) T
+        ) FTable
+        WHERE UTags.tag = '${u_tag}' AND UTags.type = 'USER';
+        `;
+    };
 }
 exports.User = User;

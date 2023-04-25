@@ -10,7 +10,7 @@ const basicConnect = async (email:string,pwd:string,hashedPwd:string,id:number,u
 
     if(bcrypt.compareSync(pwd,hashedPwd)){
 
-        const accessToken = signJWT({"email": email,"id": id,"user_tag":user_tag}, process.env.ACCESS_TOKEN_TTL as string ||'1h');
+        const accessToken = signJWT({"email": email,"id": id,"user_tag":user_tag}, process.env.ACCESS_TOKEN_TTL as string ||'1d');
         const refreshToken = signJWT({"email": email,"id": id,"user_tag":user_tag}, process.env.REFRESH_TOKEN_TTL as string || '1d');
         
         try {
@@ -19,7 +19,7 @@ const basicConnect = async (email:string,pwd:string,hashedPwd:string,id:number,u
             // res.cookie("VRToken",refreshToken,{httpOnly:true,maxAge:24*60*60*1000, sameSite:"none" ,secure:true})
             // res.cookie("VAToken",accessToken,{httpOnly:true,maxAge:20*60*1000, sameSite:"none" ,secure:true})
             res.cookie("VRToken",refreshToken,{httpOnly:true,maxAge:24*60*60*1000, sameSite:"none" })
-            res.cookie("VAToken",accessToken,{httpOnly:true,maxAge:20*60*1000, sameSite:"none" })
+            res.cookie("VAToken",accessToken,{httpOnly:true,maxAge:24*60*60*1000, sameSite:"none" })
 
             res.status(200).json(
                 {
@@ -82,4 +82,28 @@ export const login = async (req:Request, res:Response)=>{
     let {hashedPWD,user_id,user_tag} = resp.content as {hashedPWD:string,user_id:number,user_tag:string}
     
     basicConnect(email,pwd,hashedPWD,user_id,user_tag,req, res)
+}
+
+export const auth = async (req:Request, res:Response)=>{
+
+    let {user_id} = req.params
+
+    if ( !user_id){
+        res.status(403).json(
+            {
+                status:403,
+                message:Type.StatusTypes[403],
+                content: {}
+            }
+            )
+            return
+    }
+
+    res.status(200).json(
+        {
+            status:100,
+            message:Type.StatusTypes[100],
+            content: {}
+        }
+    )
 }
