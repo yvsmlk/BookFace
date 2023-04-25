@@ -49,9 +49,10 @@ export function routes() {
             <Route path= '/Register' element={<Register/>} />
             <Route path= '/Login' element={<Login/>} />
             <Route path= '/LandingPage' element={<LandingPage/>} />
-            <Route path= '/profileTest' element={<Prof/>} />
 
             <Route element={<PrivateRoutes />}>
+                <Route path= '/PProfile' element={<Prof/>} />
+                <Route path= '/PProfile/:u_tag' element={<Prof/>} />
                 <Route path= '/Home' element={<Home />} />
                 <Route path= '/Login' element={<Login/>} />
                 <Route path= '/Profile' element={<Profile/>} />

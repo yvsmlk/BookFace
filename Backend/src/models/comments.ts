@@ -140,7 +140,7 @@ export class Comment extends DbConnect{
         //https://s3.amazonaws.com/37assets/svn/765-default-avatar.png
         let comments_query = `
         SELECT comments.id, tags.tag, 
-        Media.link as avatar,
+        COALESCE(Media.link, 'https://s3.amazonaws.com/37assets/svn/765-default-avatar.png') AS avatar,
         comments.parent_comment, comments.created_at, comments.content, COALESCE(likes.likes, 0) AS likes
         FROM bf_comments comments
         LEFT JOIN bf_tags tags ON comments.user_id = tags.context_id

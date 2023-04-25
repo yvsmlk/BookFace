@@ -112,7 +112,7 @@ export class User extends DbConnect {
         let query = this.PROFILE_QUERY(tag)
         return new Promise<Type.ResponseMsg>((resolve, reject) => {
             this.connection.query(query, (err:any, rows:any, fields:any)=>{
-                if (err){
+                if (err || rows.length == 0){
                     resolve({
                         status:202,
                         message: Type.StatusTypes[202],
@@ -122,7 +122,7 @@ export class User extends DbConnect {
                     return
                 }
 
-                console.log(rows);
+               
                 
 
                 resolve({

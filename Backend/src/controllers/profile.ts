@@ -9,13 +9,7 @@ export const getPublicProfile = async (req: Request, res: Response)=>{
     
     
     if ( !u_tag ){
-        res.status(400).json(
-            {
-                status:400,
-                message:Type.StatusTypes[400],
-                content: {}
-            }
-        )
+        getProfile(req,res)
         return
     }
         

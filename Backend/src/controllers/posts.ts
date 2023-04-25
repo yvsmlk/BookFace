@@ -213,6 +213,28 @@ export const getRegisteredPost =async (req:Request, res:Response) => {
     
 }
 
+export const getUserTargetPost =async (req:Request, res:Response) => {
+
+    const {n,order} = req.query
+
+    let post_obj = new Post()
+    let limit = n == undefined ? 5: parseInt(n as string)
+    let post_response = await post_obj.select("",(order || 'LATEST') as Type.PostOrderType,'TARGET',isNaN(limit)?5:limit,0)
+    post_obj.close()
+
+    if (!checkResponse(post_response,res))return
+
+    res.status(200).json(
+        {
+            status:100,
+            message:Type.StatusTypes[100],
+            content: post_response.content
+        }
+    )
+
+    
+}
+
 export const getPublicPost =async (req:Request, res:Response) => {
 
     const {n,order} = req.query

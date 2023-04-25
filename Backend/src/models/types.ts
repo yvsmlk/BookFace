@@ -37,7 +37,7 @@ export const PostOrder = {
 }
 
 
-export type PostSelectionType = 'PUBLIC'|'USER'|'GROUP'|'GROUP_ALL'
+export type PostSelectionType = 'PUBLIC'|'USER'|'GROUP'|'GROUP_ALL'|'TARGET'
 export const PostSelection = {
     PUBLIC:'PUBLIC',
     USER: 'USER',

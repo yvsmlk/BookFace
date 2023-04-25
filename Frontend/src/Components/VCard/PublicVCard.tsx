@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 
 type VCardProps = {
   tag: string,
@@ -19,8 +19,8 @@ type ResponseMsg = {
 const DEVELOP = "http://localhost:3535"
 const PRODUCTION = "https://book-face-backend.vercel.app"
 
-const getProfile = async ()=>{
-  let url = `${DEVELOP}/profiles`
+const getProfile = async (u_tag = "")=>{
+  let url = `${DEVELOP}/profiles/${u_tag}`
 
   let option = {
     method: 'GET',
@@ -51,23 +51,14 @@ const getProfile = async ()=>{
 }
 
 
-const VCard= ({vCardRerender}:{vCardRerender:number}) => {
-
-  let navigate= useNavigate()
-
-  const handleProfileSwitch = (u_tag = "")=>{
-    navigate(`/PProfile/${u_tag}`,{ replace: true })
-    
-  }
-
-
+const PublicVCard= ({vCardRerender,u_tag}:{vCardRerender:number,u_tag:string}) => {
 
 
   const [profile,setProfile] = useState<VCardProps>() 
 
   useEffect(()=>{
 
-    getProfile()
+    getProfile(u_tag)
     .then(data=>{
       
       let {
@@ -126,11 +117,11 @@ const VCard= ({vCardRerender}:{vCardRerender:number}) => {
         <h2 className="text-2xl font-bold text-green-800 select-none">{profile? profile.tag : ""}</h2>
       </div>
       <div className="flex justify-between px-6 py-4 border-t border-gray-200 select-none">
-        <div onClick={()=>handleProfileSwitch(profile? profile.tag : "")}>
+        <div >
           <p className="text-gray-600 font-medium select-none">{profile? profile.followers : 0}</p>
           <p className=" font-semibold text-green-600 hover:text-green-900 cursor-pointer">Followers</p>
         </div>
-        <div onClick={()=>handleProfileSwitch(profile? profile.tag : "")} >
+        <div>
           <p className="text-gray-600 font-medium select-none">{profile? profile.following : 0}</p>
           <p className=" font-semibold text-green-600 hover:text-green-900 cursor-pointer">Following</p>
         </div>
@@ -139,5 +130,5 @@ const VCard= ({vCardRerender}:{vCardRerender:number}) => {
   );
 };
 
-export default VCard;
+export default PublicVCard;
 

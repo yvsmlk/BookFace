@@ -268,6 +268,10 @@ export class Post extends DbConnect{
             case 'PUBLIC':
                 base_query = this.SELECT_PUBLIC()
                 break;
+            
+            case 'PUBLIC':
+                base_query = this.SELECT_TARGET(tag)
+                break;
         
             default:
                 break;
@@ -329,6 +333,8 @@ export class Post extends DbConnect{
                 let output = []
 
                 for( let x of rows){
+                    console.log(x);
+                    
                     output.push(
                         {
                             post_id: x['id'],
@@ -489,6 +495,31 @@ export class Post extends DbConnect{
 
         )
     } 
+
+    private SELECT_TARGET(u_tag:string){
+        return (
+            `
+            SELECT
+            COALESCE(T.tag, '') AS publisher,
+            COALESCE(Media.link, '') AS avatar,
+            P.content, 
+            User.picture, 
+            P.created_at, 
+            COALESCE(likes.likes, 0) AS likes 
+            FROM bf_tags T
+            right join bf_posts P ON P.user_id = T.context_id
+            LEFT JOIN bf_users User ON User.id = P.user_id 
+            LEFT JOIN bf_media Media ON Media.id = User.picture
+            LEFT JOIN (
+                SELECT count(*) as likes, context_id 
+                FROM bf_likes
+                WHERE type = 'POST'
+                GROUP BY context_id
+            ) likes ON P.id = likes.context_id  
+            WHERE T.tag = '${u_tag}'
+            `
+        )
+    }
 
     private SELECT_USER(u_tag:string){
         return(

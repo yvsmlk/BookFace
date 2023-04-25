@@ -12,11 +12,15 @@ export class Follow extends DbConnect {
     async getFollowers (u_tag:string){
 
         let followers_query = `
-        SELECT FT.tag
-        FROM bf_tags T 
-        right join bf_userfollow UF on UF.user_id = T.context_id
-        left join bf_tags FT on FT.context_id = UF.follower_id
-        WHERE T.tag = '${u_tag}'
+        SELECT T.tag, 
+        T.context_id, 
+        COALESCE(M.link, 'https://s3.amazonaws.com/37assets/svn/765-default-avatar.png') AS link
+        FROM bf_userfollow UF
+        left join bf_tags FT on FT.context_id = UF.user_id
+        left join bf_users U on U.id = UF.follower_id
+        left join bf_media M on M.id = U.picture 
+        left join bf_tags T on T.context_id = UF.follower_id
+        where FT.tag = '${u_tag}'
         `
 
         return new Promise<Type.ResponseMsg>(async (resolve, reject) => {
@@ -48,11 +52,15 @@ export class Follow extends DbConnect {
     async getFollows (u_tag:string){
 
         let follows_query = `
-        SELECT  FT.tag
-        FROM bf_tags T 
-        right join bf_userfollow UF on UF.follower_id = T.context_id
-        left join bf_tags FT on FT.context_id = UF.user_id
-        WHERE T.tag = '${u_tag}'
+        SELECT T.tag, 
+        T.context_id, 
+        COALESCE(M.link, 'https://s3.amazonaws.com/37assets/svn/765-default-avatar.png') AS link
+        FROM bf_userfollow UF
+        left join bf_tags FT on FT.context_id = UF.follower_id
+        left join bf_users U on U.id = UF.user_id
+        left join bf_media M on M.id = U.picture 
+        left join bf_tags T on T.context_id = UF.user_id
+        where FT.tag = '${u_tag}'
         `
 
         return new Promise<Type.ResponseMsg>(async (resolve, reject) => {
@@ -136,7 +144,9 @@ export class Follow extends DbConnect {
     async suggest (u_tag:string){
 
         let follows_query = `
-        SELECT DISTINCT T.tag, T.context_id, COALESCE(M.link, 'https://s3.amazonaws.com/37assets/svn/765-default-avatar.png') AS link
+        SELECT DISTINCT T.tag, 
+        T.context_id, 
+        COALESCE(M.link, 'https://s3.amazonaws.com/37assets/svn/765-default-avatar.png') AS link
         FROM bf_tags T
         left join bf_users U on U.id = T.context_id
         left join bf_media M on M.id = U.picture 

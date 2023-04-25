@@ -75,7 +75,7 @@ export const getFollowers = async (req: Request, res: Response)=>{
             {
                 status:resp.status,
                 message:resp.message,
-                content: {}
+                content: resp.status
             }
         )
         return

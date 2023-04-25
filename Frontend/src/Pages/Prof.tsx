@@ -10,6 +10,9 @@ import GreenWave2 from '../images/GreenWave2.jpg'
 import BottomNavigationBar from '../Components/BottomNavigationBar/BottomNavigationBar';
 import SideBar from '../Components/SideBar/SideBar';
 import VCard from '../Components/VCard/VCard';
+import FFeed from '../Components/Followings/FollowFeed';
+import { useLocation, useParams } from 'react-router-dom';
+import PublicVCard from '../Components/VCard/PublicVCard';
 
 // interface ProfileCardProps {
 //     data: PostData;
@@ -40,21 +43,24 @@ const S_BUTTON = ({text, activeButton, setActiveButton}:buttonProps)=>{
     const Prof = () => {
 
     const [active, setActive] = useState(0);
-
+    const {u_tag} = useParams()
+    const [profile_tag, setPTag] = useState(u_tag || "")
     const [post, setPost] = useState('');
     const [post1, setPost1] = useState<null | React.ReactNode>(null);
     const [post2, setPost2] = useState('');
     const [isMobile, setIsMobile] = useState(false);
     const [rerender_feed_VCard,setRerenderFeedVCard] = useState(0)
-    const [activeButton, setActiveButton] = useState('Development')
-    // const [rerender_feed,setRerenderFeed] = useState(0)
-    // const [rerender_feed_VCard,setRerenderFeedVCard] = useState(0)
+    const [activeButton, setActiveButton] = useState('Followers')
+    let location = useLocation()
+    const [uu_tag,setUUTag] = useState(location.pathname.split('/')[2])
 
     const backgroundImageStyle = {
         backgroundImage: `url("${GreenWave2}")`,
         backgroundSize: 'cover',
 
     };
+
+
 
     useEffect(() => {
         const handleResize = () => {
@@ -69,6 +75,13 @@ const S_BUTTON = ({text, activeButton, setActiveButton}:buttonProps)=>{
         };
       }, []);
 
+      useEffect(() => {
+        console.log(location.pathname.split('/'));
+        
+        setUUTag(location.pathname.split('/')[2])
+        setRerenderFeedVCard(Math.random())
+      }, [location]);
+
     return (
         <div className=' flex flex-col md:flex-row ' style={backgroundImageStyle}>
       
@@ -78,18 +91,25 @@ const S_BUTTON = ({text, activeButton, setActiveButton}:buttonProps)=>{
         }
 
         <div className=' flex flex-col md:flex-[0_1_300px] gap-4  p-4'>
-            <VCard vCardRerender={rerender_feed_VCard}/>
+            <PublicVCard u_tag={uu_tag} vCardRerender={rerender_feed_VCard}/>
         </div>
         <div  className=" flex-1 flex flex-col p-3 ">
             <div className=" flex items-end gap-8 flex-[0_1_5%] pl-2 ">
-                <S_BUTTON text="Event" activeButton={activeButton} setActiveButton={setActiveButton}/>
-                <S_BUTTON text="Post" activeButton={activeButton} setActiveButton={setActiveButton}/>
-                <S_BUTTON text="Community" activeButton={activeButton} setActiveButton={setActiveButton}/>
+                <S_BUTTON text="Followers" activeButton={activeButton} setActiveButton={setActiveButton}/>
+                <S_BUTTON text="Follows" activeButton={activeButton} setActiveButton={setActiveButton}/>
+                
+
 
             </div>
-            <div className=" flex-[0_1_95%] rounded-lg ">
-                
-                
+            <div className=" flex-[0_1_95%] md:w-[50%] rounded-lg ">
+
+                {
+                  activeButton == "Followers" && <FFeed vCardRerender={setRerenderFeedVCard} user_tag={uu_tag} type='Followers'/>
+                }
+                {
+                  activeButton == "Follows" && <FFeed vCardRerender={setRerenderFeedVCard} user_tag={uu_tag} type='Follows'/>
+                }
+
             </div>
         </div>
         

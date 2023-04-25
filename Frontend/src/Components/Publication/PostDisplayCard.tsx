@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { BiSave } from "react-icons/bi";
 import { FaComment, FaEllipsisH, FaHeart, FaShare } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
 
@@ -151,7 +152,7 @@ const ComDisplayCard = ({com_info,post_id,setComRerender}:{com_info:CommentType,
     const [likes,setLikes] =  useState(com_info.likes)
     const [isOpenResponse,setIsOpenResponse] = useState(false)
     const [commentText,setCommentText] = useState("")
-
+    let navigate = useNavigate()
     const handleLike = async () => {
         let resp_like = await fetchLike(com_info.id,"comments")
         let {isLiked} = resp_like.content as {isLiked :boolean}
@@ -194,6 +195,10 @@ const ComDisplayCard = ({com_info,post_id,setComRerender}:{com_info:CommentType,
 
     const handleComment = (value:boolean) => {
     };
+
+    const handleProfileSwitch = (u_tag = "")=>{
+        navigate(`/PProfile/${u_tag}`,{ replace: true })
+    }
     
     return (
 
@@ -202,11 +207,11 @@ const ComDisplayCard = ({com_info,post_id,setComRerender}:{com_info:CommentType,
             <div className=" flex flex-[0_1_80%] ">
                 <div className="flex items-start mb-4 mr-1 ml-1">
                     <div className="flex items-center">
-                        <img src={com_info.avatar} alt="Avatar" className=" w-12 h-12 rounded-full mr-4 flex items-center" />
+                        <img onClick={()=>handleProfileSwitch(com_info.user)} src={com_info.avatar} alt="Avatar" className=" w-12 h-12 rounded-full mr-4 flex items-center hover:cursor-pointer" />
                     </div>
                 </div>
 
-                <div className=" flex flex-col gap-2 flex-1">
+                <div className=" flex flex-col gap-2 flex-1 select-none">
                     <div className=" text-green-800 font-semibold">{com_info.user}</div>
                     <div className="mb-4 mr-2 ml-2 min-h-[2rem]">
                         <p>{com_info.content}</p>
@@ -328,7 +333,7 @@ const CommentSection =  ({post_id,comRerender}:{post_id:number,comRerender:numbe
                 
                 setComments(data)
                 setLoading(false)
-            },100)
+            },300)
         })
         .catch(err=>console.log())
 
@@ -394,6 +399,7 @@ const PostDisplayCard = ({post_info,isReg=false}:{post_info:PostType,isReg:boole
     const [comRerender, setComRerender] = useState(0)
     const [likes,setLikes] =  useState(post_info.likes)
     const [HColor, setHColor] = useState(600);
+    let navigate = useNavigate()
 
     const handleLike = async () => {
         let resp_like = await fetchLike(post_info.post_id)
@@ -464,18 +470,24 @@ const PostDisplayCard = ({post_info,isReg=false}:{post_info:PostType,isReg:boole
         setIsCommenting(value);
     };
 
+    const handleProfileSwitch = (u_tag = "")=>{
+        navigate(`/PProfile/${u_tag}`,{ replace: true })
+    }
+    
+
     return (
         <div className=" flex flex-col rounded-md overflow-hidden shadow-md bg-white p-3 ">
 
             <div className=" flex flex-[0_1_80%] ">
-                <div className="flex items-start mb-4 mr-1 ml-1">
+                <div 
+                className="flex items-start mb-4 mr-1 ml-1 ">
                     <div className="flex items-center">
-                        <img src={post_info.avatar} alt="Avatar" className=" w-12 h-12 rounded-full mr-4 flex items-center" />
+                        <img onClick={()=>handleProfileSwitch(post_info.publisher)} src={post_info.avatar} alt="Avatar" className=" w-12 h-12 rounded-full mr-4 flex items-center hover:cursor-pointer" />
                     </div>
                     {/* <FaEllipsisH className="w-5 h-5  text-green-800 mr-1 ml-1" /> */}
                 </div>
 
-                <div className=" flex flex-col gap-2 flex-1">
+                <div className=" select-none flex flex-col gap-2 flex-1">
                     <div className=" text-green-800 font-semibold">{post_info.publisher}</div>
                     <div className="mb-4 mr-2 ml-2 min-h-[5rem]">
                         <p>{post_info.content}</p>

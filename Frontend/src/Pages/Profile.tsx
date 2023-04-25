@@ -60,7 +60,7 @@ const SPIN1 = ()=>{
     const [post2, setPost2] = useState('');
     const [isMobile, setIsMobile] = useState(false);
     const [rerender_feed_VCard,setRerenderFeedVCard] = useState(0)
-    const [activeButton, setActiveButton] = useState('Event')
+    const [activeButton, setActiveButton] = useState('Bookmarks')
     const [rerender_feed,setRerenderFeed] = useState(0)
     const [loading, setLoading] = useState(true);
     const [reRender, setRerender] = useState(0)
@@ -100,18 +100,18 @@ const SPIN1 = ()=>{
         </div>
         <div  className=" flex-1 flex flex-col p-3 ">
             <div className=" flex items-end gap-8 flex-[0_1_5%] pl-2 ">
-                <S_BUTTON text="Event" activeButton={activeButton} setActiveButton={setActiveButton}/>
+                <S_BUTTON text="Bookmarks" activeButton={activeButton} setActiveButton={setActiveButton}/>
                 <S_BUTTON text="Posts" activeButton={activeButton} setActiveButton={setActiveButton}/>
                 <S_BUTTON text="Community" activeButton={activeButton} setActiveButton={setActiveButton}/>
 
             </div>
             <div className=" flex-[0_1_95%] rounded-lg p-3">
                 {
-                    activeButton == "Event" && <div  ></div>
+                    activeButton == "Bookmarks" && <Feed type={2} rerender_feed={rerender_feed} isReg={true} ></Feed>
                 }
                 {
                     // loading?<SPIN1/>:<Feed type={2} rerender_feed={rerender_feed} isReg={true} ></Feed>
-                    activeButton == "Posts" && <Feed type={2} rerender_feed={rerender_feed} isReg={true} ></Feed>
+                    activeButton == "Posts" && <div></div>
                 }
                 {
                     activeButton == "Community" && <Feed type={3} rerender_feed={rerender_feed} isReg={true} ></Feed>
