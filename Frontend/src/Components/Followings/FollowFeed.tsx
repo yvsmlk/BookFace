@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Person, ResponseMsg, StatusTypes } from "../../utils/Types";
+import { Person, ResponseMsg, StatusTypes } from "../../utils/typess";
 import { SlUserFollow } from "react-icons/sl";
 import { useLocation, useNavigate } from "react-router-dom";
 // import { Person } from "./people"; // importation de notre type Person

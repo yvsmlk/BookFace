@@ -2,7 +2,7 @@ import React from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { SidebarData } from '../SideBar/SideBarData';
 import { FaHome, FaUser } from 'react-icons/fa';
-import { ResponseMsg } from '../../utils/Types';
+import { ResponseMsg } from '../../utils/typess';
 import { toast } from 'react-toastify';
 import { IoExitOutline } from "react-icons/io5";
 
