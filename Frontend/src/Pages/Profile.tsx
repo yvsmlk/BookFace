@@ -1,151 +1,137 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useState } from 'react';
-import PostData from "../Components/Publication/PostData";
+// import PostData from "../Components/Publication/PostData";
 import { FaHome, FaMapMarkerAlt } from "react-icons/fa";
 import classNames from 'classnames';
 import Publication from '../Components/Publication/Publication';
 import SideBarStat from '../Components/SideBar/SideBarStat';
 
+import GreenWave2 from '../images/GreenWave2.jpg'
+import BottomNavigationBar from '../Components/BottomNavigationBar/BottomNavigationBar';
+import SideBar from '../Components/SideBar/SideBar';
+import VCard from '../Components/VCard/VCard';
+import Feed from '../Components/Publication/Feed';
+import { FeedType } from '../utils/Types';
 
-interface ProfileCardProps {
-    data: PostData;
-  }
+// interface ProfileCardProps {
+//     data: PostData;
+//   }
 
-    
-    const Profile: React.FC <ProfileCardProps> = ({data}) => { 
-        
+type buttonProps = {
+    text:string, 
+    activeButton:string, 
+    setActiveButton:React.Dispatch<React.SetStateAction<string>>
+}
+
+const S_BUTTON = ({text, activeButton, setActiveButton}:buttonProps)=>{
+
+    let font_size = text == activeButton? 'font-bold' : 'font-light '
+    let color = text == activeButton? 'text-green-700' : 'text-neutral-700'
+    let border_bottom = text == activeButton? ' border-b-4 rounded-b-sm border-green-700' : ''
+
+    return (
+        <button className={`flex justify-center items-center h-[75%] ${color} ${font_size}
+        select-none cursor-pointer rounded-t-md p-2 ${border_bottom}`}
+        onClick={()=>setActiveButton(text)}>
+            {text}
+        </button>
+    )
+}
+
+const SPIN1 = ()=>{
+    return (
+        <div className=" flex w-full justify-center">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                <path fill="green" d="M12,23a9.63,9.63,0,0,1-8-9.5,9.51,9.51,0,0,1,6.79-9.1A1.66,1.66,0,0,0,12,2.81h0a1.67,1.67,0,0,0-1.94-1.64A11,11,0,0,0,12,23Z">
+                    <animateTransform attributeName="transform" dur="0.75s" repeatCount="indefinite" type="rotate" values="0 12 12;360 12 12"/>
+                </path>
+            </svg>
+        </div>
+    )
+}
+
+
+    const Profile = () => {
+
     const [active, setActive] = useState(0);
 
     const [post, setPost] = useState('');
     const [post1, setPost1] = useState<null | React.ReactNode>(null);
     const [post2, setPost2] = useState('');
-
-    let post_example  = {
-        id: 0,
-        author: {
-            name: "John Doe",
-            username: "johndoe",
-            avatarUrl: "https://randomuser.me/api/portraits/men/4.jpg"
-        },
-        content: "Ces services permettent de trouver les sources des photographies et donc de mieux comprendre les restrictions d’usage des images trouvées ici et là sur Internet. Dans tous les cas, méfiez-vous des images trop « parfaites » : généralement issues de banques d’images, leur utilisation est rarement gratuite !",
-        imageUrl: undefined,
-        videoUrl: undefined,
-        postedAt: "",
-        likes: 0,
-        shares: 0,
-        comments: 0
-    }
-
+    const [isMobile, setIsMobile] = useState(false);
+    const [rerender_feed_VCard,setRerenderFeedVCard] = useState(0)
+    const [activeButton, setActiveButton] = useState('Bookmarks')
+    const [rerender_feed,setRerenderFeed] = useState(0)
+    const [loading, setLoading] = useState(true);
+    const [reRender, setRerender] = useState(0)
     
-    const handleSetActive = (index:number) => {
-            setActive(index);
-            if (index === 0){
-                setPost("Hello World");
-                setPost1('');
-                setPost2('');
-            } else if (index === 1){
-                setPost1(<Publication data={post_example}/>);
-                setPost('');
-                setPost2('');
-            } else if (index === 2){
-                setPost2 ("Hello World2");
-                setPost('');
-                setPost1('');
-            }
+    // const [rerender_feed,setRerenderFeed] = useState(0)
+    // const [rerender_feed_VCard,setRerenderFeedVCard] = useState(0)
+
+    const backgroundImageStyle = {
+        backgroundImage: `url("${GreenWave2}")`,
+        backgroundSize: 'cover',
+
     };
+
+    useEffect(() => {
+        const handleResize = () => {
+          setIsMobile(window.innerWidth <= 768); 
+        };
     
+        window.addEventListener('resize', handleResize);
+        handleResize();
+    
+        return () => {
+          window.removeEventListener('resize', handleResize);
+        };
+      }, []);
+
     return (
+        <div className=' flex flex-col flex-1 md:flex-row  min-h-screen' style={backgroundImageStyle}>
+      
+        {
+          !isMobile && <SideBar children={undefined} />
+          
+        }
 
-        <div className="flex flex-col md:flex-row md:gap-5">
-        <div className="md:flex-grow-2 h-full fixed left-0 top-0">
-         < SideBarStat />
+        <div className=' flex flex-col md:flex-[0_1_300px] gap-4  p-4'>
+            <VCard vCardRerender={rerender_feed_VCard}/>
         </div>
-       <div className="md:flex-grow-2 md:ml-80">
-       <div className='max-w-3xl min-h-screen rounded-md overflow-hidden shadow-md bg-white'>
-        
-            <div className='h-full'> 
-                <div className= "flex justify-center h-36 rounded-md bg-green-700">
-            </div>
-            <img 
-                src="https://randomuser.me/api/portraits/men/4.jpg"
-                alt="Profile Picture"
-                width={160}
-                height={160}
-                className="border-2 border-white rounded-full relative left-2 bottom-24"
-                />  
-                    <div className="relative bottom-24">
-                        
-                        <button className="absolute md:bottom-22 lg:bottom-22 right-0 text-xl bg-green-500 hover:bg-green-900 text-white font-bold py-2 px-4 rounded-lg mr-5">Follow me</button>
-                            <h2 className="text-2xl font-bold text-green-800 ml-7">{data.author.name}</h2>
-                            <p className="text-xl text-gray-500 ml-7">@{data.author.username}</p>
-                            <p className="text-xl text-gray-700 pt-4 ml-5">{data.profileDescription}</p>
-                            <p className="text-xl text-gray-700 ml-5 pt-10"><FaHome className="inline-block mr-2" />{data.address}</p>
-                            <p className="text-xl text-gray-700 ml-5"><FaMapMarkerAlt className="inline-block mr-2"/>{data.country}</p>
-                            <p className="text-lg text-gray-600 pt-8 ml-5 pb-5"><span className="font-bold">{data.following}</span> Followings&nbsp; <span className="font-bold">{data.followers}</span> Followers</p>
-                            <p className="text-lg text-gray-700 ml-5">Followed by {data.followedBy}</p>
-        
-                    
-                    <div className="flex items-center justify-between px-6 bg-green-100">
-                        
-                    
-                        <a
-                            href="#"
-                            className={classNames(
-                            'text-lg text-gray-600 hover:text-gray-800 py-4 px-6 block hover:bg-green-200',
-                            {
-                                'font-bold border-b-2 border-gray-800': active === 0,
-                            }
-                            )}
-                            onClick={() => handleSetActive(0)}
+        <div  className=" flex-1 flex flex-col p-3 ">
+            <div className=" flex items-end gap-8 flex-[0_1_5%] pl-2 ">
+                <S_BUTTON text="Bookmarks" activeButton={activeButton} setActiveButton={setActiveButton}/>
+                <S_BUTTON text="Posts" activeButton={activeButton} setActiveButton={setActiveButton}/>
+                <S_BUTTON text="Community" activeButton={activeButton} setActiveButton={setActiveButton}/>
 
-                            >Event
-                               
-                        </a>
-                          
-                        
-                        <a
-                            href="#"
-                            className={classNames(
-                            'text-lg text-gray-600 hover:text-gray-800 py-4 px-6 block hover:bg-green-200',
-                            {
-                                'font-bold border-b-2 border-gray-800': active === 1,
-                            }
-                            )}
-                            onClick={() => handleSetActive(1)}
-                        >
-                            Post
-                        </a>
-                        <a
-                            href="#"
-                            className={classNames(
-                            'text-lg text-gray-600 hover:text-gray-800 py-4 px-6 block hover:bg-green-200',
-                            {
-                                'font-bold border-b-2 border-gray-800': active === 2,
-                            }
-                            )}
-                            onClick={() => handleSetActive(2)}
-                        >
-                            Community
-                        </a>
-                    </div>
-                    <div>{post}</div>
-                    <div>{post1}</div>
-                    <div>{post2}</div>
+            </div>
+            <div className=" flex-[0_1_95%] rounded-lg p-3">
+                {
+                    activeButton == "Bookmarks" && <Feed type={2} rerender_feed={rerender_feed} isReg={true} ></Feed>
+                }
+                {
+                    // loading?<SPIN1/>:<Feed type={2} rerender_feed={rerender_feed} isReg={true} ></Feed>
+                    activeButton == "Posts" && <div></div>
+                }
+                {
+                    activeButton == "Community" && <Feed type={3} rerender_feed={rerender_feed} isReg={true} ></Feed>
+                }
             </div>
         </div>
-</div>
-</div>
-<div className="md:flex-grow">
-<div className="max-w-lg">
-    {/* <GalleryCard /> */}
-</div>
-</div>
-</div>
+        
+        {
+          isMobile && <BottomNavigationBar children={undefined} />
+          
+        }
+        
+
+      </div>
+      
 
 
         );
-        }
-    
+}
+
 
 
 export default Profile;

@@ -134,6 +134,59 @@ export class Tags extends DbConnect{
 
     }
 
+    updateTag(old_tag:string,new_tag:string){
+        //
+        let sql_add_session = `
+        UPDATE bf_tags SET tag = '${new_tag}'
+        WHERE tag = '${old_tag}'
+        ;
+        `
+
+        return new Promise<Type.ResponseMsg>((resolve, reject) => {
+            this.connection.query(sql_add_session, async (err:any, rows:any, fields:any)=>{
+                
+                
+                if (err){
+                    console.log(err);
+
+                    if (err.code == "ER_DUP_ENTRY"){
+                        resolve({
+                            status:200,
+                            message:Type.StatusTypes[200],
+                            content: {new_tag: new_tag}
+                        })
+                        return 
+                    }
+                    
+                    resolve({
+                        status:202,
+                        message:Type.StatusTypes[202],
+                        content: {error: err}
+                    })
+                    return 
+                }
+
+                if (!fields){
+                    resolve({
+                        status:200,
+                        message:Type.StatusTypes[200],
+                        content: {
+                            new_tag:new_tag
+                        }
+                    })
+                    return
+                }
+
+                resolve({
+                    status:100,
+                    message:Type.StatusTypes[100],
+                    content: {}
+                })
+            })
+        })
+
+    }
+
     deleteTag(id:number){
         let sql_del_session = `
         DELETE FROM bf_tags 

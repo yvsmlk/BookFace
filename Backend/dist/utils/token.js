@@ -52,17 +52,17 @@ fwIDAQAB
 -----END PUBLIC KEY-----`;
 // sign jwt
 function signJWT(payload, expiresIn) {
-    return jsonwebtoken_1.default.sign(payload, process.env.PRK || privateKey, { algorithm: "RS256", expiresIn });
+    return jsonwebtoken_1.default.sign(payload, process.env.PRK || privateKey, { algorithm: "RS256", expiresIn: expiresIn });
 }
 exports.signJWT = signJWT;
 // verify jwt
 function verifyJWT(token) {
-    console.log("TOKEN", token);
     try {
         const decoded = jsonwebtoken_1.default.verify(token, process.env.PK || publicKey);
         return { payload: decoded, expired: false };
     }
     catch (error) {
+        console.log(error);
         //@ts-ignore
         return { payload: null, expired: error.message.includes("jwt expired") };
     }

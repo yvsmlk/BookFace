@@ -25,9 +25,12 @@ var __importStar = (this && this.__importStar) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const Type = __importStar(require("../models/types"));
 const token_1 = require("../utils/token");
-const verifyJwt = (req, res, next) => {
+const sessions_1 = require("../models/sessions");
+const tags_1 = require("../models/tags");
+const verifyJwt = async (req, res, next) => {
     const { VAToken } = req.cookies;
     if (!VAToken) {
+        console.log("no token");
         res.status(400).json({
             status: 203,
             message: Type.StatusTypes[203],
@@ -38,6 +41,7 @@ const verifyJwt = (req, res, next) => {
     //   const token = authHeader.split(" ")[1];
     let verif_out = (0, token_1.verifyJWT)(VAToken);
     if (verif_out.payload == null) {
+        console.log("wrong token");
         res.status(403).json({
             status: 203,
             message: Type.StatusTypes[203],
@@ -45,21 +49,26 @@ const verifyJwt = (req, res, next) => {
         });
         return;
     }
-    // let resSession = await session.getSession(id) 
-    //   if ( resSession.status != 201){
-    //       resolve({
-    //           status:405,
-    //           message:Type.StatusTypes[405],
-    //           content: {email:email}
-    //       })
-    //       session.close()
-    //       return
-    //   }
     let payload = verif_out.payload;
-    console.log("PAYLOAD", payload);
+    let session = new sessions_1.Session();
+    let resSession = await session.getSession(payload.id);
+    session.close();
+    if (resSession.status != 100) {
+        console.log("wrong session");
+        res.status(403).json({
+            status: 407,
+            message: Type.StatusTypes[407],
+            content: { message: "Try reconnecting" }
+        });
+        return;
+    }
+    let tags = new tags_1.Tags();
+    let resp_tag = await tags.getTagById(payload.id, Type.TagTypes.USER);
+    tags.close();
+    let { tag } = resp_tag.content;
     req.params.user_id = `${payload.id}`;
     req.params.email = `${payload.email}`;
-    req.params.user_tag = `${payload.user_tag}`;
+    req.params.user_tag = `${tag}`;
     next();
     // jwt.verify(VAToken, process.env.ACCESS_TOKEN_S as string, (err:any, decoded:any) => {
     //   if (err) {

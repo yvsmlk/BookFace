@@ -24,8 +24,8 @@ export const SidebarData = [
         icon: <FaIcons.FaBookmark/>
     },
     {
-        title: 'More',
-        path: '/More',
+        title: 'Disconnect',
+        path: '/login',
         icon: <FaIcons.FaEllipsisV/>
     }
 ]

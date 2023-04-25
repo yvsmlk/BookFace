@@ -8,6 +8,56 @@ import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 
+type ResponseMsg = {
+  status: number,
+  message: string,
+  content: object | []
+}
+
+const DEVELOP = "http://localhost:3535"
+const PRODUCTION = "https://book-face-backend.vercel.app"
+
+const fetchReg = async (email:string,pwd:string)=>{
+  let url = `${PRODUCTION}/login/`
+
+  let option = {
+    method: 'POST',
+    headers: {
+      'accept': 'application/json',
+      'Content-Type': 'application/json',
+      
+    },
+    credentials: "include" as RequestCredentials,
+    body: JSON.stringify({
+      email: email,
+      pwd: pwd
+    }),
+    
+  }
+
+  
+  return new Promise<ResponseMsg>(async (resolve, reject) => {
+
+    try {
+
+      let response = await fetch(url,option)
+      let data:ResponseMsg = await response.json()
+
+      resolve(data) 
+      
+    } catch (err) {
+      resolve({
+        status:404,
+        message:"System error",
+        content: {err}
+      }) 
+    }
+    
+  })
+
+}
+
+
 function Login (){
 
     
@@ -30,32 +80,36 @@ function Login (){
           };
 
 
-    const handleSubmit = (e: any) => {
+    const handleSubmit = async (e: any) => {
         console.log(formError)
         e.preventDefault()
         if ( !Email || !Password ) {
-          toast.error('Login unsuccessful!', {
+          toast.error('Incorrect email or password ', {
             position: "top-center",
-            autoClose: 1000
+            hideProgressBar:true,
+            pauseOnHover:true,
+            autoClose: 5000
           })
           setFormError('Please fill in all fields.')
-        } else if (!checkBoxChecked) {
-          toast.error('Login unsuccessful!', {
-            position: "top-center",
-            autoClose: 1000
-          })
-          setFormError('Please accept the terms of use and privacy policy.')
-        }else {
-          setFormError('')
+        } else {
           
-          toast.success('Login successful!', {
-            position: "top-center",
-            autoClose: 1000,
-              onClose: () => {
-                  window.location.href = "/Home";// Navigue vers la prochaine page ici
-              }})
-        
-          console.log("Formulaire envoyé");
+          let response = await fetchReg(Email,Password)
+          if (response.status == 100){
+            toast.success('Sign in successful!', {
+              position: "top-center",
+              autoClose: 1000,
+            onClose: () => {
+              window.location.href = "/Home";
+            }})
+          }
+          else{
+            toast.error(response.message, {
+              position: "top-center",
+              hideProgressBar:true,
+              pauseOnHover:true,
+              autoClose: 5000
+            })
+          }
   
         }
       
@@ -64,7 +118,7 @@ function Login (){
     return (
 
 
-<div className = "h-screen py-40" style={backgroundImageStyle}>
+<div className = "h-screen flex justify-center items-center py-4" style={backgroundImageStyle}>
     <div className = "container mx-auto">
         <div className = "flex flex-col md:flex-row lg:flex-row w-9/12 md:w-11/12 lg:w-8/12 bg-green-50 rounded-xl mx-auto overflow-hidden" style={{ boxShadow: "10px 10px 20px #888888" }}>
             <div className = "w-full lg:w-1/2 flex flex-col items-center justify-center p-12 bg-no-repeat bg-cover bg-center">
@@ -84,10 +138,10 @@ function Login (){
                     <input type="password" placeholder="Password" name="Password" onChange={e => setPassword(e.target.value)} className="border border-gray-400 py-1 px-2 w-full" />
                     {formError && <p>{formError}</p>}
                 </div>
-                <div className="mt-5">
+                {/* <div className="mt-5">
                    <input type="checkbox" name="checkbox" onChange={handleCheckBoxChange} className="border border-gray-400" />
                    <div className = "text-green-900"><span> I accept the <a href="#" className="font-semibold"> Terms of Use</a> & <a href="#" className=" font-semibold">Privacy Policy</a></span></div>
-                </div>
+                </div> */}
                 <div className="mt-5">
                 <button type="submit" className="bg-white hover:bg-green-700 text-green-600 hover:text-white font-bold py-2 px-4 rounded border-2 border-green-600 mr-4">Log In</button>
                 </div>

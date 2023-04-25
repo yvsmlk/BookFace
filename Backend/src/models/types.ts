@@ -14,7 +14,8 @@ export const StatusTypes = {
     403: 'Not authorized',
     404: 'System error',
     405: 'Already connected',
-    406: 'Missing Token'
+    406: 'Missing Token',
+    407: 'Token does not correspond to any session'
 };
 
 export const TagTypes = {
@@ -36,11 +37,12 @@ export const PostOrder = {
 }
 
 
-export type PostSelectionType = 'PUBLIC'|'USER'|'GROUP'
+export type PostSelectionType = 'PUBLIC'|'USER'|'GROUP'|'GROUP_ALL'|'TARGET'
 export const PostSelection = {
     PUBLIC:'PUBLIC',
     USER: 'USER',
-    GROUP: 'GROUP'
+    GROUP: 'GROUP',
+    GROUP_ALL: 'GROUP_ALL'
 }
 
 export type ResponseMsg = {
@@ -70,6 +72,7 @@ export type PostType = {
 
 export type CommentType = {
     id:number,
+    avatar:string,
     user: string,
     content: string,
     responses: CommentResponseType[]
@@ -79,6 +82,7 @@ export type CommentType = {
 
 export type CommentResponseType = {
     id:number,
+    avatar:string,
     user: string,
     content: string,
     created_at: string,

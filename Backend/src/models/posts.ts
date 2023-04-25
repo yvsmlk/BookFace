@@ -35,23 +35,18 @@ export class Post extends DbConnect{
                 (SELECT id  FROM bf_users WHERE id = ${user_id}) AS user_id,
                 (SELECT id  FROM bf_posts WHERE id = ${post_id}) AS post_id
             ) t
-            WHERE user_id IS NOT NULL AND post_id IS NOT NULL;
+            WHERE user_id IS NOT NULL AND post_id IS NOT NULL
+            ON DUPLICATE KEY UPDATE do_delete = true;
+            `
+
+            let del_query = `
+            DELETE FROM bf_registeredposts
+            WHERE do_delete = true;
             `
             
             this.connection.query(register_post_query, (err:any, rows:any, fields:any)=>{
-                
+                let {affectedRows} = rows
                 if (err){
-
-                    const {code} = err
-
-                    if (code == 'ER_DUP_ENTRY'){
-                        resolve({
-                            status:200,
-                            message:Type.StatusTypes[200],
-                            content: {}
-                        })
-                        return
-                    }
 
                     resolve({
                         status:404,
@@ -60,12 +55,26 @@ export class Post extends DbConnect{
                     })
                     return
                 }
+
+                this.connection.query(del_query,(err:any, rows:any, fields:any)=>{
+                    
+                    if (err){
+                        resolve({
+                            status:404,
+                            message:Type.StatusTypes[404],
+                            content: {error: err}
+                        })
+                        return
+                    }
+                })
                 
                 
                 resolve({
                     status:100,
                     message:Type.StatusTypes[100],
-                    content: {}
+                    content: {
+                        isReg: affectedRows == 1
+                    }
                 })
 
             })
@@ -240,7 +249,7 @@ export class Post extends DbConnect{
 
     }
 
-    private createSelectQuery(order:Type.PostOrderType,select:Type.PostSelectionType,tag:string,n:number){
+    private createSelectQuery(order:Type.PostOrderType,select:Type.PostSelectionType,tag:string,n:number,user_id:number){
 
         let base_query = ""
 
@@ -250,11 +259,18 @@ export class Post extends DbConnect{
             case 'GROUP':
                 base_query = this.SELECT_GROUP(tag)
                 break;
+            case 'GROUP_ALL':
+                base_query = this.SELECT_GROUP_ALL(user_id)
+                break
             case 'USER':
                 base_query = this.SELECT_USER(tag)
                 break;
             case 'PUBLIC':
                 base_query = this.SELECT_PUBLIC()
+                break;
+            
+            case 'PUBLIC':
+                base_query = this.SELECT_TARGET(tag)
                 break;
         
             default:
@@ -287,9 +303,9 @@ export class Post extends DbConnect{
     }
 
     async select(tag:string,order:Type.PostOrderType = 'LATEST',
-    selection:Type.PostSelectionType ='PUBLIC',n=5){
+    selection:Type.PostSelectionType ='PUBLIC',n=5,user_id:number){
 
-        let get_query = this.createSelectQuery(order,selection,tag,n)
+        let get_query = this.createSelectQuery(order,selection,tag,n,user_id)
         
         return new Promise<Type.ResponseMsg>( async (resolve, reject) => {
 
@@ -317,14 +333,18 @@ export class Post extends DbConnect{
                 let output = []
 
                 for( let x of rows){
+                    console.log(x);
+                    
                     output.push(
                         {
                             post_id: x['id'],
                             publisher: x['publisher'],
+                            avatar: x['avatar'] || "https://s3.amazonaws.com/37assets/svn/765-default-avatar.png",
                             media: x['media_id'],
                             content: x['content'],
                             created_at: x['created_at'],
-                            likes: x['likes']
+                            likes: x['likes'],
+                            gp_tag: selection == 'GROUP_ALL'? x['G_tag'] : ""
                         }
                     )
                 }
@@ -341,57 +361,57 @@ export class Post extends DbConnect{
         })
     }
 
-    async getUser(user_id:number,timestamp:string){
+    // async getUser(user_id:number,timestamp:string){
 
-        let find_query = `
-        SELECT * FROM bf_posts 
-        WHERE user_id = ${user_id} AND created_at = TIMESTAMP('${timestamp}','0:0:0')
-        `
+    //     let find_query = `
+    //     SELECT * FROM bf_posts 
+    //     WHERE user_id = ${user_id} AND created_at = TIMESTAMP('${timestamp}','0:0:0')
+    //     `
 
-        return new Promise<Type.ResponseMsg>((resolve, reject) => {
-            this.connection.query(find_query, (err:any, rows:any, fields:any)=>{
+    //     return new Promise<Type.ResponseMsg>((resolve, reject) => {
+    //         this.connection.query(find_query, (err:any, rows:any, fields:any)=>{
 
                 
 
-                if (err){
-                    console.log(err)
-                    resolve({
-                        status:404,
-                        message:Type.StatusTypes[404],
-                        content: {error: err}
-                    })
-                    return
-                }
+    //             if (err){
+    //                 console.log(err)
+    //                 resolve({
+    //                     status:404,
+    //                     message:Type.StatusTypes[404],
+    //                     content: {error: err}
+    //                 })
+    //                 return
+    //             }
 
-                if (rows.length == 0){
-                    resolve({
-                        status:201,
-                        message:Type.StatusTypes[201],
-                        content: {}
-                    })
-                    return
-                }
+    //             if (rows.length == 0){
+    //                 resolve({
+    //                     status:201,
+    //                     message:Type.StatusTypes[201],
+    //                     content: {}
+    //                 })
+    //                 return
+    //             }
 
-                let post = {
-                    post_id: rows[0]['id'],
-                    user: rows[0]['user_id'],
-                    media: rows[0]['media_id'],
-                    content: rows[0]['content'],
-                    created_at: rows[0]['created_at'],
-                    likes: rows[0]['likes']
-                }
+    //             let post = {
+    //                 post_id: rows[0]['id'],
+    //                 user: rows[0]['user_id'],
+    //                 media: rows[0]['media_id'],
+    //                 content: rows[0]['content'],
+    //                 created_at: rows[0]['created_at'],
+    //                 likes: rows[0]['likes']
+    //             }
 
-                resolve({
-                    status:100,
-                    message:Type.StatusTypes[100],
-                    content: {
-                        post:post
-                    }
-                })
+    //             resolve({
+    //                 status:100,
+    //                 message:Type.StatusTypes[100],
+    //                 content: {
+    //                     post:post
+    //                 }
+    //             })
 
-            })
-        })
-    }
+    //         })
+    //     })
+    // }
 
     async delete(post_id:number){
 
@@ -446,9 +466,10 @@ export class Post extends DbConnect{
             `
             SELECT gpost.post_id AS id, 
             tags.tag AS GP_TAG , 
-            COALESCE(UTags.tag, '') AS publisher, 
+            COALESCE(UTags.tag, '') AS publisher,
+			COALESCE(Media.link, '') AS avatar,
             posts.content, 
-            posts.media_id, 
+            User.picture, 
             posts.created_at, 
             COALESCE(likes.likes, 0) AS likes 
             FROM bf_groupposts gpost 
@@ -458,9 +479,14 @@ export class Post extends DbConnect{
                 ON gpost.post_id = posts.id 
             LEFT JOIN bf_tags UTags 
                 ON UTags.context_id = posts.user_id 
+			LEFT JOIN bf_users User 
+                ON User.id = posts.user_id 
+			LEFT JOIN bf_media Media 
+                ON Media.id = User.picture
             LEFT JOIN (
                 SELECT context_id, count(*) AS likes 
                 FROM bf_likes 
+                WHERE type = 'POST'
                 GROUP BY context_id
             ) likes 
                 ON gpost.post_id = likes.context_id 
@@ -470,20 +496,52 @@ export class Post extends DbConnect{
         )
     } 
 
+    private SELECT_TARGET(u_tag:string){
+        return (
+            `
+            SELECT
+            COALESCE(T.tag, '') AS publisher,
+            COALESCE(Media.link, '') AS avatar,
+            P.content, 
+            User.picture, 
+            P.created_at, 
+            COALESCE(likes.likes, 0) AS likes 
+            FROM bf_tags T
+            right join bf_posts P ON P.user_id = T.context_id
+            LEFT JOIN bf_users User ON User.id = P.user_id 
+            LEFT JOIN bf_media Media ON Media.id = User.picture
+            LEFT JOIN (
+                SELECT count(*) as likes, context_id 
+                FROM bf_likes
+                WHERE type = 'POST'
+                GROUP BY context_id
+            ) likes ON P.id = likes.context_id  
+            WHERE T.tag = '${u_tag}'
+            `
+        )
+    }
+
     private SELECT_USER(u_tag:string){
         return(
             `
             SELECT regPost.post_id AS id, regUTag.tag AS RUTAG, 
-            UTags.tag AS publisher , posts.content, 
+            UTags.tag AS publisher , 
+            COALESCE(Media.link, '') AS avatar,
+            posts.content, 
             posts.media_id, posts.created_at, 
             COALESCE(likes.likes, 0) AS likes
             FROM bf_registeredposts regPost 
             INNER JOIN bf_tags regUTag on regPost.user_id = regUTag.context_id
             LEFT JOIN bf_posts posts ON regPost.post_id = posts.id 
             LEFT JOIN bf_tags UTags ON UTags.context_id = posts.user_id 
+            LEFT JOIN bf_users User 
+                ON User.id = posts.user_id
+            LEFT JOIN bf_media Media 
+                ON Media.id = User.picture
             LEFT JOIN (
                 SELECT context_id, count(*) AS likes 
                 FROM bf_likes 
+                WHERE type = 'POST'
                 GROUP BY context_id
             ) likes ON regPost.post_id = likes.context_id 
             WHERE regUTag.tag = '${u_tag}'
@@ -497,6 +555,7 @@ export class Post extends DbConnect{
             `
             SELECT posts.id, 
             UTags.tag AS publisher , 
+            COALESCE(Media.link, '') AS avatar,
             posts.content, 
             posts.media_id, 
             posts.created_at, 
@@ -504,15 +563,49 @@ export class Post extends DbConnect{
             from  bf_posts posts
             left join bf_groupposts gPosts  on gPosts.post_id = posts.id
             LEFT JOIN bf_tags UTags ON UTags.context_id = posts.user_id 
+            LEFT JOIN bf_users User 
+                ON User.id = posts.user_id
+            LEFT JOIN bf_media Media 
+                ON Media.id = User.picture
             LEFT JOIN (
-                SELECT context_id, count(*) AS likes 
+                SELECT context_id, count(*) AS likes , type
                 FROM bf_likes 
+                WHERE type = 'POST'
                 GROUP BY context_id
             ) likes ON posts.id = likes.context_id 
-            WHERE gPosts.post_id is null
+            WHERE gPosts.post_id is null and UTags.type = 'USER'
             `
 
         )
     } 
+
+    private SELECT_GROUP_ALL (user_id:number){
+        return (
+            `
+            SELECT 
+            P.id, 
+            P.created_at,
+            COALESCE(T.tag, '') AS publisher,
+            COALESCE(Media.link, '') AS avatar,
+            P.content,
+            GT.tag AS G_tag,
+            COALESCE(likes.likes, 0) AS likes 
+            FROM bf_usergroup UG
+            RIGHT JOIN bf_groupposts GP ON GP.group_id = UG.group_id
+            LEFT JOIN bf_posts P ON P.id = GP.post_id
+            LEFT JOIN bf_tags T  ON T.context_id = P.user_id 
+            LEFT JOIN bf_users User ON User.id = P.user_id 
+            LEFT JOIN bf_media Media ON Media.id = User.picture
+            LEFT JOIN (
+                SELECT context_id, count(*) AS likes 
+                FROM bf_likes 
+                WHERE type = 'POST'
+                GROUP BY context_id
+            ) likes ON P.id = likes.context_id 
+            LEFT JOIN bf_tags GT on GT.context_id = UG.group_id
+            WHERE UG.user_id = ${user_id}
+            `
+        )
+    }
     
 }
