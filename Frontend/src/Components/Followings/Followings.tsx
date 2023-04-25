@@ -19,7 +19,7 @@ const fetchFollowSuggestion = ()=>{
 
   const DEVELOP = "http://localhost:3535"
   const PRODUCTION = "https://book-face-backend.vercel.app"
-  let URL = `${DEVELOP}/users/suggest` 
+  let URL = `${PRODUCTION}/users/suggest` 
 
   
   return new Promise<ResponseMsg>(async (resolve, reject) => {
@@ -66,7 +66,7 @@ const fetchFollow = (u_tag:string)=>{
 
 const DEVELOP = "http://localhost:3535"
 const PRODUCTION = "https://book-face-backend.vercel.app"
-let URL = `${DEVELOP}/users/follow?user=${u_tag}` 
+let URL = `${PRODUCTION}/users/follow?user=${u_tag}` 
 
 
 return new Promise<ResponseMsg>(async (resolve, reject) => {

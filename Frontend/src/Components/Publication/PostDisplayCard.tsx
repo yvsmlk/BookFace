@@ -67,7 +67,7 @@ const fetchLike = (context_id:number,type="posts")=>{
 
     const DEVELOP = "http://localhost:3535"
     const PRODUCTION = "https://book-face-backend.vercel.app"
-    let URL = `${DEVELOP}/${type}/like` 
+    let URL = `${PRODUCTION}/${type}/like` 
 
     
     return new Promise<ResponseMsg>(async (resolve, reject) => {
@@ -120,7 +120,7 @@ const fetchRegister = (context_id:number)=>{
 
     const DEVELOP = "http://localhost:3535"
     const PRODUCTION = "https://book-face-backend.vercel.app"
-    let URL = `${DEVELOP}/posts/register` 
+    let URL = `${PRODUCTION}/posts/register` 
 
     
     return new Promise<ResponseMsg>(async (resolve, reject) => {
@@ -302,7 +302,7 @@ const fetchComment = async (post_id:number)=>{
     return new Promise<CommentType[]>(async (resolve, reject) => {
         
 
-        let URL = `${DEVELOP}/posts/comment?post_id=${post_id}` 
+        let URL = `${PRODUCTION}/posts/comment?post_id=${post_id}` 
         
         let response = await fetch(URL,option)
         let data = await response.json() as ResponseMsg
@@ -352,7 +352,7 @@ const CommentSection =  ({post_id,comRerender}:{post_id:number,comRerender:numbe
 }
 
 const addComment = async (content:string, post_id:number,parent=-1)=>{
-    let url = `${DEVELOP}/comments/add`
+    let url = `${PRODUCTION}/comments/add`
 
     let option = {
         method: 'POST',
