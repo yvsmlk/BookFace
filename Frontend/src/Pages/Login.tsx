@@ -1,6 +1,6 @@
 
 import { useState } from 'react'
-import {  } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import GreenWave2 from '../images/GreenWave2.jpg'
 import GlobeImage from '../images/GlobeImage.png'
 import {Link} from 'react-router-dom'
@@ -60,7 +60,7 @@ const fetchReg = async (email:string,pwd:string)=>{
 
 function Login (){
 
-    
+    let navigate = useNavigate()
 
     const backgroundImageStyle = {
         backgroundImage: `url("${GreenWave2}")`,
@@ -80,9 +80,9 @@ function Login (){
           };
 
 
-    const handleSubmit = async (e: any) => {
+    const handleSubmit = async () => {
         console.log(formError)
-        e.preventDefault()
+        
         if ( !Email || !Password ) {
           toast.error('Incorrect email or password ', {
             position: "top-center",
@@ -99,7 +99,8 @@ function Login (){
               position: "top-center",
               autoClose: 1000,
             onClose: () => {
-              window.location.href = "/Home";
+              
+              navigate("/home",{ replace: true })
             }})
           }
           else{
@@ -129,7 +130,7 @@ function Login (){
             <h2 className = "text-3xl mb-4 font-bold text-green-800">Log In</h2>
 
                 
-            <form action="" onSubmit={handleSubmit}>
+            
                 
                 <div className="mt-5">
                     <input type="email" placeholder="Email" name="Email" onChange={e => setEmail(e.target.value)} className="border border-gray-400 py-1 px-2 w-full" />
@@ -143,12 +144,12 @@ function Login (){
                    <div className = "text-green-900"><span> I accept the <a href="#" className="font-semibold"> Terms of Use</a> & <a href="#" className=" font-semibold">Privacy Policy</a></span></div>
                 </div> */}
                 <div className="mt-5">
-                <button type="submit" className="bg-white hover:bg-green-700 text-green-600 hover:text-white font-bold py-2 px-4 rounded border-2 border-green-600 mr-4">Log In</button>
+                <button onClick={()=>handleSubmit()} className="bg-white hover:bg-green-700 text-green-600 hover:text-white font-bold py-2 px-4 rounded border-2 border-green-600 mr-4">Log In</button>
                 </div>
                 <div>
                 <div className = "text-green-900 pt-5"><span> First time visit on PHYSYS ? <Link to="/Register" className="font-semibold">Sign In</Link></span></div>
                     </div>
-            </form>
+           
             
           </div>
         </div>

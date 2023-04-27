@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { Person, ResponseMsg, StatusTypes } from "../../utils/Types";
+// import { Person, ResponseMsg, StatusTypes } from "../../utils/Types";
 import { SlUserFollow } from "react-icons/sl";
+import { Person , ResponseMsg, StatusTypes } from "../../utils/typess";
 // import { Person } from "./people"; // importation de notre type Person
 
 

@@ -11,7 +11,7 @@ import BottomNavigationBar from '../Components/BottomNavigationBar/BottomNavigat
 import SideBar from '../Components/SideBar/SideBar';
 import VCard from '../Components/VCard/VCard';
 import Feed from '../Components/Publication/Feed';
-import { FeedType } from '../utils/Types';
+import { FeedType } from '../utils/typess';
 
 // interface ProfileCardProps {
 //     data: PostData;

@@ -3,7 +3,7 @@ import { NavLink, Navigate, useNavigate } from 'react-router-dom';
 import { FaBars } from 'react-icons/fa';
 import { SidebarData } from './SideBarData';
 import {FaHome, FaUser, FaBell, FaBookmark} from 'react-icons/fa' 
-import { ResponseMsg } from '../../utils/Types';
+import { ResponseMsg } from '../../utils/typess';
 import { toast } from 'react-toastify';
 import { IoExitOutline } from "react-icons/io5";
 

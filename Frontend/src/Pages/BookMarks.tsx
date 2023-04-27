@@ -1,5 +1,5 @@
 import React from "react";
-import GreenWave2 from '../images/GreenWave2.jpg'
+// import GreenWave2 from '../images/GreenWave2.jpg'
 import BottomNavigationBar from "../Components/BottomNavigationBar/BottomNavigationBar";
 import SideBar from "../Components/SideBar/SideBar";
 import BookmarkPage from "../Components/BookMark/BookmarkPage";
@@ -22,15 +22,15 @@ const BookMarks: React.FC = () => {
     }, []);
 
 
-    const backgroundImageStyle = {
-        backgroundImage: `url("${GreenWave2}")`,
-        backgroundSize: 'cover', 
+    // const backgroundImageStyle = {
+    //     backgroundImage: `url("${GreenWave2}")`,
+    //     backgroundSize: 'cover', 
 
-      };
+    //   };
  
 
   return (
-<div className=' flex flex-1 'style={backgroundImageStyle}>
+<div className=' flex flex-1 '>
     {isMobile ? (
        <BottomNavigationBar children={undefined} />
    ) : (

@@ -22,13 +22,14 @@ const BookmarkPage: React.FC = () => {
 
   return (
     <div className="container mx-auto px-4 sm:px-6 md:px-8 py-8">
-      <h1 className="text-3xl font-semibold mb-4">Mes bookmarks</h1>
+      {/* <h1 className="text-3xl font-semibold mb-4">Mes bookmarks</h1>
+      
       <BookmarkForm addBookmark={addBookmark} />
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
         {bookmarks.map((bookmark: Bookmark) => (
           <BookmarkCard key={bookmark.id} bookmark={bookmark} />
         ))}
-      </div>
+      </div> */}
     </div>
   );
 };
