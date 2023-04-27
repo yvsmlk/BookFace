@@ -1,17 +1,16 @@
-import React from 'react'
-import ReactDOM from 'react-dom/client'
-import { BrowserRouter } from 'react-router-dom'
+import ReactDOM from 'react-dom'
 import App from './App'
+import { BrowserRouter, HashRouter } from 'react-router-dom'
 import './index.css'
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 
-ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
-  
 
-  <BrowserRouter>
+ReactDOM.render(
+  <HashRouter >
     <App />
-     <ToastContainer /> 
-  </BrowserRouter>,
+    <ToastContainer /> 
+  </HashRouter>,
+  document.getElementById("root")
 )

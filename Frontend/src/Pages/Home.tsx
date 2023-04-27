@@ -1,7 +1,6 @@
 
 import React, { useState } from 'react'
 import Followings from '../Components/Followings/Followings'
-import people from "../Components/Followings/people"
 import PostCard from "../Components/Postcard/Postcard"
 import VCard from "../Components/VCard/VCard"
 import NatureTrendCard from "../Components/NatureTrendCard/NatureTrendCard"
@@ -9,12 +8,10 @@ import Publication from "../Components/Publication/Publication"
 import SideBar from '../Components/SideBar/SideBar'
 import NatureCard from '../Components/GalleryCard/GalleryCard'
 import GreenWave2 from '../images/GreenWave2.jpg'
-import SearchBar from '../Components/Search/SearchBar'
 import BottomNavigationBar from '../Components/BottomNavigationBar/BottomNavigationBar'
 
 import { generateRandomPostData } from '../Components/Publication/PostData'
 import Feed from '../Components/Publication/Feed'
-import { Person, ResponseMsg, StatusTypes } from '../utils/Types'
 
 const Home = () => {
   const [isMobile, setIsMobile] = useState(false);
