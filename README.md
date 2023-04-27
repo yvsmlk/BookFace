@@ -17,7 +17,12 @@
 <a href="https://expressjs.com/"> 
     <img src="https://img.shields.io/badge/Express.js-404D59?style=for-the-badge" style="border-radius:4px"/>
 </a> 
-
+<a href="https://vercel.com/"> 
+    <img src="https://img.shields.io/badge/Vercel-000000.svg?style=for-the-badge&logo=Vercel&logoColor=white" style="border-radius:4px"/>
+</a>
+<a href="https://planetscale.com/"> 
+    <img src="https://img.shields.io/badge/PlanetScale-000000.svg?style=for-the-badge&logo=PlanetScale&logoColor=white" style="border-radius:4px"/>
+</a> 
 
 
 #### Description :
@@ -27,7 +32,11 @@ PHYSYS is a social media app designed for nature enthusiasts who want to share t
 
 #### Demo :
 <a href="https://liolle.github.io/BookFace/"> 
-<img src="./homePage.png" style="border-radius:10px"/>
+<img src="./homePage.png" style="border-radius:4px"/>
+</a>
+
+<a href="https://liolle.github.io/BookFace/"> 
+<img src="./homeMobile.png" style="border-radius:4px; width:100px"/>
 </a>
 
 #### ERD :
