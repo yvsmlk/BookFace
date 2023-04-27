@@ -12,7 +12,6 @@ import BottomNavigationBar from '../Components/BottomNavigationBar/BottomNavigat
 
 import { generateRandomPostData } from '../Components/Publication/PostData'
 import Feed from '../Components/Publication/Feed'
-import { Person, ResponseMsg, StatusTypes } from '../utils/typess'
 
 const Home = () => {
   const [isMobile, setIsMobile] = useState(false);

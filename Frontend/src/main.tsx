@@ -8,7 +8,7 @@ import 'react-toastify/dist/ReactToastify.css';
 
 
 ReactDOM.render(
-  <HashRouter>
+  <HashRouter >
     <App />
     <ToastContainer /> 
   </HashRouter>,

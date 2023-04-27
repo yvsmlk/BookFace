@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import {Link} from 'react-router-dom'
+import {Link, useNavigate} from 'react-router-dom'
 import GreenWave2 from '../images/GreenWave2.jpg'
 import GlobeImage from '../images/GlobeImage.png'
 import { toast } from 'react-toastify';
@@ -73,14 +73,14 @@ function Register (){
     const [formError, setFormError] = useState('')
     const [checkBoxChecked, setCheckBoxChecked] = useState(false);
 
-
+      let navigate = useNavigate()
 
     const handleCheckBoxChange = (e:any) => {
             setCheckBoxChecked(e.target.checked);
           };
 
-    const handleSubmit = async (e: any) => {
-        e.preventDefault()
+    const handleSubmit = async () => {
+        
         if ( !Email || !Password || !ConfPassword) {
           toast.error('Please fill in all fields', {
             position: "top-center",
@@ -115,7 +115,8 @@ function Register (){
               position: "top-center",
               autoClose: 1000,
             onClose: () => {
-              window.location.href = "/Login";
+              
+              navigate("/login",{ replace: true })
             }})
           }
         else{
@@ -168,7 +169,7 @@ function Register (){
 
             <p className="mb-4 w-48 text-green-800">Create your account.</p>
                 
-            <form action="" onSubmit={handleSubmit}>
+            
                 
                 <div className="mt-5">
                     <input type="email" placeholder="Email" name="Email" onChange={e => setEmail(e.target.value)} className="border border-gray-400 py-1 px-2 w-full" />
@@ -186,9 +187,9 @@ function Register (){
                    <div className = "text-green-900"><span> I accept the <a href="#" className="font-semibold"> Terms of Use</a> & <a href="#" className=" font-semibold">Privacy Policy</a></span></div>
                 </div>
                 <div className="mt-5">
-                <button type="submit" className="bg-white hover:bg-green-700 text-green-600 hover:text-white font-bold py-2 px-4 rounded border-2 border-green-600 mr-4">Register Now</button>
+                <button onClick={()=>handleSubmit()} className="bg-white hover:bg-green-700 text-green-600 hover:text-white font-bold py-2 px-4 rounded border-2 border-green-600 mr-4">Register Now</button>
                 </div>
-            </form>
+            
             
           </div>
         </div>
