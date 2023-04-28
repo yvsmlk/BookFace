@@ -39,5 +39,5 @@ PHYSYS is a social media app designed for nature enthusiasts who want to share t
 <img src="./homeMobile.png" style="border-radius:4px; width:200px"/>
 </a>
 
-#### ERD :
+#### ERD (not the latest):
 ![](https://raw.githubusercontent.com/liolle/BookFace/main/Backend/imgs/dbERD.png)
