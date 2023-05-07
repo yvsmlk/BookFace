@@ -20,7 +20,7 @@ const DEVELOP = "http://localhost:3535"
 const PRODUCTION = "https://book-face-backend.vercel.app"
 
 const getProfile = async (u_tag = "")=>{
-  let url = `${PRODUCTION}/profiles/${u_tag}`
+  let url = `${DEVELOP}/profiles/${u_tag}`
 
   let option = {
     method: 'GET',
