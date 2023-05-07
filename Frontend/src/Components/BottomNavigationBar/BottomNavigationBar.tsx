@@ -11,7 +11,7 @@ const DEVELOP = "http://localhost:3535"
 const PRODUCTION = "https://book-face-backend.vercel.app"
 
 const fetchDisconnect = ()=>{
-  let url = `${PRODUCTION}/logout`
+  let url = `${DEVELOP}/logout`
 
   let option = {
     method: 'POST',
@@ -44,11 +44,13 @@ const BottomNavigationBar: React.FC<{ children: React.ReactNode }> = ({ children
   const navigate = useNavigate()
 
   const navHome = ()=>{
-    navigate("/Home")
+    navigate("/Home",{replace:true})
+    window.location.reload();
   }
 
   const navProfile = ()=>{
-    navigate("/Profile")
+    navigate("/Profile",{replace:true})
+    window.location.reload();
   }
 
   // const navNotifications = ()=>{
@@ -64,7 +66,7 @@ const BottomNavigationBar: React.FC<{ children: React.ReactNode }> = ({ children
     fetchDisconnect()
     .then((response)=>{
       if (response.status == 100){
-        navigate("/Login")
+        navigate("/Login",{replace:true})
       }
       else{
         toast.error("Error", {

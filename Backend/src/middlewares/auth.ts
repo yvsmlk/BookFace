@@ -42,10 +42,11 @@ const verifyJwt =async (req: Request, res: Response, next: NextFunction) => {
   let payload = verif_out.payload as {
     email: string,
     id: number,
-    user_tag: string
+    user_tag: string,
+    session_id : number
   }
   let session = new Session()
-  let resSession = await session.getSession(payload.id) 
+  let resSession = await session.getSession(payload.session_id) 
   session.close()
   
   if ( resSession.status != 100){

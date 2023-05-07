@@ -16,7 +16,7 @@ const PRODUCTION = "https://book-face-backend.vercel.app"
 
 
 const fetchReg = async (email:string,pwd:string)=>{
-  let url = `${PRODUCTION}/register/`
+  let url = `${DEVELOP}/register/`
 
   let option = {
     method: 'POST',

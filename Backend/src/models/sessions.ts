@@ -17,7 +17,47 @@ export class Session extends DbConnect{
         super();
     }
 
-    getSession(user_id:number){
+    getSession(session_id:number){
+        //
+        let sql_add_session = `
+        SELECT S.id, S.user_id, T.tag FROM bf_sessions S
+        left join bf_tags T on T.context_id = S.user_id 
+        WHERE S.id = ${session_id}
+        `
+
+        return new Promise<Type.ResponseMsg>((resolve, reject) => {
+            this.connection.query(sql_add_session, async (err:any, rows:any, fields:any)=>{
+                if (err){
+                    
+                    resolve({
+                        status:202,
+                        message:Type.StatusTypes[202],
+                        content: {error: err}
+                    })
+                    return 
+                }
+
+                
+                if (rows.length == 0){
+                    resolve({
+                        status:201,
+                        message: Type.StatusTypes[201],
+                        content: {}
+                    })
+                    return
+                }
+                        
+                resolve({
+                    status:100,
+                    message:Type.StatusTypes[100],
+                    content: rows
+                })
+            })
+        })
+
+    } 
+
+    getUId(user_id:number){
         //
         let sql_add_session = `
         SELECT S.id, S.user_id, T.tag FROM bf_sessions S
@@ -56,7 +96,6 @@ export class Session extends DbConnect{
         })
 
     } 
-
 
     addSession(user_id:number){
         let sql_add_session = `

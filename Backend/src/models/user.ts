@@ -405,7 +405,7 @@ export class User extends DbConnect {
     }
 
     
-    async login(email:string,pwd:string){
+    async login(email:string,in_pwd:string){
 
         return new Promise<Type.ResponseMsg>(async (resolve, reject) => {
 
@@ -437,16 +437,17 @@ export class User extends DbConnect {
 
             let resSession = await session.getSession(id) 
 
-            if ( resSession.status != 201){
-                resolve({
-                    status:405,
-                    message:Type.StatusTypes[405],
-                    content: {email:email}
-                })
-                session.close()
-                return
-            }
-            
+            // if ( resSession.status != 201){
+            //     resolve({
+            //         status:405,
+            //         message:Type.StatusTypes[405],
+            //         content: {email:email}
+            //     })
+                
+            //     session.close()
+            //     return
+            // }
+            let delSession = await session.deleteSession(id)
            
 
             resSession = await session.addSession(id)
@@ -459,14 +460,18 @@ export class User extends DbConnect {
                 })
                 return
             }
+            console.log(resSession);
             
-            resSession = await session.getSession(id) 
+            resSession = await session.getUId(id) 
             
             let content = resSession.content as [{
                 id:number,
                 user_id:number,
                 tag:string
             }]
+
+            console.log(resSession);
+            
             
             resolve({
                 status:100,
@@ -474,7 +479,8 @@ export class User extends DbConnect {
                 content: {
                     hashedPWD:pwd,
                     user_id:id,
-                    user_tag:content[0]['tag'] 
+                    user_tag:content[0]['tag'],
+                    session_id: content[0]['id']
                 }
             })
         })

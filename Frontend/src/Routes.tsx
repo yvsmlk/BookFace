@@ -38,6 +38,7 @@ export function routes() {
             <Route path= '/Login' element={<Login/>} />
             <Route path= '/LandingPage' element={<LandingPage/>} />
             <Route path= '/' element={<LandingPage />} />
+           
             
             {/* <Route element={<ReRoot />}>
                 <Route path= '/' element={<LandingCheck />} />
