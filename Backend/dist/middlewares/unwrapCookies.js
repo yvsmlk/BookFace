@@ -23,25 +23,33 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.logout = void 0;
 const Type = __importStar(require("../models/types"));
-const user_1 = require("../models/user");
-const logout = async (req, res) => {
-    let user = new user_1.User();
-    let resp = await user.logout(parseInt(req.params.user_id));
-    user.close();
-    if (resp.status != 100) {
+const token_1 = require("../utils/token");
+const unwrapCookies = async (req, res, next) => {
+    const { VAToken } = req.cookies;
+    if (!VAToken) {
+        console.log("no token");
         res.status(400).json({
-            status: resp.status,
-            message: resp.message,
-            content: resp.content
+            status: 203,
+            message: Type.StatusTypes[203],
+            content: {}
         });
         return;
     }
-    res.status(200).json({
-        status: 100,
-        message: Type.StatusTypes[100],
-        content: {}
-    });
+    //   const token = authHeader.split(" ")[1];
+    let verif_out = (0, token_1.verifyJWT)(VAToken);
+    if (verif_out.payload == null) {
+        console.log("wrong token");
+        res.status(403).json({
+            status: 203,
+            message: Type.StatusTypes[203],
+            content: {}
+        });
+        return;
+    }
+    let payload = verif_out.payload;
+    req.params.user_id = `${payload.id}`;
+    req.params.email = `${payload.email}`;
+    next();
 };
-exports.logout = logout;
+exports.default = unwrapCookies;

@@ -14,6 +14,7 @@ export const logout = async (req:Request, res:Response)=>{
             message:resp.message,
             content: resp.content
         })
+        return
     }
 
     res.status(200).json({

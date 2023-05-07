@@ -6,6 +6,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const router = express_1.default.Router();
 const logout_1 = require("../controllers/logout");
-const auth_1 = __importDefault(require("../middlewares/auth"));
-router.post('/', auth_1.default, logout_1.logout);
+const unwrapCookies_1 = __importDefault(require("../middlewares/unwrapCookies"));
+router.post('/', unwrapCookies_1.default, logout_1.logout);
 module.exports = router;
