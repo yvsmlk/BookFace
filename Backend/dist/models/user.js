@@ -372,15 +372,16 @@ class User extends dbConnect_1.default {
                 return;
             }
             let resSession = await session.getSession(id);
-            if (resSession.status != 201) {
-                resolve({
-                    status: 405,
-                    message: Type.StatusTypes[405],
-                    content: { email: email }
-                });
-                session.close();
-                return;
-            }
+            // if ( resSession.status != 201){
+            //     resolve({
+            //         status:405,
+            //         message:Type.StatusTypes[405],
+            //         content: {email:email}
+            //     })
+            //     session.close()
+            //     return
+            // }
+            let delSession = await session.deleteSession(id);
             resSession = await session.addSession(id);
             session.close();
             if (resSession.status != 100) {
@@ -391,15 +392,18 @@ class User extends dbConnect_1.default {
                 });
                 return;
             }
-            resSession = await session.getSession(id);
+            console.log(resSession);
+            resSession = await session.getUId(id);
             let content = resSession.content;
+            console.log(resSession);
             resolve({
                 status: 100,
                 message: Type.StatusTypes[100],
                 content: {
                     hashedPWD: pwd,
                     user_id: id,
-                    user_tag: content[0]['tag']
+                    user_tag: content[0]['tag'],
+                    session_id: content[0]['id']
                 }
             });
         });

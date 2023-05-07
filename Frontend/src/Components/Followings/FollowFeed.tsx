@@ -20,7 +20,7 @@ const fetchFollowSuggestion = ()=>{
 
   const DEVELOP = "http://localhost:3535"
   const PRODUCTION = "https://book-face-backend.vercel.app"
-  let URL = `${DEVELOP}/users/suggest` 
+  let URL = `${PRODUCTION}/users/suggest` 
 
   
   return new Promise<ResponseMsg>(async (resolve, reject) => {
@@ -67,7 +67,7 @@ const fetchFollows = (u_tag:string)=>{
 
 const DEVELOP = "http://localhost:3535"
 const PRODUCTION = "https://book-face-backend.vercel.app"
-let URL = `${DEVELOP}/users/follows?user=${u_tag ||"self"}` 
+let URL = `${PRODUCTION}/users/follows?user=${u_tag ||"self"}` 
 
 
 return new Promise<ResponseMsg>(async (resolve, reject) => {
@@ -115,7 +115,7 @@ const fetchFollowers = (u_tag:string)=>{
   
   const DEVELOP = "http://localhost:3535"
   const PRODUCTION = "https://book-face-backend.vercel.app"
-  let URL = `${DEVELOP}/users/followers?user=${u_tag ||"self"}` 
+  let URL = `${PRODUCTION}/users/followers?user=${u_tag ||"self"}` 
   
   
   return new Promise<ResponseMsg>(async (resolve, reject) => {
@@ -165,7 +165,7 @@ const fetchFollowers = (u_tag:string)=>{
   
   const DEVELOP = "http://localhost:3535"
   const PRODUCTION = "https://book-face-backend.vercel.app"
-  let URL = `${DEVELOP}/users/follow?user=${u_tag }` 
+  let URL = `${PRODUCTION}/users/follow?user=${u_tag }` 
   
   
   return new Promise<ResponseMsg>(async (resolve, reject) => {

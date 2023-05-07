@@ -41,7 +41,40 @@ class Session extends dbConnect_1.default {
     constructor() {
         super();
     }
-    getSession(user_id) {
+    getSession(session_id) {
+        //
+        let sql_add_session = `
+        SELECT S.id, S.user_id, T.tag FROM bf_sessions S
+        left join bf_tags T on T.context_id = S.user_id 
+        WHERE S.id = ${session_id}
+        `;
+        return new Promise((resolve, reject) => {
+            this.connection.query(sql_add_session, async (err, rows, fields) => {
+                if (err) {
+                    resolve({
+                        status: 202,
+                        message: Type.StatusTypes[202],
+                        content: { error: err }
+                    });
+                    return;
+                }
+                if (rows.length == 0) {
+                    resolve({
+                        status: 201,
+                        message: Type.StatusTypes[201],
+                        content: {}
+                    });
+                    return;
+                }
+                resolve({
+                    status: 100,
+                    message: Type.StatusTypes[100],
+                    content: rows
+                });
+            });
+        });
+    }
+    getUId(user_id) {
         //
         let sql_add_session = `
         SELECT S.id, S.user_id, T.tag FROM bf_sessions S

@@ -54,10 +54,10 @@ const PRODUCTION = "https://book-face-backend.vercel.app"
 
 
 const fetchPost = async (type:FeedType,tag:string)=>{
-    let URL_PUBLIC = `${DEVELOP}/posts/public`
-    let URL_GROUP = `${DEVELOP}/posts/group?group_tag=${tag}`
-    let URL_USER = `${DEVELOP}/posts/registered`
-    let URL_GROUP_ALL = `${DEVELOP}/posts/group_all`
+    let URL_PUBLIC = `${PRODUCTION}/posts/public`
+    let URL_GROUP = `${PRODUCTION}/posts/group?group_tag=${tag}`
+    let URL_USER = `${PRODUCTION}/posts/registered`
+    let URL_GROUP_ALL = `${PRODUCTION}/posts/group_all`
 
     let option = {
         method: 'GET',
