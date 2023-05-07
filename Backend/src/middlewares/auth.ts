@@ -47,6 +47,8 @@ const verifyJwt =async (req: Request, res: Response, next: NextFunction) => {
   }
   let session = new Session()
   let resSession = await session.getSession(payload.session_id) 
+  console.log(payload.session_id);
+  
   session.close()
   
   if ( resSession.status != 100){

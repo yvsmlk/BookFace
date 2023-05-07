@@ -39,8 +39,8 @@ const basicConnect = async (email, pwd, hashedPwd, id, user_tag, session_id, req
             // await user.update("",0,refreshToken)
             // res.cookie("VRToken",refreshToken,{httpOnly:true,maxAge:24*60*60*1000, sameSite:"none" ,secure:true})
             // res.cookie("VAToken",accessToken,{httpOnly:true,maxAge:20*60*1000, sameSite:"none" ,secure:true})
-            res.cookie("VRToken", refreshToken, { maxAge: 24 * 60 * 60 * 1000 });
-            res.cookie("VAToken", accessToken, { maxAge: 24 * 60 * 60 * 1000 });
+            res.cookie("VRToken", refreshToken, { maxAge: 24 * 60 * 60 * 1000, sameSite: "none", secure: true });
+            res.cookie("VAToken", accessToken, { maxAge: 24 * 60 * 60 * 1000, sameSite: "none", secure: true });
             res.status(200).json({
                 status: 100,
                 message: Type.StatusTypes[100],

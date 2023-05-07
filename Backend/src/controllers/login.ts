@@ -18,8 +18,8 @@ const basicConnect = async (email:string,pwd:string,hashedPwd:string,id:number,u
                 
             // res.cookie("VRToken",refreshToken,{httpOnly:true,maxAge:24*60*60*1000, sameSite:"none" ,secure:true})
             // res.cookie("VAToken",accessToken,{httpOnly:true,maxAge:20*60*1000, sameSite:"none" ,secure:true})
-            res.cookie("VRToken",refreshToken,{maxAge:24*60*60*1000})
-            res.cookie("VAToken",accessToken,{maxAge:24*60*60*1000})
+            res.cookie("VRToken",refreshToken,{maxAge:24*60*60*1000 ,sameSite:"none",secure:true})
+            res.cookie("VAToken",accessToken,{maxAge:24*60*60*1000,sameSite:"none",secure:true})
 
             res.status(200).json(
                 {
