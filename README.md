@@ -30,7 +30,7 @@
 PHYSYS is a social media app designed for nature enthusiasts who want to share their love of the great outdoors with a like-minded community. Our app is inspired by popular social media platforms such as Twitter, YouTube, and Instagram, and combines the best features of these platforms to create an unique and engaging experience for nature lovers.
 
 
-#### Demo :
+#### Demo (does not work on edge):
 <a href="https://liolle.github.io/BookFace/"> 
 <img src="./homePage.png" style="border-radius:4px"/>
 </a>
